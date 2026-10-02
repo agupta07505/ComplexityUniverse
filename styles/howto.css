@@ -1,0 +1,103 @@
+/* =====================  how to use  ===================== */
+
+.cu-how-hero {
+  padding: 64px 0 40px;
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(900px 320px at 20% -60px, rgba(185, 138, 28, 0.08), transparent 60%),
+    var(--paper);
+}
+
+.cu-how-hero h1 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(32px, 4.5vw, 48px);
+  margin-bottom: 14px;
+}
+
+.cu-how-hero p { max-width: 620px; color: var(--ink-2); font-size: 17px; }
+
+.cu-steps {
+  counter-reset: step;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.cu-step {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 26px 26px 24px 74px;
+  position: relative;
+}
+
+.cu-step::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute;
+  left: 22px;
+  top: 24px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-weight: 750;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cu-step h3 { font-size: 17px; margin-bottom: 6px; }
+.cu-step p { color: var(--ink-2); font-size: 14.5px; margin: 0; }
+
+.cu-faq { display: flex; flex-direction: column; gap: 12px; }
+
+.cu-faq details {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+}
+
+.cu-faq summary {
+  cursor: pointer;
+  font-weight: 620;
+  font-size: 15.5px;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.cu-faq summary::-webkit-details-marker { display: none; }
+
+.cu-faq summary::after {
+  content: "+";
+  color: var(--accent);
+  font-size: 19px;
+  font-weight: 500;
+  transition: transform 0.18s ease;
+}
+
+.cu-faq details[open] summary::after { transform: rotate(45deg); }
+
+.cu-faq details p {
+  margin: 12px 0 0;
+  color: var(--ink-2);
+  font-size: 14.5px;
+}
+
+.cu-how-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin-top: 16px;
+}
+
+@media (max-width: 760px) {
+  .cu-steps { grid-template-columns: 1fr; }
+}

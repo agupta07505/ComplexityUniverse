@@ -1,0 +1,27 @@
+/* =====================  admin  ===================== */
+
+.cu-admin-form { margin-bottom: 18px; }
+
+.cu-admin-exlist {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cu-admin-exlist li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+@media (max-width: 860px) {
+  .cu-admin-exlist li { flex-direction: column; align-items: flex-start; }
+}

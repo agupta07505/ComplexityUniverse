@@ -1,0 +1,25 @@
+{
+  "name": "complexity-universe",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ComplexityUniverse — AI-powered time & space complexity analysis platform (Next.js + MySQL)",
+  "scripts": {
+    "dev": "next dev -H 0.0.0.0",
+    "build": "next build",
+    "start": "next start -H 0.0.0.0",
+    "setup": "npm install --no-audit --no-fund && node scripts/setup-db.mjs",
+    "db:setup": "node scripts/setup-db.mjs"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "framer-motion": "^11.3.11",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.11.3",
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  }
+}
