@@ -10,7 +10,6 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
 
-  const confidencePercent = Math.round((Number(result.confidence) || 0.7) * 100);
   const grade = gradeFor(result.time_complexity);
 
   async function handleSaveAnalysis() {
@@ -48,17 +47,6 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
           <div className="cu-chip-row" style={{ alignItems: 'center' }}>
             <ComplexityBadge label="Time" value={result.time_complexity} />
             <ComplexityBadge label="Space" value={result.space_complexity} />
-            <span className="cu-badge cu-badge-plain" title="Analysis confidence">
-              {confidencePercent}% confidence
-            </span>
-            <span className="cu-badge cu-badge-plain" title="Analyzed exclusively via Google Gemini API">
-              Gemini AI ({result.model || 'Flash'})
-            </span>
-            {promptInfo?.version ? (
-              <span className="cu-badge cu-badge-plain" title="Active admin prompt version">
-                prompt v{promptInfo.version}
-              </span>
-            ) : null}
           </div>
           <p className="result-summary">{result.summary}</p>
         </div>
