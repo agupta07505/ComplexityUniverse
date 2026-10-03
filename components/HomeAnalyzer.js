@@ -34,9 +34,9 @@ export default function HomeAnalyzer() {
       if (!response.ok) throw new Error(data.error || 'Analysis failed');
       setAnalysisResult(data.result);
       setPromptInfo(data.prompt);
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
+      }, 60);
     } catch (error) {
       setErrorMessage(error.message || 'Something went wrong. Try again.');
     } finally {
@@ -52,10 +52,12 @@ export default function HomeAnalyzer() {
   }
 
   return (
-    <div>
+    <div className="home-page-container">
+      {/* Full-Page Background Particles */}
+      <StarField className="home-particles-canvas" />
+
       {/* ---------------- Hero Section ---------------- */}
       <section className="hero-banner">
-        <StarField className="hero-stars-overlay" />
         <div className="cu-wrap hero-content">
           <span className="cu-eyebrow">Time &amp; space complexity, decoded</span>
           <h1 className="cu-display hero-title">
@@ -124,10 +126,10 @@ export default function HomeAnalyzer() {
           </div>
         </div>
 
-        {/* ---------------- Results Section ---------------- */}
-        <div ref={resultsRef} className="results-container">
-          <AnimatePresence mode="wait">
-            {analysisResult && (
+        {/* ---------------- Results Section (Shown only after analysis) ---------------- */}
+        <AnimatePresence>
+          {analysisResult && (
+            <div ref={resultsRef} className="results-container">
               <motion.div
                 key={`${analysisResult.time_complexity}-${analysisResult.space_complexity}-${Date.now()}`}
                 initial={{ opacity: 0, y: 18 }}
@@ -169,30 +171,9 @@ export default function HomeAnalyzer() {
                   }}
                 />
               </motion.div>
-            )}
-
-            {!analysisResult && (
-              <motion.div
-                key="placeholder"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="placeholder-card"
-              >
-                <div className="placeholder-row">
-                  <span className="placeholder-pill" />
-                  <span className="placeholder-line" style={{ width: '38%' }} />
-                </div>
-                <div className="placeholder-line" style={{ width: '92%' }} />
-                <div className="placeholder-line" style={{ width: '84%' }} />
-                <div className="placeholder-line" style={{ width: '60%' }} />
-                <p>
-                  Your detailed analysis will appear here — complexity classes, case table,
-                  bottlenecks and optimizations.
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+            </div>
+          )}
+        </AnimatePresence>
       </section>
 
       {/* ---------------- Feature Highlights ---------------- */}
