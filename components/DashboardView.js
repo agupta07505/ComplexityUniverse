@@ -13,6 +13,8 @@ function formatDate(dateString) {
 }
 
 function parseJsonSafely(jsonString) {
+  if (!jsonString) return null;
+  if (typeof jsonString === 'object') return jsonString;
   try {
     return JSON.parse(jsonString);
   } catch {
@@ -216,27 +218,93 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
                       animate={{ opacity: 1, height: 'auto' }}
                       className="card-item-details"
                     >
-                      {details.approach && (
-                        <p style={{ color: 'var(--ink-2)' }}>{details.approach}</p>
-                      )}
-                      <div className="cu-grid-2">
-                        <div>
-                          <div className="result-section-title">Bottlenecks</div>
-                          <ul className="warning-bullets">
-                            {(details.bottlenecks || []).map((bottleneck, index) => (
-                              <li key={index}>{bottleneck}</li>
-                            ))}
-                          </ul>
+                      {/* Cases & Breakdown Grid */}
+                      <div className="result-grid" style={{ marginBottom: 18 }}>
+                        <div className="cu-card cu-card-pad" style={{ background: 'var(--paper)' }}>
+                          <h4 className="result-section-title">Complexity by case</h4>
+                          <table className="cu-table">
+                            <tbody>
+                              <tr>
+                                <td style={{ fontWeight: 620, width: '33%' }}>Best</td>
+                                <td className="mono">{details.cases?.best || analysis.time_complexity}</td>
+                              </tr>
+                              <tr>
+                                <td style={{ fontWeight: 620 }}>Average</td>
+                                <td className="mono">{details.cases?.average || analysis.time_complexity}</td>
+                              </tr>
+                              <tr>
+                                <td style={{ fontWeight: 620 }}>Worst</td>
+                                <td className="mono">{details.cases?.worst || analysis.time_complexity}</td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
-                        <div>
-                          <div className="result-section-title">Optimizations</div>
-                          <ul className="good-bullets">
-                            {(details.optimizations || []).map((optimization, index) => (
-                              <li key={index}>{optimization}</li>
-                            ))}
-                          </ul>
+
+                        <div className="cu-card cu-card-pad" style={{ background: 'var(--paper)' }}>
+                          <h4 className="result-section-title">Where the cost comes from</h4>
+                          {Array.isArray(details.breakdown) && details.breakdown.length > 0 ? (
+                            <ul className="cost-breakdown-list">
+                              {details.breakdown.map((breakdownItem, index) => (
+                                <li key={index}>
+                                  <div className="cost-item-header">
+                                    <strong>{breakdownItem.label}</strong>
+                                    {breakdownItem.cost && <span className="mono cost-badge">{breakdownItem.cost}</span>}
+                                  </div>
+                                  <span>{breakdownItem.detail}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p style={{ color: 'var(--muted)', fontSize: 14, margin: 0 }}>No granular breakdown recorded.</p>
+                          )}
                         </div>
                       </div>
+
+                      {/* How this was measured */}
+                      {details.approach && (
+                        <div className="cu-card cu-card-pad" style={{ background: 'var(--paper)', marginBottom: 18 }}>
+                          <h4 className="result-section-title">How this was measured</h4>
+                          <p style={{ color: 'var(--ink-2)', margin: 0, lineHeight: 1.6 }}>{details.approach}</p>
+                        </div>
+                      )}
+
+                      {/* Bottlenecks and Optimizations */}
+                      <div className="result-grid" style={{ marginBottom: 18 }}>
+                        <div className="cu-card cu-card-pad" style={{ background: 'var(--paper)' }}>
+                          <h4 className="result-section-title">Bottlenecks</h4>
+                          {Array.isArray(details.bottlenecks) && details.bottlenecks.length > 0 ? (
+                            <ul className="warning-bullets">
+                              {details.bottlenecks.map((bottleneck, index) => (
+                                <li key={index}>{bottleneck}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p style={{ color: 'var(--muted)', fontSize: 14, margin: 0 }}>None identified</p>
+                          )}
+                        </div>
+                        <div className="cu-card cu-card-pad" style={{ background: 'var(--paper)' }}>
+                          <h4 className="result-section-title">Optimization ideas</h4>
+                          {Array.isArray(details.optimizations) && details.optimizations.length > 0 ? (
+                            <ul className="good-bullets">
+                              {details.optimizations.map((optimization, index) => (
+                                <li key={index}>{optimization}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p style={{ color: 'var(--muted)', fontSize: 14, margin: 0 }}>Already optimal</p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Analyzed Code */}
+                      {(analysis.code_text || details.code) && (
+                        <div>
+                          <h4 className="result-section-title" style={{ marginLeft: 2, marginBottom: 8 }}>
+                            Analyzed code
+                          </h4>
+                          <CodeBlock code={analysis.code_text || details.code} language={analysis.language || 'code'} />
+                        </div>
+                      )}
                     </motion.div>
                   )}
                 </div>

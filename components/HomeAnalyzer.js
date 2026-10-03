@@ -152,6 +152,7 @@ export default function HomeAnalyzer() {
                         title: `Analysis — ${(analysisResult.time_complexity || 'code').toString()}`,
                         ...analysisResult,
                         detailed_analysis: {
+                          code,
                           summary: analysisResult.summary,
                           approach: analysisResult.approach,
                           breakdown: analysisResult.breakdown,
@@ -159,7 +160,6 @@ export default function HomeAnalyzer() {
                           bottlenecks: analysisResult.bottlenecks,
                           optimizations: analysisResult.optimizations,
                           notes: analysisResult.notes,
-                          confidence: analysisResult.confidence,
                           time_complexity: analysisResult.time_complexity,
                           space_complexity: analysisResult.space_complexity,
                         },

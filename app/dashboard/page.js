@@ -33,7 +33,7 @@ export default async function DashboardPage() {
   const analyses = await query(
     `SELECT v.id, v.title, v.language, v.time_complexity, v.space_complexity, v.summary,
             v.code_lines, v.detail_mode, v.engine, v.cost_grade, v.created_at,
-            a.detailed_analysis
+            a.code_text, a.detailed_analysis
        FROM v_analysis_feed v
        JOIN code_analyses a ON a.id = v.id
       WHERE v.user_id = ?
