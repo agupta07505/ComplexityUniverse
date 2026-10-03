@@ -332,6 +332,36 @@ button { font-family: inherit; }
 }
 
 @media (max-width: 640px) {
-  .cu-grid-2, .cu-grid-3, .cu-grid-4 { grid-template-columns: 1fr; }
-  .cu-page { padding: 30px 0 64px; }
+  .cu-wrap {
+    width: calc(100% - 24px);
+  }
+  .cu-grid-2,
+  .cu-grid-3,
+  .cu-grid-4 {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .cu-page {
+    padding: 24px 0 54px;
+  }
+  .cu-card-pad {
+    padding: 16px;
+  }
+  .cu-stat {
+    padding: 14px 16px;
+  }
+  .cu-stat .cu-stat-value {
+    font-size: 22px;
+  }
+  .cu-prose h2 {
+    font-size: 22px;
+  }
+  .cu-prose h3 {
+    font-size: 16px;
+  }
+  .cu-table th,
+  .cu-table td {
+    padding: 8px 10px;
+    font-size: 13.5px;
+  }
 }

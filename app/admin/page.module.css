@@ -172,3 +172,28 @@
   font-size: 14px;
   color: var(--ink-2);
 }
+
+@media (max-width: 720px) {
+  .dashHero,
+  .cu-dash-hero {
+    flex-direction: column;
+    padding: 20px 16px;
+  }
+  .tabs,
+  .cu-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+  .tab,
+  .cu-tab {
+    padding: 9px 12px;
+    font-size: 13.5px;
+    white-space: nowrap;
+  }
+  .authCard,
+  .cu-auth-card {
+    padding: 24px 18px;
+    margin: 0 14px;
+  }
+}

@@ -35,3 +35,13 @@
 .footer-links-column a {
   color: var(--ink-2);
 }
+
+@media (max-width: 640px) {
+  .site-footer {
+    padding: 30px 0 24px;
+  }
+  .footer-content-grid {
+    flex-direction: column;
+    gap: 22px;
+  }
+}

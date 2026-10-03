@@ -137,3 +137,22 @@
     overflow-y: visible;
   }
 }
+
+@media (max-width: 640px) {
+  .topic-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .topic-article-card {
+    padding: 18px 16px;
+  }
+  .example-card {
+    padding: 14px;
+  }
+  .example-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

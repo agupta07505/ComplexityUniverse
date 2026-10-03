@@ -5,29 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import StarField from './StarField';
 import AnalysisResult from './AnalysisResult';
 
-const SUPPORTED_LANGUAGES = [
-  ['auto', 'Auto-detect'],
-  ['javascript', 'JavaScript'],
-  ['typescript', 'TypeScript'],
-  ['python', 'Python'],
-  ['java', 'Java'],
-  ['cpp', 'C / C++'],
-  ['go', 'Go'],
-  ['rust', 'Rust'],
-  ['php', 'PHP'],
-];
-
-const SAMPLE_NAMES = {
-  binary: 'Binary search',
-  nested: 'Nested loops',
-  recursion: 'Naive Fibonacci',
-  sort: 'Sort a list',
-};
-
-export default function HomeAnalyzer({ samples }) {
+export default function HomeAnalyzer() {
   const [code, setCode] = useState('');
-  const [language, setLanguage] = useState('auto');
-  const [mode, setMode] = useState('detailed');
+  const language = 'auto';
+  const mode = 'detailed';
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [analysisResult, setAnalysisResult] = useState(null);
@@ -93,59 +74,7 @@ export default function HomeAnalyzer({ samples }) {
       {/* ---------------- Code Analyzer ---------------- */}
       <section className="cu-wrap analyzer-section">
         <div className="cu-card analyzer-card">
-          <div className="analyzer-toolbar">
-            <label className="toolbar-group">
-              <span>Language</span>
-              <select
-                className="cu-input language-selector"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-              >
-                {SUPPORTED_LANGUAGES.map(([langValue, langLabel]) => (
-                  <option key={langValue} value={langValue}>
-                    {langLabel}
-                  </option>
-                ))}
-              </select>
-            </label>
 
-            <div className="toolbar-group">
-              <span>Detail</span>
-              <div className="mode-toggle-group">
-                <button
-                  type="button"
-                  className={mode === 'detailed' ? 'is-active' : ''}
-                  onClick={() => setMode('detailed')}
-                >
-                  Detailed
-                </button>
-                <button
-                  type="button"
-                  className={mode === 'short' ? 'is-active' : ''}
-                  onClick={() => setMode('short')}
-                >
-                  Short
-                </button>
-              </div>
-            </div>
-
-            <div className="sample-buttons-group">
-              <span>Try</span>
-              {Object.keys(samples).map((sampleKey) => (
-                <button
-                  key={sampleKey}
-                  type="button"
-                  className="sample-btn"
-                  onClick={() => {
-                    setCode(samples[sampleKey]);
-                    setErrorMessage('');
-                  }}
-                >
-                  {SAMPLE_NAMES[sampleKey]}
-                </button>
-              ))}
-            </div>
-          </div>
 
           <div className="code-editor-box">
             <textarea
@@ -175,6 +104,19 @@ export default function HomeAnalyzer({ samples }) {
                 'Analyze complexity'
               )}
             </button>
+            {code.trim() && (
+              <button
+                type="button"
+                className="cu-btn cu-btn-ghost cu-btn-sm"
+                onClick={() => {
+                  setCode('');
+                  setErrorMessage('');
+                  setAnalysisResult(null);
+                }}
+              >
+                Clear
+              </button>
+            )}
             <span className="cu-hint">
               {code.trim() ? `${code.split('\n').length} lines ready` : 'Ctrl + Enter to analyze'}
             </span>

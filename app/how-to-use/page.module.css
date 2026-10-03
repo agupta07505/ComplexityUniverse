@@ -138,3 +138,33 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 640px) {
+  .howHero,
+  .cu-how-hero {
+    padding: 40px 0 28px;
+  }
+  .howHero h1,
+  .cu-how-hero h1 {
+    font-size: 28px;
+  }
+  .step,
+  .cu-step {
+    padding: 20px 18px 18px 62px;
+  }
+  .step::before,
+  .cu-step::before {
+    left: 16px;
+    top: 18px;
+    width: 32px;
+    height: 32px;
+  }
+  .faq details,
+  .cu-faq details {
+    padding: 14px 16px;
+  }
+  .faq summary,
+  .cu-faq summary {
+    font-size: 14.5px;
+  }
+}

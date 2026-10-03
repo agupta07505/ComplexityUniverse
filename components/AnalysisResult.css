@@ -183,3 +183,33 @@
     height: 104px;
   }
 }
+
+@media (max-width: 640px) {
+  .result-header {
+    padding: 18px 16px;
+    gap: 16px;
+  }
+  .result-summary {
+    font-size: 15px;
+    margin-top: 10px;
+  }
+  .result-actions-side {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .complexity-orb {
+    margin: 0 auto;
+    width: 96px;
+    height: 96px;
+  }
+  .result-actions-side .cu-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .cost-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}

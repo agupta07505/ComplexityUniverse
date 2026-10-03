@@ -149,12 +149,35 @@
 @media (max-width: 720px) {
   .dashboard-hero {
     flex-direction: column;
+    padding: 20px 16px;
+    gap: 16px;
+  }
+  .dashboard-profile-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+  .tabs-navigation {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+  .tab-button {
+    padding: 9px 12px;
+    font-size: 13.5px;
+    white-space: nowrap;
+  }
+  .dashboard-card-item {
+    padding: 16px 14px;
   }
   .card-item-header {
     flex-direction: column;
+    gap: 10px;
   }
   .card-item-actions {
     flex-direction: row;
     width: 100%;
+    justify-content: flex-end;
   }
 }

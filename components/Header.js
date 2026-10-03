@@ -14,6 +14,7 @@ const NAV_MENU_ITEMS = [
 export default function Header() {
   const [currentUser, setCurrentUser] = useState(null);
   const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -29,9 +30,15 @@ export default function Header() {
     };
   }, [pathname]);
 
+  // Close mobile navigation on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   async function handleSignOut() {
     await fetch('/api/auth/logout', { method: 'POST' });
     setCurrentUser(null);
+    setIsMobileMenuOpen(false);
     router.push('/');
     router.refresh();
   }
@@ -46,13 +53,34 @@ export default function Header() {
   return (
     <header className="site-header">
       <div className="cu-wrap header-container">
-        <Link href="/" className="brand-logo">
+        <Link href="/" className="brand-logo" onClick={() => setIsMobileMenuOpen(false)}>
           <span>
             Complexity<span className="accent-word">Universe</span>
           </span>
         </Link>
 
-        <nav className="nav-links">
+        {/* Mobile Navigation Toggle Button */}
+        <button
+          type="button"
+          className="mobile-nav-toggle"
+          aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+        >
+          {isMobileMenuOpen ? (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          ) : (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          )}
+        </button>
+
+        <nav className={`nav-links ${isMobileMenuOpen ? 'is-open' : ''}`}>
           {NAV_MENU_ITEMS.filter((item) => !item.requiresAuth || currentUser).map((item) => (
             <Link
               key={item.href}
