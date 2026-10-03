@@ -87,16 +87,6 @@ export default function HomeAnalyzer({ samples }) {
             with a line-by-line breakdown, bottlenecks and concrete optimizations, saved to
             your personal dashboard.
           </p>
-
-          <div className="cu-chip-row cu-hero-chips">
-            <span className="cu-badge cu-badge-green mono">O(1)</span>
-            <span className="cu-badge cu-badge-green mono">O(log n)</span>
-            <span className="cu-badge cu-badge-blue mono">O(n)</span>
-            <span className="cu-badge cu-badge-blue mono">O(n log n)</span>
-            <span className="cu-badge cu-badge-amber mono">O(n²)</span>
-            <span className="cu-badge cu-badge-amber mono">O(n³)</span>
-            <span className="cu-badge cu-badge-red mono">O(2ⁿ)</span>
-          </div>
         </div>
       </section>
 

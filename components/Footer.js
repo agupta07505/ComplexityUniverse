@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Logo from './Logo';
 
 export default function Footer() {
   return (
@@ -7,7 +6,6 @@ export default function Footer() {
       <div className="cu-wrap cu-footer-grid">
         <div className="cu-footer-col" style={{ maxWidth: 300 }}>
           <span className="cu-logo" style={{ fontSize: 15 }}>
-            <Logo size={22} />
             <span>
               Complexity<span className="lo-2">Universe</span>
             </span>
@@ -32,7 +30,7 @@ export default function Footer() {
         <div className="cu-footer-col">
           <strong>Built with</strong>
           <span>Next.js App Router</span>
-          <span>MySQL — views, triggers, procedures</span>
+          <span>MySQL — CRUD Operations, views & triggers</span>
           <span>AI-assisted static analysis</span>
         </div>
       </div>

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import Logo from './Logo';
 
 const LINKS = [
   { href: '/', label: 'Home' },
@@ -50,7 +49,6 @@ export default function Header() {
     <header className="cu-header">
       <div className="cu-wrap cu-header-in">
         <Link href="/" className="cu-logo" onClick={() => setMenuOpen(false)}>
-          <Logo />
           <span>
             Complexity<span className="lo-2">Universe</span>
           </span>
