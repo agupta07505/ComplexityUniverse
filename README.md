@@ -9,50 +9,33 @@ Built with **Next.js (App Router, JavaScript)**, **plain CSS files** (no Tailwin
 
 ---
 
-## Database — local MySQL or Aiven (online)
+## Database — Aiven MySQL (Cloud)
 
-The site works with a local MySQL/XAMPP install **or** an online MySQL like
-**Aiven**. The connection is configured in `.env.local`.
+ComplexityUniverse is configured to run exclusively with **Aiven MySQL** with TLS/SSL encryption. The connection is configured in `.env.local`.
 
-### Using Aiven (online MySQL)
+### Aiven MySQL Configuration
 
-1. Create a MySQL service in the [Aiven console](https://console.aiven.io)
-2. Open the service → **Connection information** and copy **Host, Port, User, Password**
-3. Edit `.env.local` and replace the MySQL block:
+1. In your [Aiven Console](https://console.aiven.io), open your MySQL service → **Connection information**
+2. Copy your **Host, Port, User, Password** into `.env.local`:
 
 ```
-DB_HOST=mysql-12345.aivencloud.com
-DB_PORT=17xxx              # Aiven uses a custom port — copy it exactly
+DB_HOST=complexity-universe-complexityuniverse.l.aivencloud.com
+DB_PORT=10275
 DB_USER=avnadmin
 DB_PASSWORD=your-aiven-password
-DB_NAME=defaultdb
-DB_SSL=true                # or leave empty — SSL turns on automatically for remote hosts
-# DB_CA_CERT=              # optional: paste Aiven's PEM certificate (or path to ca.pem)
+DB_NAME=complexity_universe
+DB_SSL=true
+DB_CA_CERT=./ca.pem
 ```
 
-4. Run the setup: `npm run setup` (or `setup.bat` / `setup.sh`)
+3. Run the setup: `npm run setup` (or `npm run db:setup`)
 
-That's it — `npm run setup` creates the `complexity_universe` database, all tables,
-views, triggers and seed data **inside your Aiven service**. SSL/TLS is enabled
-automatically for remote hosts (Aiven requires it).
+`npm run db:setup` creates the `complexity_universe` database on Aiven, all tables, views, triggers, and seed data.
 
-> Tip: `DB_CA_CERT` is optional. Without it the connection is still encrypted, only the
-> server certificate is not checked. Paste Aiven's CA certificate (PEM text) for full
-> verification.
+### What the setup creates in Aiven MySQL
 
-### Using local MySQL / XAMPP
-
-Keep the default values in `.env.local` (`127.0.0.1:3306`, user `cu_app`) and make sure
-MySQL is running (XAMPP/WAMP/Laragon: press *Start* next to MySQL) before you run the
-setup and while using the site. The setup script creates the `cu_app` user automatically
-(through the default `root` account) if it does not exist.
-
-### What the setup creates automatically
-
-1. `.env.local` (default settings) if it does not exist
-2. A MySQL user `cu_app` if it does not exist (tries the default `root` account to create it)
-3. The `complexity_universe` database — tables, foreign keys, cascade rules, views, triggers
-4. Seed data — 15 Learn topics, 11 code examples, the AI prompt, demo users
+1. The `complexity_universe` database — tables, foreign keys, cascade rules, views, and triggers
+2. Seed data — 15 Learn topics, 11 code examples, the AI prompt template, and demo users
 
 ### Demo accounts (seeded)
 
@@ -111,7 +94,6 @@ app/                   # App Router pages + API routes (all .js)
   login|register|dashboard|learn|how-to-use|admin
 components/            # Header, Footer, HomeAnalyzer, LearnView, DashboardView, ...
 lib/                   # db pool, auth (JWT + bcrypt), Gemini AI service
-styles/                # one css file per area (home, auth, learn, dashboard, admin, howto)
 database/              # schema.sql + seed.sql
 scripts/setup-db.mjs   # bootstrap: .env + MySQL user + schema + seed
 ```

@@ -1,14 +1,13 @@
 /**
- * ComplexityUniverse — database bootstrap.
+ * ComplexityUniverse — database bootstrap for Aiven MySQL.
  * Runs database/schema.sql (tables, views, triggers) then
  * database/seed.sql (topics, examples, AI prompt) and seeds demo users.
  *
- * Works with local MySQL/XAMPP and online databases (e.g. Aiven) —
- * the connection (including SSL) is read from .env.local.
+ * Connection settings (including SSL/TLS) are read from .env.local.
  *
- * Usage:  npm run db:setup   (or run setup.bat / setup.sh)
+ * Usage:  npm run db:setup
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import mysql from 'mysql2/promise';
@@ -23,119 +22,78 @@ function loadEnv() {
 }
 
 const env = loadEnv();
-const config = buildMysqlConfig(env, { withDatabase: false });
 
-/** Write a default .env.local when one does not exist yet. */
+/** Ensure .env.local exists with an Aiven MySQL template if missing. */
 function ensureEnvFile() {
   const envPath = path.join(root, '.env.local');
-  try {
-    readFileSync(envPath);
-    return; // already there
-  } catch {
-    /* create it */
-  }
+  if (existsSync(envPath)) return;
+
   const jwt = [...Array(24)].map(() => 'abcdef0123456789'[Math.floor(Math.random() * 16)]).join('');
   writeFileSync(
     envPath,
-    `# --- MySQL ---
-# Local MySQL/XAMPP (default):
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_USER=cu_app
-DB_PASSWORD=cu_app_2026
+    `# --- Aiven MySQL ---
+# Copy these values from your Aiven Console (Service -> Overview -> Connection information)
+DB_HOST=
+DB_PORT=10275
+DB_USER=avnadmin
+DB_PASSWORD=
 DB_NAME=complexity_universe
-# DB_SSL=false
-
-# --- Using Aiven (online MySQL)? ---
-# Copy these values from the Aiven console (Service -> Connection information)
-# and replace the ones above. SSL turns on automatically for remote hosts.
-# DB_HOST=mysql-12345.aivencloud.com
-# DB_PORT=17xxx
-# DB_USER=avnadmin
-# DB_PASSWORD=your-aiven-password
-# DB_NAME=defaultdb
-# DB_SSL=true
-# DB_CA_CERT=          (optional) paste the PEM text from Aiven, or path to ca.pem
+DB_SSL=true
+DB_CA_CERT=./ca.pem
 
 # --- Auth ---
 JWT_SECRET=${jwt}
 JWT_EXPIRES_IN=7d
-
-# NOTE: the Gemini API key is set inside the website
-# (Admin -> AI settings), not here.
 `
   );
-  console.log('Created .env.local with default settings.');
+  console.log('Created .env.local template for Aiven MySQL.');
 }
 
-/**
- * Connect to MySQL. If the configured account does not exist yet (fresh PC),
- * try the default root account (XAMPP / WAMP / Laragon) and create it.
- * Online databases (Aiven etc.) use the credentials from .env.local directly.
- */
+/** Connect to Aiven MySQL. */
 async function connect() {
+  const config = buildMysqlConfig(env, { withDatabase: false });
+
+  if (!config.host || !config.password) {
+    console.error(
+      'Missing Aiven MySQL configuration in .env.local.\n' +
+        'Please check that DB_HOST, DB_PORT, DB_USER, and DB_PASSWORD are set.\n' +
+        'You can copy these directly from your Aiven Console (Service -> Connection information).'
+    );
+    process.exit(1);
+  }
+
   try {
     return await mysql.createConnection(config);
   } catch (err) {
     const msg = err.message || '';
     if (/ECONNREFUSED|ETIMEDOUT|ENOTFOUND|EAI_AGAIN/i.test(msg)) {
       console.error(
-        `Cannot reach the MySQL server at ${config.host}:${config.port}.\n` +
-          `- Local MySQL/XAMPP: start MySQL first (XAMPP -> Start next to MySQL).\n` +
-          `- Aiven / online MySQL: check DB_HOST and DB_PORT in .env.local\n` +
-          `  (copy them from the Aiven console -> Connection information).`
+        `Cannot reach the Aiven MySQL server at ${config.host}:${config.port}.\n` +
+          `- Verify your Aiven service is Running in the Aiven Console.\n` +
+          `- Check that DB_HOST and DB_PORT in .env.local match your Aiven connection info.\n` +
+          `- Check your internet connection or firewall settings.`
       );
       process.exit(1);
     }
-    if (!/ER_ACCESS_DENIED|ER_NOT_SUPPORTED_AUTH_MODE|HANDSHAKE|SSL|TLS/i.test(msg)) throw err;
+    if (/ER_ACCESS_DENIED/i.test(msg)) {
+      console.error(
+        `Access denied for user '${config.user}' on Aiven MySQL.\n` +
+          `- Check that DB_USER and DB_PASSWORD in .env.local match the credentials in your Aiven Console.`
+      );
+      process.exit(1);
+    }
     if (/HANDSHAKE|SSL|TLS/i.test(msg)) {
       console.error(
-        `TLS/SSL problem while connecting to ${config.host}:\n${msg}\n` +
-          `For Aiven: leave DB_SSL empty (TLS turns on automatically) or set DB_SSL=true.\n` +
-          `If the certificate cannot be verified, set DB_SSL=true and leave DB_CA_CERT empty,\n` +
-          `or paste Aiven's CA certificate into DB_CA_CERT in .env.local.`
+        `TLS/SSL connection error connecting to Aiven (${config.host}):\n${msg}\n` +
+          `- Ensure ca.pem is present in the project root, or set DB_CA_CERT=./ca.pem in .env.local.`
       );
       process.exit(1);
     }
+    throw err;
   }
-  console.log('Configured MySQL user not accepted — trying root to create it automatically ...');
-  for (const rootPw of ['', 'root', 'password']) {
-    try {
-      const rootConn = await mysql.createConnection({
-        host: config.host,
-        port: config.port,
-        user: 'root',
-        password: rootPw,
-      });
-      await rootConn.query(
-        `CREATE USER IF NOT EXISTS '${config.user}'@'%' IDENTIFIED BY '${config.password}'`
-      );
-      await rootConn.query(
-        `CREATE USER IF NOT EXISTS '${config.user}'@'localhost' IDENTIFIED BY '${config.password}'`
-      );
-      await rootConn.query(`GRANT ALL PRIVILEGES ON *.* TO '${config.user}'@'%'`);
-      await rootConn.query(`GRANT ALL PRIVILEGES ON *.* TO '${config.user}'@'localhost'`);
-      await rootConn.query('FLUSH PRIVILEGES');
-      await rootConn.end();
-      console.log(`MySQL user '${config.user}' created — continuing.`);
-      return mysql.createConnection(config);
-    } catch {
-      /* try the next root password */
-    }
-  }
-  console.error(
-    `Could not log in to MySQL.\n` +
-      `- Local MySQL/XAMPP: open .env.local and set DB_USER / DB_PASSWORD to your MySQL account.\n` +
-      `- Aiven: open the Aiven console -> Service -> Connection information and copy\n` +
-      `  the exact User, Password, Host and Port into .env.local.\n` +
-      `Then rerun this setup.`
-  );
-  process.exit(1);
 }
 
-/** Split a .sql file into executable statements.
- *  Handles DELIMITER blocks and skips delimiters inside quoted strings
- *  (code samples in seed.sql contain semicolons). */
+/** Split a .sql file into executable statements. */
 export function splitSql(raw) {
   const statements = [];
   let delimiter = ';';
@@ -175,7 +133,6 @@ export function splitSql(raw) {
       continue;
     }
 
-    // DELIMITER directive (only at line start, outside strings/comments)
     if (atLineStart && !inSingle && !inDouble && !inBacktick) {
       const rest = raw.slice(i);
       const m = rest.match(/^DELIMITER[ \t]+(\S+)[ \t]*\r?\n?/i);
@@ -273,16 +230,17 @@ async function runFile(conn, file) {
 
 async function main() {
   ensureEnvFile();
-  console.log(`Connecting to MySQL at ${config.host}:${config.port} as ${config.user} ...`);
+  const dbName = (env.DB_NAME || 'complexity_universe').trim();
+  console.log(`Connecting to Aiven MySQL at ${env.DB_HOST}:${env.DB_PORT || 10275} as ${env.DB_USER || 'avnadmin'} ...`);
   const conn = await connect();
 
   await conn.query(
-    `CREATE DATABASE IF NOT EXISTS ${env.DB_NAME || 'complexity_universe'}
+    `CREATE DATABASE IF NOT EXISTS \`${dbName}\`
      CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`
   );
-  await conn.query(`USE ${env.DB_NAME || 'complexity_universe'}`);
+  await conn.query(`USE \`${dbName}\``);
 
-  console.log('Applying schema.sql ...');
+  console.log('Applying schema.sql to Aiven MySQL ...');
   await runFile(conn, 'schema.sql');
 
   console.log('Applying seed.sql ...');
@@ -305,7 +263,7 @@ async function main() {
     );
   }
 
-  // a few bookmarks so the dashboard is not empty on first login
+  // sample bookmarks for demo user
   const [demoRows] = await conn.query(`SELECT id FROM users WHERE email = 'demo@complexityuniverse.dev'`);
   if (demoRows.length) {
     const uid = demoRows[0].id;
@@ -335,11 +293,11 @@ async function main() {
             (SELECT COUNT(*) FROM users)              AS users,
             (SELECT COUNT(*) FROM analysis_prompts)   AS prompts`
   );
-  console.log('Done.', counts[0]);
+  console.log('Aiven MySQL setup complete:', counts[0]);
   await conn.end();
 }
 
 main().catch((err) => {
-  console.error('Database setup failed:', err.message);
+  console.error('Aiven MySQL setup failed:', err.message);
   process.exit(1);
 });

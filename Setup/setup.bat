@@ -1,9 +1,9 @@
 @echo off
 title ComplexityUniverse - Setup
-cd /d %~dp0
+cd /d "%~dp0\.."
 
 echo ==========================================
-echo   ComplexityUniverse - Automatic Setup
+echo   ComplexityUniverse - Aiven MySQL Setup
 echo ==========================================
 echo.
 
@@ -24,13 +24,11 @@ if errorlevel 1 (
 )
 
 echo.
-echo [2/3] Creating the MySQL database, tables, views and triggers...
-echo       ^(Local MySQL: make sure it is running - XAMPP: Start next to MySQL^)
-echo       ^(Aiven / online MySQL: fill in .env.local first - see README^)
+echo [2/3] Setting up Aiven MySQL database, tables, views and triggers...
 node scripts\setup-db.mjs
 if errorlevel 1 (
   echo.
-  echo [ERROR] Database setup failed. Read the message above.
+  echo [ERROR] Aiven MySQL setup failed. Check your .env.local credentials.
   pause
   exit /b 1
 )

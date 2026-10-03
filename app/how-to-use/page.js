@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import ComplexityBadge from '@/components/ComplexityBadge';
+import styles from './page.module.css';
 
 export const metadata = {
   title: 'How to use — ComplexityUniverse',
@@ -8,7 +9,7 @@ export const metadata = {
 export default function HowToUsePage() {
   return (
     <div>
-      <section className="cu-how-hero">
+      <section className={styles.howHero}>
         <div className="cu-wrap">
           <span className="cu-eyebrow">How to use</span>
           <h1>Four moves, and the whole
@@ -26,8 +27,8 @@ export default function HowToUsePage() {
         <div className="cu-section-head">
           <h2 className="cu-display" style={{ fontSize: 26 }}>Step by step</h2>
         </div>
-        <div className="cu-steps">
-          <div className="cu-step">
+        <div className={styles.steps}>
+          <div className={styles.step}>
             <h3>Paste your code</h3>
             <p>
               On the home page, drop any function, class or script into the editor. Pick the
@@ -35,7 +36,7 @@ export default function HowToUsePage() {
               full breakdown or <strong>Short</strong> for the verdict only.
             </p>
           </div>
-          <div className="cu-step">
+          <div className={styles.step}>
             <h3>Press Analyze</h3>
             <p>
               The button sits right under the editor. Results appear beneath it: time and space
@@ -43,7 +44,7 @@ export default function HowToUsePage() {
               bottlenecks and optimization ideas.
             </p>
           </div>
-          <div className="cu-step">
+          <div className={styles.step}>
             <h3>Save to your dashboard</h3>
             <p>
               Signed in? Hit “Save to dashboard” and the code, its analysis and the engine used
@@ -51,7 +52,7 @@ export default function HowToUsePage() {
               views.
             </p>
           </div>
-          <div className="cu-step">
+          <div className={styles.step}>
             <h3>Learn and bookmark</h3>
             <p>
               The Learn page is a structured library — topics on the left, notes and worked
@@ -71,7 +72,7 @@ export default function HowToUsePage() {
           </p>
         </div>
         <div className="cu-card cu-card-pad">
-          <div className="cu-how-legend">
+          <div className={styles.howLegend}>
             <span style={{ display: 'inline-flex', gap: 10, alignItems: 'center' }}>
               <ComplexityBadge label="Time" value="O(1)" /> <span className="cu-hint">excellent — constant</span>
             </span>
@@ -99,7 +100,7 @@ export default function HowToUsePage() {
         <div className="cu-section-head">
           <h2 className="cu-display" style={{ fontSize: 26 }}>Questions people ask</h2>
         </div>
-        <div className="cu-faq">
+        <div className={styles.faq}>
           <details>
             <summary>Do I need an account to analyze code?</summary>
             <p>

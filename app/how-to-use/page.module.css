@@ -1,5 +1,4 @@
-/* =====================  how to use  ===================== */
-
+.howHero,
 .cu-how-hero {
   padding: 64px 0 40px;
   border-bottom: 1px solid var(--line);
@@ -8,6 +7,7 @@
     var(--paper);
 }
 
+.howHero h1,
 .cu-how-hero h1 {
   font-family: var(--font-serif);
   font-weight: 500;
@@ -15,8 +15,14 @@
   margin-bottom: 14px;
 }
 
-.cu-how-hero p { max-width: 620px; color: var(--ink-2); font-size: 17px; }
+.howHero p,
+.cu-how-hero p {
+  max-width: 620px;
+  color: var(--ink-2);
+  font-size: 17px;
+}
 
+.steps,
 .cu-steps {
   counter-reset: step;
   display: grid;
@@ -24,6 +30,7 @@
   gap: 18px;
 }
 
+.step,
 .cu-step {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -32,6 +39,7 @@
   position: relative;
 }
 
+.step::before,
 .cu-step::before {
   counter-increment: step;
   content: counter(step);
@@ -50,11 +58,27 @@
   justify-content: center;
 }
 
-.cu-step h3 { font-size: 17px; margin-bottom: 6px; }
-.cu-step p { color: var(--ink-2); font-size: 14.5px; margin: 0; }
+.step h3,
+.cu-step h3 {
+  font-size: 17px;
+  margin-bottom: 6px;
+}
 
-.cu-faq { display: flex; flex-direction: column; gap: 12px; }
+.step p,
+.cu-step p {
+  color: var(--ink-2);
+  font-size: 14.5px;
+  margin: 0;
+}
 
+.faq,
+.cu-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq details,
 .cu-faq details {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -62,6 +86,7 @@
   padding: 18px 22px;
 }
 
+.faq summary,
 .cu-faq summary {
   cursor: pointer;
   font-weight: 620;
@@ -73,8 +98,12 @@
   gap: 12px;
 }
 
-.cu-faq summary::-webkit-details-marker { display: none; }
+.faq summary::-webkit-details-marker,
+.cu-faq summary::-webkit-details-marker {
+  display: none;
+}
 
+.faq summary::after,
 .cu-faq summary::after {
   content: "+";
   color: var(--accent);
@@ -83,14 +112,19 @@
   transition: transform 0.18s ease;
 }
 
-.cu-faq details[open] summary::after { transform: rotate(45deg); }
+.faq details[open] summary::after,
+.cu-faq details[open] summary::after {
+  transform: rotate(45deg);
+}
 
+.faq details p,
 .cu-faq details p {
   margin: 12px 0 0;
   color: var(--ink-2);
   font-size: 14.5px;
 }
 
+.howLegend,
 .cu-how-legend {
   display: flex;
   flex-wrap: wrap;
@@ -99,5 +133,8 @@
 }
 
 @media (max-width: 760px) {
-  .cu-steps { grid-template-columns: 1fr; }
+  .steps,
+  .cu-steps {
+    grid-template-columns: 1fr;
+  }
 }

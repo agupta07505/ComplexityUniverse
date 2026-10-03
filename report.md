@@ -347,19 +347,15 @@ The system interacts directly with the Google Gemini REST endpoint:
 
 ---
 
-## 10. Database Connectivity: Local MySQL vs. Aiven Cloud
+## 10. Database Connectivity: Aiven Cloud MySQL
 
-ComplexityUniverse supports both local offline development and managed cloud databases out of the box:
-
-### Local Setup (XAMPP / WAMP / MySQL 8.x)
-- Host: `127.0.0.1:3306`
-- User: `cu_app` (or `root`)
-- Automated user creation: If `cu_app` does not exist, `scripts/setup-db.mjs` attempts connection via `root` with empty password and creates `cu_app` with appropriate privileges.
+ComplexityUniverse is configured exclusively for **Aiven Cloud MySQL**:
 
 ### Cloud Setup (Aiven MySQL)
-- Automatic SSL/TLS: Enabled automatically whenever `DB_HOST` is not localhost/127.0.0.1.
-- Custom Port: Accommodates Aiven's custom ports (e.g. `17xxx`).
-- Certificate Handling: Reads `ca.pem` if specified or defaults to encrypted SSL without mandatory local CA verification.
+- **Automatic SSL/TLS**: Enforced with certificate verification using the provided `ca.pem` certificate authority.
+- **Custom Port**: Accommodates Aiven's custom assigned ports (e.g., `10275`).
+- **Resilience**: Uses a connection pool with keep-alive, auto-reconnect, and connection limits.
+- **Zero Local Footprint**: No local MySQL installation, XAMPP, WAMP, or local database service is required.
 
 ---
 
@@ -367,7 +363,7 @@ ComplexityUniverse supports both local offline development and managed cloud dat
 
 ### Prerequisites
 1. **Node.js** >= 18.17.0
-2. **MySQL Server** (Local XAMPP or Aiven cloud instance)
+2. **Aiven Cloud MySQL Service** (configured in `.env.local`)
 3. **Google Gemini API Key** (Free from [Google AI Studio](https://aistudio.google.com/apikey))
 
 ### One-Click Bootstrap

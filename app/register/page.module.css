@@ -1,0 +1,120 @@
+.auth,
+.cu-auth {
+  min-height: calc(100vh - var(--header-h) - 120px);
+  display: flex;
+  align-items: center;
+  padding: 48px 0 72px;
+  background:
+    radial-gradient(800px 380px at 85% 10%, rgba(67, 56, 202, 0.06), transparent 60%),
+    var(--paper);
+}
+
+.authGrid,
+.cu-auth-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 56px;
+  align-items: center;
+}
+
+.authCopy h1,
+.cu-auth-copy h1 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(30px, 4vw, 42px);
+  line-height: 1.12;
+  margin-bottom: 16px;
+}
+
+.authCopy p,
+.cu-auth-copy p {
+  color: var(--ink-2);
+  font-size: 16.5px;
+  max-width: 420px;
+}
+
+.authPoints,
+.cu-auth-points {
+  list-style: none;
+  padding: 0;
+  margin: 26px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.authPoints li,
+.cu-auth-points li {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  color: var(--ink-2);
+  font-size: 14.5px;
+}
+
+.authPoints li::before,
+.cu-auth-points li::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  margin-top: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.authCard,
+.cu-auth-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 32px;
+}
+
+.authCard h2,
+.cu-auth-card h2 {
+  font-size: 21px;
+  margin-bottom: 4px;
+}
+
+.authSub,
+.cu-auth-sub {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 22px;
+}
+
+.authAlt,
+.cu-auth-alt {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.authAdmin,
+.cu-auth-admin {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+  font-size: 13.5px;
+}
+
+.authAdmin a,
+.cu-auth-admin a {
+  font-weight: 600;
+}
+
+@media (max-width: 880px) {
+  .authGrid,
+  .cu-auth-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .authCopy,
+  .cu-auth-copy {
+    display: none;
+  }
+}

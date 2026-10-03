@@ -1,10 +1,4 @@
 import './globals.css';
-import '../styles/home.css';
-import '../styles/auth.css';
-import '../styles/learn.css';
-import '../styles/dashboard.css';
-import '../styles/admin.css';
-import '../styles/howto.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 

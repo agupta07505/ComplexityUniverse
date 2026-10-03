@@ -1,5 +1,4 @@
-/* =====================  auth  ===================== */
-
+.auth,
 .cu-auth {
   min-height: calc(100vh - var(--header-h) - 120px);
   display: flex;
@@ -10,6 +9,7 @@
     var(--paper);
 }
 
+.authGrid,
 .cu-auth-grid {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
@@ -17,6 +17,7 @@
   align-items: center;
 }
 
+.authCopy h1,
 .cu-auth-copy h1 {
   font-family: var(--font-serif);
   font-weight: 500;
@@ -25,8 +26,14 @@
   margin-bottom: 16px;
 }
 
-.cu-auth-copy p { color: var(--ink-2); font-size: 16.5px; max-width: 420px; }
+.authCopy p,
+.cu-auth-copy p {
+  color: var(--ink-2);
+  font-size: 16.5px;
+  max-width: 420px;
+}
 
+.authPoints,
 .cu-auth-points {
   list-style: none;
   padding: 0;
@@ -36,6 +43,7 @@
   gap: 12px;
 }
 
+.authPoints li,
 .cu-auth-points li {
   display: flex;
   gap: 11px;
@@ -44,6 +52,7 @@
   font-size: 14.5px;
 }
 
+.authPoints li::before,
 .cu-auth-points li::before {
   content: "";
   width: 7px;
@@ -54,6 +63,7 @@
   flex-shrink: 0;
 }
 
+.authCard,
 .cu-auth-card {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -62,17 +72,20 @@
   padding: 32px;
 }
 
+.authCard h2,
 .cu-auth-card h2 {
   font-size: 21px;
   margin-bottom: 4px;
 }
 
-.cu-auth-card .cu-auth-sub {
+.authSub,
+.cu-auth-sub {
   color: var(--muted);
   font-size: 14px;
   margin-bottom: 22px;
 }
 
+.authAlt,
 .cu-auth-alt {
   margin-top: 20px;
   text-align: center;
@@ -80,6 +93,7 @@
   color: var(--ink-2);
 }
 
+.authAdmin,
 .cu-auth-admin {
   margin-top: 16px;
   padding-top: 16px;
@@ -88,9 +102,19 @@
   font-size: 13.5px;
 }
 
-.cu-auth-admin a { font-weight: 600; }
+.authAdmin a,
+.cu-auth-admin a {
+  font-weight: 600;
+}
 
 @media (max-width: 880px) {
-  .cu-auth-grid { grid-template-columns: 1fr; gap: 32px; }
-  .cu-auth-copy { display: none; }
+  .authGrid,
+  .cu-auth-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .authCopy,
+  .cu-auth-copy {
+    display: none;
+  }
 }

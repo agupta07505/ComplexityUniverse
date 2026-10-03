@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import styles from './page.module.css';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -32,9 +33,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="cu-auth">
-      <div className="cu-wrap cu-auth-grid">
-        <div className="cu-auth-copy">
+    <div className={styles.auth}>
+      <div className={`cu-wrap ${styles.authGrid}`}>
+        <div className={styles.authCopy}>
           <span className="cu-eyebrow">Welcome back</span>
           <h1 className="cu-display">
             Pick up where your
@@ -45,16 +46,16 @@ export default function LoginPage() {
             Your saved analyses, bookmarked topics and reading notes are waiting in your
             dashboard.
           </p>
-          <ul className="cu-auth-points">
+          <ul className={styles.authPoints}>
             <li>Full history of every analysis you save</li>
             <li>Bookmarked Learn topics in one place</li>
             <li>Profile and reading activity</li>
           </ul>
         </div>
 
-        <div className="cu-auth-card">
+        <div className={styles.authCard}>
           <h2>Sign in</h2>
-          <p className="cu-auth-sub">Use your ComplexityUniverse account</p>
+          <p className={styles.authSub}>Use your ComplexityUniverse account</p>
 
           <form onSubmit={submit}>
             <label className="cu-field">
@@ -89,11 +90,11 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="cu-auth-alt">
+          <p className={styles.authAlt}>
             New here? <Link href="/register">Create an account</Link>
           </p>
 
-          <div className="cu-auth-admin">
+          <div className={styles.authAdmin}>
             Administrator? <Link href="/admin">Open the admin console →</Link>
           </div>
         </div>

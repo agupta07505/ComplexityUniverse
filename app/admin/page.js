@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import ComplexityBadge from '@/components/ComplexityBadge';
+import styles from './page.module.css';
 
 const EMPTY_TOPIC = {
   topic_name: '',
@@ -272,12 +273,12 @@ export default function AdminPage() {
 
   if (!user) {
     return (
-      <div className="cu-auth">
+      <div className={styles.auth}>
         <div className="cu-wrap" style={{ maxWidth: 460 }}>
-          <div className="cu-auth-card">
+          <div className={styles.authCard}>
             <span className="cu-eyebrow">Admin access</span>
             <h2>Administrator sign-in</h2>
-            <p className="cu-auth-sub">
+            <p className={styles.authSub}>
               The console manages the Learn library and the AI analysis prompt.
             </p>
             <form onSubmit={adminLogin}>
@@ -306,7 +307,7 @@ export default function AdminPage() {
                 Sign in to console
               </button>
             </form>
-            <p className="cu-auth-alt">
+            <p className={styles.authAlt}>
               Not an admin? <Link href="/login">Regular sign-in</Link>
             </p>
           </div>
@@ -332,7 +333,7 @@ export default function AdminPage() {
   /* ---------- render: console ---------- */
   return (
     <div className="cu-wrap cu-page">
-      <div className="cu-dash-hero" style={{ marginBottom: 24 }}>
+      <div className={styles.dashHero} style={{ marginBottom: 24 }}>
         <div>
           <span className="cu-eyebrow">Admin console</span>
           <h1 className="cu-display" style={{ fontSize: 30, marginBottom: 6 }}>
@@ -348,7 +349,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div className="cu-tabs">
+      <div className={styles.tabs}>
         {[
           ['overview', 'Overview'],
           ['topics', 'Complexity topics'],
@@ -358,7 +359,7 @@ export default function AdminPage() {
           <button
             key={key}
             type="button"
-            className={`cu-tab ${tab === key ? 'is-on' : ''}`}
+            className={`${styles.tab} ${tab === key ? styles.isOn : ''}`}
             onClick={() => setTab(key)}
           >
             {label}
@@ -387,7 +388,7 @@ export default function AdminPage() {
 
           <div className="cu-grid-2" style={{ marginTop: 20 }}>
             <div className="cu-card cu-card-pad">
-              <h3 className="cu-result-h3">Complexity distribution</h3>
+              <h3 className={styles.resultH3}>Complexity distribution</h3>
               <table className="cu-table">
                 <thead>
                   <tr>
@@ -418,11 +419,11 @@ export default function AdminPage() {
             </div>
 
             <div className="cu-card cu-card-pad">
-              <h3 className="cu-result-h3">Recent activity</h3>
-              <ul className="cu-activity">
+              <h3 className={styles.resultH3}>Recent activity</h3>
+              <ul className={styles.activity}>
                 {(stats?.recent || []).map((r, i) => (
                   <li key={i}>
-                    <span className="cu-dot cu-dot-ok" />
+                    <span className={`${styles.dot} ${styles.dotOk}`} />
                     <div>
                       <strong>{r.action.replace(/_/g, ' ')}</strong> — {r.entity}
                       {r.detail ? ` · ${r.detail}` : ''}
@@ -450,7 +451,7 @@ export default function AdminPage() {
           {topicMsg && <p className="cu-success-text">{topicMsg}</p>}
 
           {editing && (
-            <form className="cu-card cu-card-pad cu-admin-form" onSubmit={saveTopic}>
+            <form className={`cu-card cu-card-pad ${styles.adminForm}`} onSubmit={saveTopic}>
               <h3 style={{ marginTop: 0 }}>{editId ? 'Edit topic' : 'New topic'}</h3>
               <div className="cu-grid-2">
                 <label className="cu-field">
@@ -568,7 +569,7 @@ export default function AdminPage() {
                 </button>
               </div>
 
-              <ul className="cu-admin-exlist">
+              <ul className={styles.adminExlist}>
                 {exampleList.map((ex) => (
                   <li key={ex.id}>
                     <div>
