@@ -3,7 +3,8 @@ import { query } from '@/lib/db';
 
 /** GET /api/topics/[id] — one topic with examples (id or slug). */
 export async function GET(request, { params }) {
-  const key = params.id;
+  const resolvedParams = await params;
+  const key = resolvedParams.id;
   const rows = await query(
     `SELECT * FROM v_topic_overview WHERE (id = ? OR slug = ?) AND is_published = 1 LIMIT 1`,
     [Number(key) || 0, key]

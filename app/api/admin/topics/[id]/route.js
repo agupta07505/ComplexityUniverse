@@ -6,8 +6,9 @@ import { requireAdmin } from '@/lib/auth';
 export async function PUT(request, { params }) {
   try {
     await requireAdmin();
+    const resolvedParams = await params;
     const b = await request.json();
-    const id = Number(params.id);
+    const id = Number(resolvedParams.id);
 
     await query(
       `UPDATE complexity_topics
@@ -45,7 +46,8 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const admin = await requireAdmin();
-    const id = Number(params.id);
+    const resolvedParams = await params;
+    const id = Number(resolvedParams.id);
 
     await transaction(async (conn) => {
       const [topicRows] = await conn.query(

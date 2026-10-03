@@ -11,7 +11,8 @@ export async function POST(request, { params }) {
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: 'Sign in to save topics.' }, { status: 401 });
 
-  const topicId = Number(params.id);
+  const resolvedParams = await params;
+  const topicId = Number(resolvedParams.id);
   const body = await request.json().catch(() => ({}));
   const note = String(body.note || '').slice(0, 255);
 

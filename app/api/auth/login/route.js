@@ -27,7 +27,7 @@ export async function POST(request) {
     await query(`UPDATE users SET last_login_at = NOW() WHERE id = ?`, [user.id]);
 
     const token = signToken({ id: user.id, role: user.role });
-    setAuthCookie(token);
+    await setAuthCookie(token);
 
     return NextResponse.json({
       user: { id: user.id, name: user.name, email: user.email, role: user.role },

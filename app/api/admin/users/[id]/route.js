@@ -6,7 +6,8 @@ import { requireAdmin } from '@/lib/auth';
 export async function PATCH(request, { params }) {
   try {
     const admin = await requireAdmin();
-    const id = Number(params.id);
+    const resolvedParams = await params;
+    const id = Number(resolvedParams.id);
     const b = await request.json();
     if (id === admin.id) return NextResponse.json({ error: 'You cannot modify your own account here.' }, { status: 400 });
 
@@ -27,7 +28,8 @@ export async function PATCH(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const admin = await requireAdmin();
-    const id = Number(params.id);
+    const resolvedParams = await params;
+    const id = Number(resolvedParams.id);
     if (id === admin.id) return NextResponse.json({ error: 'You cannot delete your own account here.' }, { status: 400 });
     await query(`DELETE FROM users WHERE id = ?`, [id]);
     return NextResponse.json({ ok: true });

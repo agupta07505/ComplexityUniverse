@@ -5,6 +5,7 @@ import { requireAdmin } from '@/lib/auth';
 export async function PUT(request, { params }) {
   try {
     await requireAdmin();
+    const resolvedParams = await params;
     const b = await request.json();
     await query(
       `UPDATE topic_examples
@@ -19,7 +20,7 @@ export async function PUT(request, { params }) {
         String(b.time_complexity || '').slice(0, 40) || null,
         String(b.space_complexity || '').slice(0, 40) || null,
         Number(b.sort_order) || 10,
-        Number(params.id),
+        Number(resolvedParams.id),
       ]
     );
     return NextResponse.json({ ok: true });
@@ -31,7 +32,8 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     await requireAdmin();
-    await query(`DELETE FROM topic_examples WHERE id = ?`, [Number(params.id)]);
+    const resolvedParams = await params;
+    await query(`DELETE FROM topic_examples WHERE id = ?`, [Number(resolvedParams.id)]);
     return NextResponse.json({ ok: true });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: err.status || 500 });
