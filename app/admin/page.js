@@ -40,7 +40,7 @@ export default function AdminPage() {
   const [promptName, setPromptName] = useState('');
   const [promptMsg, setPromptMsg] = useState('');
   const [geminiKey, setGeminiKey] = useState('');
-  const [geminiModel, setGeminiModel] = useState('gemini-3.5-flash');
+  const [geminiModel, setGeminiModel] = useState('gemini-3.8-flash');
   const [settingsMsg, setSettingsMsg] = useState('');
   const [users, setUsers] = useState([]);
 
@@ -101,7 +101,7 @@ export default function AdminPage() {
     }
     if (st.settings) {
       setGeminiKey(st.settings.gemini_api_key || '');
-      setGeminiModel(st.settings.gemini_model || 'gemini-3.5-flash');
+      setGeminiModel(st.settings.gemini_model || 'gemini-3.8-flash');
     }
     setUsers(u.users || []);
   }, []);
@@ -768,9 +768,9 @@ export default function AdminPage() {
                   value={geminiModel}
                   onChange={(e) => setGeminiModel(e.target.value)}
                 >
-                  <option value="gemini-3.5-flash">gemini-3.5-flash (recommended, fast)</option>
-                  <option value="gemini-3.8-flash">gemini-3.8-flash (latest)</option>
+                  <option value="gemini-3.8-flash">gemini-3.8-flash (recommended, fast & latest)</option>
                   <option value="gemini-2.5-pro">gemini-2.5-pro (most accurate)</option>
+                  <option value="gemini-2.0-flash">gemini-2.0-flash (fast)</option>
                 </select>
                 <span className="cu-hint">The model used for complexity analysis.</span>
               </label>

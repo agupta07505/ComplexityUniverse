@@ -51,8 +51,8 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
             <span className="cu-badge cu-badge-plain" title="Analysis confidence">
               {confidencePercent}% confidence
             </span>
-            <span className="cu-badge cu-badge-plain" title="Which engine produced this">
-              {result.engine === 'gemini' ? 'Gemini AI' : 'AI engine'}
+            <span className="cu-badge cu-badge-plain" title="Analyzed exclusively via Google Gemini API">
+              Gemini AI ({result.model || 'Flash'})
             </span>
             {promptInfo?.version ? (
               <span className="cu-badge cu-badge-plain" title="Active admin prompt version">

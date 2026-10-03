@@ -111,9 +111,9 @@ export default function HowToUsePage() {
           <details>
             <summary>Where do the results come from?</summary>
             <p>
-              Results are produced by Google Gemini, using a prompt template the admin can
-              edit from the admin console. The admin also adds the Gemini API key there
-              (AI settings tab) — the key is stored safely in the MySQL database.
+              Results are exclusively produced in real-time by the Google Gemini API, using an
+              optimized prompt template configured in the admin console. There is no offline or
+              simulated fallback — every analysis is performed by Gemini.
             </p>
           </details>
           <details>
@@ -127,10 +127,8 @@ export default function HowToUsePage() {
           <details>
             <summary>Can I run this locally?</summary>
             <p>
-              Yes. It is a standard Next.js app backed by MySQL — clone it, run
-              <code> npm run db:setup</code>, then <code>npm run dev</code>. The README walks
-              through every step, including database features used (views, triggers, cascade
-              rules and procedures).
+              Yes. It is a standard Next.js 16 app backed by Aiven MySQL — configure your Aiven
+              connection in <code>.env.local</code>, run <code>npm run db:setup</code>, then <code>npm run dev</code>.
             </p>
           </details>
           <details>

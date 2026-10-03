@@ -4,8 +4,7 @@
 analysis from **Google Gemini**, learn algorithm complexity from a structured library, and
 keep everything in your personal dashboard.
 
-Built with **Next.js (App Router, JavaScript)**, **plain CSS files** (no Tailwind) and
-**MySQL** (foreign keys, cascade, views, triggers — no stored procedures).
+Built with **Next.js 16 (App Router, Turbopack, JavaScript)**, **React 19**, **Vanilla CSS Architecture** (`ComponentName.css` + `globals.css` design system, no Tailwind), and **Aiven Cloud MySQL** (foreign keys, cascade, views, triggers — no stored procedures, SSL/TLS encrypted).
 
 ---
 
@@ -59,14 +58,14 @@ DB_CA_CERT=./ca.pem
 
 ## Gemini API key (required for analysis)
 
-Analysis is powered by **Google Gemini**. To set it up:
+Analysis is exclusively powered by **Google Gemini API** (there is no offline or mock fallback). To set it up:
 
-1. Get a free key at **https://aistudio.google.com/apikey**
+1. Get an API key at **https://aistudio.google.com/apikey**
 2. Sign in as admin → open **Admin console → AI settings**
-3. Paste the key, pick a model (`gemini-2.0-flash` recommended), press **Save API settings**
+3. Paste the key, pick a model (`gemini-3.8-flash` recommended), press **Save API settings**
 
 The key is stored in the MySQL table `app_settings` (updated with
-`INSERT … ON DUPLICATE KEY UPDATE`), and the analysis prompt below it can be edited freely
+`INSERT … ON DUPLICATE KEY UPDATE`), or can optionally be specified in `.env.local` via `GEMINI_API_KEY`. The analysis prompt can be edited freely
 (placeholders: `{CODE}`, `{LANGUAGE}`, `{MODE}`). Saving the prompt bumps its version via a
 trigger.
 
@@ -98,8 +97,9 @@ database/              # schema.sql + seed.sql
 scripts/setup-db.mjs   # bootstrap: .env + MySQL user + schema + seed
 ```
 
-## Design notes
+## Design & Styling Architecture
 
-- Plain CSS files with design tokens in `app/globals.css` — no CSS framework
-- `framer-motion` for result/tab transitions, a tiny custom canvas starfield for the hero
-- System font stacks only (renders identically offline)
+- **DRY & Component-Scoped**: Shared design tokens (`--ink-*`, `--accent-*`, `--cu-font-*`) and reusable components (`.cu-btn`, `.cu-card`, `.cu-wrap`, `.cu-badge`) live in `app/globals.css`.
+- **Component Stylesheets**: Every component defines its focused styles in a dedicated file (`HomeAnalyzer.css`, `DashboardView.css`, `LearnView.css`, `ComplexityBadge.css`, `AnalysisResult.css`, `CodeBlock.css`, etc.) using clear, human-friendly class names.
+- **Modern Animations**: `framer-motion` for smooth result/tab transitions, plus a lightweight custom HTML5 canvas starfield for the hero banner.
+- **Zero CSS Bloat**: Pure vanilla CSS with zero Tailwind or runtime framework overhead, rendering crisp cosmic dark-theme UI across all modern browsers.

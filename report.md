@@ -3,7 +3,7 @@
 > **Project Name:** ComplexityUniverse  
 > **Repository:** ComplexityUniverse With Aiven  
 > **Core Purpose:** AI-Powered Time & Space Complexity Analysis Platform  
-> **Stack:** Next.js 14 (App Router), Vanilla CSS, MySQL (with Foreign Keys, Triggers, Views, and Virtual Generated Columns), and Google Gemini AI.
+> **Stack:** Next.js 16 (App Router, Turbopack), React 19, Vanilla CSS Architecture, Aiven Cloud MySQL (SSL/TLS, Foreign Keys, Triggers, Views, and Virtual Generated Columns), and Google Gemini API.
 
 ---
 
@@ -21,7 +21,7 @@
 7. [Authentication & Authorization Model](#7-authentication--authorization-model)
 8. [API Route Catalog & Backend Endpoints](#8-api-route-catalog--backend-endpoints)
 9. [Frontend Components & UI Design System](#9-frontend-components--ui-design-system)
-10. [Database Connectivity: Local MySQL vs. Aiven Cloud](#10-database-connectivity-local-mysql-vs-aiven-cloud)
+10. [Database Connectivity: Aiven Cloud MySQL](#10-database-connectivity-aiven-cloud-mysql)
 11. [Setup, Deployment & Testing Guide](#11-setup-deployment--testing-guide)
 12. [Summary & Key Architectural Highlights](#12-summary--key-architectural-highlights)
 
@@ -43,12 +43,12 @@ Instead of generic estimates, ComplexityUniverse provides:
 
 ## 2. High-Level Architecture
 
-The system is built as a unified full-stack Next.js application adhering to modern App Router principles.
+The system is built as a unified full-stack Next.js 16 application adhering to modern App Router principles.
 
 ```
                       +---------------------------------------+
                       |               Client                  |
-                      |  (Browser: React 18, Framer Motion,   |
+                      |  (Browser: React 19, Framer Motion,   |
                       |   HTML5 Canvas Starfield, Custom CSS) |
                       +-------------------+-------------------+
                                           |
@@ -57,7 +57,7 @@ The system is built as a unified full-stack Next.js application adhering to mode
                                           v
                       +---------------------------------------+
                       |         Next.js App Router            |
-                      |       (Node.js Server Runtime)        |
+                      |     (Next.js 16 Server Runtime)       |
                       |                                       |
                       |  * /api/analyze                       |
                       |  * /api/analyses                      |
@@ -67,14 +67,14 @@ The system is built as a unified full-stack Next.js application adhering to mode
                       |  * /api/admin/*                       |
                       +----------+-----------------+----------+
                                  |                 |
-                   Fetch Prompts |                 | REST API / JSON
-                   & App Config  |                 | (responseMimeType)
+                    Fetch Prompts |                 | REST API / JSON
+                    & App Config  |                 | (responseMimeType)
                                  v                 v
                  +-------------------+  +-----------------------+
-                 |    MySQL Server   |  |   Google Gemini AI    |
-                 | (Local or Aiven)  |  | (gemini-2.0-flash /   |
-                 | * 9 Tables        |  |  gemini-1.5-pro /     |
-                 | * 5 Views         |  |  gemini-2.5-flash)    |
+                 | Aiven Cloud MySQL |  |   Google Gemini AI    |
+                 | (TLS/SSL Enforced)|  | (gemini-3.8-flash /   |
+                 | * 9 Tables        |  |  gemini-2.5-pro /     |
+                 | * 5 Views         |  |  gemini-2.0-flash)    |
                  | * 10 Triggers     |  +-----------------------+
                  +-------------------+
 ```
@@ -85,13 +85,13 @@ The system is built as a unified full-stack Next.js application adhering to mode
 
 | Layer | Technology | Rationale |
 |---|---|---|
-| **Framework** | **Next.js 14 (App Router)** | Full-stack JavaScript unification; serverless-ready API routes and optimized React Client/Server components. |
-| **Frontend / UI** | **React 18 & Framer Motion** | Smooth interactive state management, tab transitions, animated result banners, and dynamic accordions. |
+| **Framework** | **Next.js 16 (App Router & Turbopack)** | Full-stack JavaScript unification; asynchronous request APIs (`await cookies()`, `await params`), Turbopack build optimization, and serverless-ready API routes. |
+| **Frontend / UI** | **React 19 & Framer Motion** | Smooth interactive state management, tab transitions, animated result banners, and dynamic accordions. |
 | **Canvas Graphics** | **HTML5 Canvas 2D (`StarField.js`)** | Custom particle starfield animation in the Hero banner without heavyweight external 3D libraries. |
-| **Styling** | **Vanilla CSS (`globals.css` + modules)** | Zero external CSS runtime overhead (no Tailwind); uses custom design tokens, dark space aesthetic, glassmorphism, and HSL color scales. |
-| **Database** | **MySQL (InnoDB, utf8mb4)** | Robust relational integrity, foreign key cascades, views for performance, and triggers for audit logging. Compatible with Local XAMPP/WAMP or Managed Cloud services (Aiven). |
-| **AI Engine** | **Google Gemini API** | Leverages Gemini's long-context and structured JSON output capability (`responseMimeType: 'application/json'`). |
-| **Security & Auth** | **JWT & bcryptjs** | Stateless JWT tokens stored in `httpOnly`, `SameSite: Lax` secure cookies; bcrypt password hashing with 10 salt rounds. |
+| **Styling Architecture** | **Vanilla CSS (`globals.css` + `ComponentName.css`)** | Zero external CSS runtime overhead (no Tailwind); strictly adheres to DRY principles with global design tokens in `globals.css` and dedicated component styling files. |
+| **Database** | **Aiven Cloud MySQL 8 (InnoDB, utf8mb4)** | High-availability cloud relational database with TLS/SSL encryption (`ca.pem`), foreign key cascades, views for performance, and triggers for audit logging. Zero local database footprint required. |
+| **AI Engine** | **Google Gemini API** | Real-time AI analysis powered exclusively by Google Gemini (`gemini-3.8-flash`, `gemini-2.5-pro`, `gemini-2.0-flash`) with structured JSON enforcement (`responseMimeType: 'application/json'`). No offline or mock fallbacks. |
+| **Security & Auth** | **JWT & bcryptjs** | Stateless JWT tokens stored in `httpOnly`, `SameSite: Lax` secure cookies; bcrypt password hashing with 10 salt rounds. | |
 
 ---
 
@@ -330,20 +330,21 @@ The system interacts directly with the Google Gemini REST endpoint:
 ### Design Philosophy
 - **Dark Space Theme:** Deep cosmos palette (`#070a13`, `#0f172a`, `#1e293b`) with glowing borders and high-contrast typography.
 - **Glassmorphism:** Translucent floating cards with subtle backdrop blurs.
+- **DRY & Component-Scoped CSS Architecture:** Shared design tokens and utilities reside in `app/globals.css` (e.g. `.cu-wrap`, `.cu-btn`, `.cu-card`, `.cu-badge`), while each component uses its own dedicated stylesheet (`HomeAnalyzer.css`, `DashboardView.css`, `LearnView.css`, `ComplexityBadge.css`, `AnalysisResult.css`, `CodeBlock.css`, `Header.css`, `Footer.css`) with clean, descriptive class names.
 - **Visual Performance Badges:**
   - `O(1)`, `O(log n)`: **Green** (Constant / Logarithmic - Optimal)
   - `O(n)`, `O(n log n)`: **Blue** (Linear / Linearithmic - Good)
   - `O(n²)`, `O(n³)`: **Amber** (Quadratic / Polynomial - Heavy)
   - `O(2ⁿ)`, `O(n!)`: **Red** (Exponential / Factorial - Severe)
 
-### Key Components
+### Key Components & Style Organization
 
-- **`HomeAnalyzer.js`**: Core analyzer interface. Includes quick-load sample algorithms, language picker, detailed/short toggle, and keyboard shortcut handler (`Ctrl/Cmd + Enter`).
-- **`StarField.js`**: Lightweight HTML5 Canvas particle generator drawing moving stars with twinkle effects.
-- **`AnalysisResult.js`**: Displays the returned JSON from Gemini, breaking it into Big-O summary badges, loop analysis breakdown table, best/average/worst cases, bottlenecks, and optimizations.
-- **`LearnView.js`**: Two-pane browser with category filtering, search input, rendered markdown/HTML notes, and code snippet previews with bookmarking.
-- **`DashboardView.js`**: User overview banner showing rank badge, line count counters, complexity distribution graph, bookmarked topics, and saved analysis history.
-- **`Header.js` & `Footer.js`**: Navigation and session management.
+- **`HomeAnalyzer.js` (`HomeAnalyzer.css`)**: Core analyzer interface. Includes quick-load sample algorithms, language picker, detailed/short toggle, and keyboard shortcut handler (`Ctrl/Cmd + Enter`).
+- **`StarField.js` (`StarField.css`)**: Lightweight HTML5 Canvas particle generator drawing moving stars with twinkle effects.
+- **`AnalysisResult.js` (`AnalysisResult.css`)**: Displays the returned JSON from Gemini, breaking it into Big-O summary badges, loop analysis breakdown table, best/average/worst cases, bottlenecks, and optimizations.
+- **`LearnView.js` (`LearnView.css`)**: Two-pane browser with category filtering, search input, rendered markdown/HTML notes, and code snippet previews with bookmarking.
+- **`DashboardView.js` (`DashboardView.css`)**: User overview banner showing rank badge, line count counters, complexity distribution graph, bookmarked topics, and saved analysis history.
+- **`Header.js` (`Header.css`) & `Footer.js` (`Footer.css`)**: Navigation and session management.
 
 ---
 
@@ -362,8 +363,8 @@ ComplexityUniverse is configured exclusively for **Aiven Cloud MySQL**:
 ## 11. Setup, Deployment & Testing Guide
 
 ### Prerequisites
-1. **Node.js** >= 18.17.0
-2. **Aiven Cloud MySQL Service** (configured in `.env.local`)
+1. **Node.js** >= 18.17.0 (built for Next.js 16 & React 19)
+2. **Aiven Cloud MySQL Service** (configured in `.env.local` with SSL `ca.pem`)
 3. **Google Gemini API Key** (Free from [Google AI Studio](https://aistudio.google.com/apikey))
 
 ### One-Click Bootstrap
@@ -380,13 +381,13 @@ chmod +x setup.sh && ./setup.sh
 # 1. Install dependencies
 npm install
 
-# 2. Configure .env.local
-# (Edit DB_HOST, DB_PORT, DB_USER, DB_PASSWORD if using cloud MySQL)
+# 2. Configure .env.local with Aiven MySQL credentials
+# DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, DB_SSL=true, DB_CA_CERT=./ca.pem
 
-# 3. Bootstrap database (creates tables, views, triggers, and demo users)
+# 3. Bootstrap database (creates tables, views, triggers, and demo users on Aiven)
 npm run db:setup
 
-# 4. Start local development server
+# 4. Start local development server with Next.js 16 Turbopack
 npm run dev
 ```
 
@@ -396,7 +397,7 @@ npm run dev
    - **Email:** `admin@complexityuniverse.dev`
    - **Password:** `admin123`
 3. Navigate to **Admin Console -> AI Settings**.
-4. Paste your **Gemini API Key**, select model `gemini-2.0-flash` (or `gemini-1.5-flash`), and click **Save API Settings**.
+4. Paste your **Gemini API Key**, select model `gemini-3.8-flash` (or `gemini-2.5-pro` / `gemini-2.0-flash`), and click **Save API Settings**.
 5. Return to the Home page and analyze any code snippet.
 
 *(A standard user demo account is also seeded: `demo@complexityuniverse.dev` / `demo1234`)*.
@@ -405,8 +406,9 @@ npm run dev
 
 ## 12. Summary & Key Architectural Highlights
 
-1. **Zero Hardcoded Prompts:** AI prompts live in MySQL with trigger-enforced version audits.
-2. **Schema-Enforced Business Logic:** Uses 10 MySQL triggers to automate activity logging, user profile creation, and counters.
-3. **High-Performance SQL Views:** Dashboard metrics and feed items are served through 5 specialized SQL views.
-4. **Structured JSON AI Guarantees:** Strict output schema enforcement ensures zero UI parsing crashes.
-5. **No Bulky Framework Dependencies:** Clean vanilla CSS and standard Next.js ensure fast load times and clean code maintainability.
+1. **Zero Hardcoded Prompts:** AI prompts live in Aiven MySQL with trigger-enforced version audits.
+2. **Exclusive Real-Time Gemini AI Engine:** 100% of code analyses run directly through Google Gemini API (`v1beta`) with structured JSON schema enforcement (`responseMimeType: 'application/json'`). There is no offline or simulated fallback.
+3. **Next.js 16 & React 19 Core:** Modern App Router architecture utilizing asynchronous request primitives, Turbopack, and React 19 hooks.
+4. **Schema-Enforced Business Logic:** Uses 10 MySQL triggers to automate activity logging, user profile creation, and counters.
+5. **High-Performance SQL Views:** Dashboard metrics and feed items are served through 5 specialized SQL views.
+6. **DRY Component Styling:** Clean separation of concerns with component-specific CSS files (`ComponentName.css`) and centralized design tokens in `globals.css`. Zero CSS framework bloat.
