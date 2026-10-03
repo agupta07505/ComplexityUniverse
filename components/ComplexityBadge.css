@@ -1,6 +1,8 @@
-/* ===================== component: ComplexityBadge ===================== */
+/* ==========================================================================
+   Component: ComplexityBadge
+   ========================================================================== */
 
-.cu-badge {
+.badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -14,41 +16,41 @@
   white-space: nowrap;
 }
 
-.cu-badge .mono {
+.badge .mono {
   font-size: 12px;
 }
 
-.cu-badge-green {
+.badge-green {
   background: var(--green-soft);
   color: var(--green);
   border-color: #c8e3d3;
 }
 
-.cu-badge-blue {
+.badge-blue {
   background: var(--blue-soft);
   color: var(--blue);
   border-color: #cdd9f3;
 }
 
-.cu-badge-amber {
+.badge-amber {
   background: var(--amber-soft);
   color: var(--amber);
   border-color: #ecd9bb;
 }
 
-.cu-badge-red {
+.badge-red {
   background: var(--red-soft);
   color: var(--red);
   border-color: #efc8c3;
 }
 
-.cu-badge-plain {
+.badge-plain {
   background: var(--paper-2);
   color: var(--ink-2);
   border-color: var(--line);
 }
 
-.cu-badge-accent {
+.badge-accent {
   background: var(--accent-soft);
   color: var(--accent-ink);
   border-color: #d6daf6;

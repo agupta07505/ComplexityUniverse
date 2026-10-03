@@ -4,65 +4,67 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
-const LINKS = [
+const NAV_MENU_ITEMS = [
   { href: '/', label: 'Home' },
   { href: '/learn', label: 'Learn' },
   { href: '/how-to-use', label: 'How to use' },
-  { href: '/dashboard', label: 'Dashboard', auth: true },
+  { href: '/dashboard', label: 'Dashboard', requiresAuth: true },
 ];
 
 export default function Header() {
-  const [user, setUser] = useState(null);
-  const [checked, setChecked] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
-    let alive = true;
+    let isSubscribed = true;
     fetch('/api/auth/me')
-      .then((r) => r.json())
-      .then((d) => alive && setUser(d.user))
+      .then((response) => response.json())
+      .then((data) => isSubscribed && setCurrentUser(data.user))
       .catch(() => {})
-      .finally(() => alive && setChecked(true));
+      .finally(() => isSubscribed && setHasCheckedAuth(true));
     return () => {
-      alive = false;
+      isSubscribed = false;
     };
   }, [pathname]);
 
-  async function signOut() {
+  async function handleSignOut() {
     await fetch('/api/auth/logout', { method: 'POST' });
-    setUser(null);
-    setMenuOpen(false);
+    setCurrentUser(null);
     router.push('/');
     router.refresh();
   }
 
-  const initials = (user?.name || '')
+  const userInitials = (currentUser?.name || '')
     .split(/\s+/)
     .slice(0, 2)
-    .map((w) => w[0])
+    .map((word) => word[0])
     .join('')
     .toUpperCase();
 
   return (
-    <header className="cu-header">
-      <div className="cu-wrap cu-header-in">
-        <Link href="/" className="cu-logo" onClick={() => setMenuOpen(false)}>
+    <header className="site-header">
+      <div className="cu-wrap header-container">
+        <Link href="/" className="brand-logo">
           <span>
-            Complexity<span className="lo-2">Universe</span>
+            Complexity<span className="accent-word">Universe</span>
           </span>
         </Link>
 
-        <nav className="cu-nav">
-          {LINKS.filter((l) => !l.auth || user).map((l) => (
-            <Link key={l.href} href={l.href} className={pathname === l.href ? 'is-active' : ''}>
-              {l.label}
+        <nav className="nav-links">
+          {NAV_MENU_ITEMS.filter((item) => !item.requiresAuth || currentUser).map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={pathname === item.href ? 'is-active' : ''}
+            >
+              {item.label}
             </Link>
           ))}
 
-          {checked && !user && (
-            <span className="cu-nav-user">
+          {hasCheckedAuth && !currentUser && (
+            <span className="user-nav-actions">
               <Link href="/login" className="cu-btn cu-btn-ghost cu-btn-sm">
                 Sign in
               </Link>
@@ -72,17 +74,17 @@ export default function Header() {
             </span>
           )}
 
-          {user && (
-            <span className="cu-nav-user">
-              {user.role === 'admin' && (
+          {currentUser && (
+            <span className="user-nav-actions">
+              {currentUser.role === 'admin' && (
                 <Link href="/admin" className="cu-badge cu-badge-accent" title="Admin console">
                   Admin
                 </Link>
               )}
-              <span className="cu-avatar" title={user.name}>
-                {initials || 'U'}
+              <span className="user-avatar" title={currentUser.name}>
+                {userInitials || 'U'}
               </span>
-              <button type="button" className="cu-btn cu-btn-ghost cu-btn-sm" onClick={signOut}>
+              <button type="button" className="cu-btn cu-btn-ghost cu-btn-sm" onClick={handleSignOut}>
                 Sign out
               </button>
             </span>

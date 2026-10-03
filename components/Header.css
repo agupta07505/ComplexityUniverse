@@ -1,6 +1,8 @@
-/* ===================== component: Header ===================== */
+/* ==========================================================================
+   Component: Header
+   ========================================================================== */
 
-.cu-header {
+.site-header {
   position: sticky;
   top: 0;
   z-index: 50;
@@ -11,7 +13,7 @@
   border-bottom: 1px solid var(--line);
 }
 
-.cu-header-in {
+.header-container {
   height: 100%;
   display: flex;
   align-items: center;
@@ -19,7 +21,7 @@
   gap: 20px;
 }
 
-.cu-logo {
+.brand-logo {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -30,21 +32,21 @@
   letter-spacing: -0.02em;
 }
 
-.cu-logo:hover {
+.brand-logo:hover {
   text-decoration: none;
 }
 
-.cu-logo .lo-2 {
+.brand-logo .accent-word {
   color: var(--accent);
 }
 
-.cu-nav {
+.nav-links {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.cu-nav a {
+.nav-links a {
   color: var(--ink-2);
   font-size: 14.5px;
   font-weight: 550;
@@ -54,18 +56,18 @@
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-.cu-nav a:hover {
+.nav-links a:hover {
   background: var(--paper-2);
   color: var(--ink);
   text-decoration: none;
 }
 
-.cu-nav a.is-active {
+.nav-links a.is-active {
   color: var(--ink);
   background: var(--paper-2);
 }
 
-.cu-nav-user {
+.user-nav-actions {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -74,7 +76,7 @@
   border-left: 1px solid var(--line);
 }
 
-.cu-avatar {
+.user-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -90,7 +92,7 @@
 }
 
 @media (max-width: 640px) {
-  .cu-nav a {
+  .nav-links a {
     padding: 8px 9px;
     font-size: 13.5px;
   }

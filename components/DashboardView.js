@@ -6,89 +6,89 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ComplexityBadge from './ComplexityBadge';
 import CodeBlock from './CodeBlock';
 
-function formatDate(s) {
-  if (!s) return '';
-  const d = new Date(String(s).replace(' ', 'T'));
-  return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+function formatDate(dateString) {
+  if (!dateString) return '';
+  const date = new Date(String(dateString).replace(' ', 'T'));
+  return date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-function safeParse(json) {
+function parseJsonSafely(jsonString) {
   try {
-    return JSON.parse(json);
+    return JSON.parse(jsonString);
   } catch {
     return null;
   }
 }
 
 export default function DashboardView({ profile, stats, analyses, savedTopics, activity }) {
-  const [tab, setTab] = useState('analyses');
-  const [rows, setRows] = useState(analyses);
-  const [topics, setTopics] = useState(savedTopics);
-  const [openId, setOpenId] = useState(null);
-  const [flash, setFlash] = useState('');
+  const [activeTab, setActiveTab] = useState('analyses');
+  const [analysisList, setAnalysisList] = useState(analyses);
+  const [topicList, setTopicList] = useState(savedTopics);
+  const [expandedAnalysisId, setExpandedAnalysisId] = useState(null);
+  const [statusMessage, setStatusMessage] = useState('');
 
-  const [editOpen, setEditOpen] = useState(false);
-  const [form, setForm] = useState({
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({
     name: profile.name || '',
     headline: profile.headline || '',
     bio: profile.bio || '',
     location: profile.location || '',
   });
-  const [profileMsg, setProfileMsg] = useState('');
+  const [profileSaveFeedback, setProfileSaveFeedback] = useState('');
 
-  async function deleteAnalysis(id) {
-    const res = await fetch(`/api/analyses/${id}`, { method: 'DELETE' });
-    if (res.ok) {
-      setRows((r) => r.filter((x) => x.id !== id));
-      setFlash('Analysis removed.');
-      setTimeout(() => setFlash(''), 2200);
+  async function handleDeleteAnalysis(analysisId) {
+    const response = await fetch(`/api/analyses/${analysisId}`, { method: 'DELETE' });
+    if (response.ok) {
+      setAnalysisList((prevList) => prevList.filter((item) => item.id !== analysisId));
+      setStatusMessage('Analysis removed.');
+      setTimeout(() => setStatusMessage(''), 2200);
     }
   }
 
-  async function unsaveTopic(bookmarkId) {
-    const t = topics.find((x) => x.bookmark_id === bookmarkId);
-    if (!t) return;
-    const res = await fetch(`/api/topics/${t.topic_id}/save`, {
+  async function handleUnsaveTopic(bookmarkId) {
+    const matchedTopic = topicList.find((item) => item.bookmark_id === bookmarkId);
+    if (!matchedTopic) return;
+    const response = await fetch(`/api/topics/${matchedTopic.topic_id}/save`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: '{}',
     });
-    if (res.ok) {
-      setTopics((list) => list.filter((x) => x.bookmark_id !== bookmarkId));
-      setFlash('Topic removed from saved.');
-      setTimeout(() => setFlash(''), 2200);
+    if (response.ok) {
+      setTopicList((prevList) => prevList.filter((item) => item.bookmark_id !== bookmarkId));
+      setStatusMessage('Topic removed from saved.');
+      setTimeout(() => setStatusMessage(''), 2200);
     }
   }
 
-  async function saveProfile(e) {
-    e.preventDefault();
-    setProfileMsg('');
-    const res = await fetch('/api/auth/profile', {
+  async function handleSaveProfile(event) {
+    event.preventDefault();
+    setProfileSaveFeedback('');
+    const response = await fetch('/api/auth/profile', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify(profileForm),
     });
-    if (res.ok) {
-      setProfileMsg('Profile updated.');
-      setEditOpen(false);
+    if (response.ok) {
+      setProfileSaveFeedback('Profile updated.');
+      setIsEditingProfile(false);
     } else {
-      setProfileMsg('Could not update profile.');
+      setProfileSaveFeedback('Could not update profile.');
     }
   }
 
-  const initials = (profile.name || 'U')
+  const userInitials = (profile.name || 'U')
     .split(/\s+/)
     .slice(0, 2)
-    .map((w) => w[0])
+    .map((word) => word[0])
     .join('')
     .toUpperCase();
 
   return (
     <div className="cu-wrap cu-page">
-      {/* -------- identity banner -------- */}
-      <div className="cu-dash-hero">
-        <div className="cu-dash-id">
-          <span className="cu-avatar cu-avatar-lg">{initials}</span>
+      {/* -------- User Identity Banner -------- */}
+      <div className="dashboard-hero">
+        <div className="dashboard-profile-info">
+          <span className="avatar-large">{userInitials}</span>
           <div>
             <h1 className="cu-display" style={{ fontSize: 30, marginBottom: 4 }}>
               {profile.name}
@@ -111,15 +111,15 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
         </Link>
       </div>
 
-      {/* -------- stat cards -------- */}
-      <div className="cu-grid-4 cu-dash-stats">
+      {/* -------- Statistics Overview -------- */}
+      <div className="cu-grid-4 stats-overview-grid">
         <div className="cu-stat">
           <div className="cu-stat-label">Saved analyses</div>
-          <div className="cu-stat-value">{stats.total_analyses ?? rows.length}</div>
+          <div className="cu-stat-value">{stats.total_analyses ?? analysisList.length}</div>
         </div>
         <div className="cu-stat">
           <div className="cu-stat-label">Bookmarked topics</div>
-          <div className="cu-stat-value">{stats.saved_topics ?? topics.length}</div>
+          <div className="cu-stat-value">{stats.saved_topics ?? topicList.length}</div>
         </div>
         <div className="cu-stat">
           <div className="cu-stat-label">Lines analyzed</div>
@@ -133,38 +133,38 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
         </div>
       </div>
 
-      {flash && <p className="cu-success-text" style={{ marginTop: 12 }}>{flash}</p>}
+      {statusMessage && <p className="cu-success-text" style={{ marginTop: 12 }}>{statusMessage}</p>}
 
-      {/* -------- tabs -------- */}
-      <div className="cu-tabs">
+      {/* -------- Tab Navigation -------- */}
+      <div className="tabs-navigation">
         {[
-          ['analyses', `Analyses (${rows.length})`],
-          ['topics', `Saved topics (${topics.length})`],
+          ['analyses', `Analyses (${analysisList.length})`],
+          ['topics', `Saved topics (${topicList.length})`],
           ['profile', 'Profile'],
-        ].map(([key, label]) => (
+        ].map(([tabKey, tabLabel]) => (
           <button
-            key={key}
+            key={tabKey}
             type="button"
-            className={`cu-tab ${tab === key ? 'is-on' : ''}`}
-            onClick={() => setTab(key)}
+            className={`tab-button ${activeTab === tabKey ? 'is-active' : ''}`}
+            onClick={() => setActiveTab(tabKey)}
           >
-            {label}
+            {tabLabel}
           </button>
         ))}
       </div>
 
       <AnimatePresence mode="wait">
-        {/* ============ analyses tab ============ */}
-        {tab === 'analyses' && (
+        {/* ============ Analyses Tab ============ */}
+        {activeTab === 'analyses' && (
           <motion.div
             key="analyses"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22 }}
-            className="cu-dash-list"
+            className="dashboard-cards-list"
           >
-            {rows.length === 0 && (
+            {analysisList.length === 0 && (
               <div className="cu-empty">
                 <p>No saved analyses yet.</p>
                 <p>
@@ -173,66 +173,66 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
                 </p>
               </div>
             )}
-            {rows.map((a) => {
-              const detail = openId === a.id ? safeParse(a.detailed_analysis) : null;
+            {analysisList.map((analysis) => {
+              const details = expandedAnalysisId === analysis.id ? parseJsonSafely(analysis.detailed_analysis) : null;
               return (
-                <div key={a.id} className="cu-card cu-dash-item">
-                  <div className="cu-dash-item-head">
+                <div key={analysis.id} className="cu-card dashboard-card-item">
+                  <div className="card-item-header">
                     <div style={{ minWidth: 0 }}>
-                      <strong className="cu-dash-item-title">{a.title}</strong>
+                      <strong className="card-item-title">{analysis.title}</strong>
                       <div className="cu-chip-row" style={{ marginTop: 8 }}>
-                        <span className="cu-badge cu-badge-plain">{a.language}</span>
-                        <ComplexityBadge label="Time" value={a.time_complexity} />
-                        <ComplexityBadge label="Space" value={a.space_complexity} />
-                        <span className="cu-badge cu-badge-plain">{a.code_lines} lines</span>
-                        <span className="cu-badge cu-badge-plain">{formatDate(a.created_at)}</span>
+                        <span className="cu-badge cu-badge-plain">{analysis.language}</span>
+                        <ComplexityBadge label="Time" value={analysis.time_complexity} />
+                        <ComplexityBadge label="Space" value={analysis.space_complexity} />
+                        <span className="cu-badge cu-badge-plain">{analysis.code_lines} lines</span>
+                        <span className="cu-badge cu-badge-plain">{formatDate(analysis.created_at)}</span>
                         <span className="cu-badge cu-badge-plain">
-                          {a.engine === 'gemini' ? 'Gemini' : 'AI'}
+                          {analysis.engine === 'gemini' ? 'Gemini' : 'AI'}
                         </span>
                       </div>
-                      <p className="cu-dash-item-summary">{a.summary}</p>
+                      <p className="card-item-summary">{analysis.summary}</p>
                     </div>
-                    <div className="cu-dash-item-actions">
+                    <div className="card-item-actions">
                       <button
                         type="button"
                         className="cu-btn cu-btn-ghost cu-btn-sm"
-                        onClick={() => setOpenId(openId === a.id ? null : a.id)}
+                        onClick={() => setExpandedAnalysisId(expandedAnalysisId === analysis.id ? null : analysis.id)}
                       >
-                        {openId === a.id ? 'Hide details' : 'Details'}
+                        {expandedAnalysisId === analysis.id ? 'Hide details' : 'Details'}
                       </button>
                       <button
                         type="button"
                         className="cu-btn cu-btn-danger cu-btn-sm"
-                        onClick={() => deleteAnalysis(a.id)}
+                        onClick={() => handleDeleteAnalysis(analysis.id)}
                       >
                         Delete
                       </button>
                     </div>
                   </div>
 
-                  {detail && (
+                  {details && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
-                      className="cu-dash-detail"
+                      className="card-item-details"
                     >
-                      {detail.approach && (
-                        <p style={{ color: 'var(--ink-2)' }}>{detail.approach}</p>
+                      {details.approach && (
+                        <p style={{ color: 'var(--ink-2)' }}>{details.approach}</p>
                       )}
                       <div className="cu-grid-2">
                         <div>
-                          <div className="cu-result-h3">Bottlenecks</div>
-                          <ul className="cu-bullet-warn">
-                            {(detail.bottlenecks || []).map((x, i) => (
-                              <li key={i}>{x}</li>
+                          <div className="result-section-title">Bottlenecks</div>
+                          <ul className="warning-bullets">
+                            {(details.bottlenecks || []).map((bottleneck, index) => (
+                              <li key={index}>{bottleneck}</li>
                             ))}
                           </ul>
                         </div>
                         <div>
-                          <div className="cu-result-h3">Optimizations</div>
-                          <ul className="cu-bullet-good">
-                            {(detail.optimizations || []).map((x, i) => (
-                              <li key={i}>{x}</li>
+                          <div className="result-section-title">Optimizations</div>
+                          <ul className="good-bullets">
+                            {(details.optimizations || []).map((optimization, index) => (
+                              <li key={index}>{optimization}</li>
                             ))}
                           </ul>
                         </div>
@@ -245,17 +245,17 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
           </motion.div>
         )}
 
-        {/* ============ saved topics tab ============ */}
-        {tab === 'topics' && (
+        {/* ============ Saved Topics Tab ============ */}
+        {activeTab === 'topics' && (
           <motion.div
             key="topics"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22 }}
-            className="cu-dash-list"
+            className="dashboard-cards-list"
           >
-            {topics.length === 0 && (
+            {topicList.length === 0 && (
               <div className="cu-empty">
                 <p>No saved topics yet.</p>
                 <p>
@@ -264,28 +264,28 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
                 </p>
               </div>
             )}
-            {topics.map((t) => (
-              <div key={t.bookmark_id} className="cu-card cu-dash-item">
-                <div className="cu-dash-item-head">
+            {topicList.map((topic) => (
+              <div key={topic.bookmark_id} className="cu-card dashboard-card-item">
+                <div className="card-item-header">
                   <div style={{ minWidth: 0 }}>
-                    <strong className="cu-dash-item-title">{t.topic_name}</strong>
+                    <strong className="card-item-title">{topic.topic_name}</strong>
                     <div className="cu-chip-row" style={{ marginTop: 8 }}>
-                      <span className="cu-badge cu-badge-plain">{t.category}</span>
-                      <span className="cu-badge cu-badge-plain">{t.difficulty}</span>
-                      <ComplexityBadge label="Time" value={t.time_complexity} />
-                      <ComplexityBadge label="Space" value={t.space_complexity} />
-                      <span className="cu-badge cu-badge-plain">Saved {formatDate(t.saved_at)}</span>
+                      <span className="cu-badge cu-badge-plain">{topic.category}</span>
+                      <span className="cu-badge cu-badge-plain">{topic.difficulty}</span>
+                      <ComplexityBadge label="Time" value={topic.time_complexity} />
+                      <ComplexityBadge label="Space" value={topic.space_complexity} />
+                      <span className="cu-badge cu-badge-plain">Saved {formatDate(topic.saved_at)}</span>
                     </div>
-                    <p className="cu-dash-item-summary">{t.summary}</p>
+                    <p className="card-item-summary">{topic.summary}</p>
                   </div>
-                  <div className="cu-dash-item-actions">
-                    <Link href={`/learn#topic-${t.slug}`} className="cu-btn cu-btn-ghost cu-btn-sm">
+                  <div className="card-item-actions">
+                    <Link href={`/learn#topic-${topic.slug}`} className="cu-btn cu-btn-ghost cu-btn-sm">
                       Open notes
                     </Link>
                     <button
                       type="button"
                       className="cu-btn cu-btn-danger cu-btn-sm"
-                      onClick={() => unsaveTopic(t.bookmark_id)}
+                      onClick={() => handleUnsaveTopic(topic.bookmark_id)}
                     >
                       Remove
                     </button>
@@ -296,8 +296,8 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
           </motion.div>
         )}
 
-        {/* ============ profile tab ============ */}
-        {tab === 'profile' && (
+        {/* ============ Profile Tab ============ */}
+        {activeTab === 'profile' && (
           <motion.div
             key="profile"
             initial={{ opacity: 0, y: 10 }}
@@ -307,7 +307,7 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
             className="cu-grid-2"
           >
             <div className="cu-card cu-card-pad">
-              <h3 className="cu-result-h3">About you</h3>
+              <h3 className="result-section-title">About you</h3>
               <table className="cu-table">
                 <tbody>
                   <tr>
@@ -348,29 +348,29 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
                 <button
                   type="button"
                   className="cu-btn cu-btn-primary cu-btn-sm"
-                  onClick={() => setEditOpen(!editOpen)}
+                  onClick={() => setIsEditingProfile(!isEditingProfile)}
                 >
-                  {editOpen ? 'Close editor' : 'Edit profile'}
+                  {isEditingProfile ? 'Close editor' : 'Edit profile'}
                 </button>
-                {profileMsg && <span className="cu-success-text">{profileMsg}</span>}
+                {profileSaveFeedback && <span className="cu-success-text">{profileSaveFeedback}</span>}
               </div>
 
-              {editOpen && (
-                <form onSubmit={saveProfile} style={{ marginTop: 18 }}>
+              {isEditingProfile && (
+                <form onSubmit={handleSaveProfile} style={{ marginTop: 18 }}>
                   <label className="cu-field">
                     <span className="cu-label">Name</span>
                     <input
                       className="cu-input"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
+                      value={profileForm.name}
+                      onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
                     />
                   </label>
                   <label className="cu-field">
                     <span className="cu-label">Headline</span>
                     <input
                       className="cu-input"
-                      value={form.headline}
-                      onChange={(e) => setForm({ ...form, headline: e.target.value })}
+                      value={profileForm.headline}
+                      onChange={(e) => setProfileForm({ ...profileForm, headline: e.target.value })}
                     />
                   </label>
                   <label className="cu-field">
@@ -378,16 +378,16 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
                     <textarea
                       className="cu-textarea"
                       rows={3}
-                      value={form.bio}
-                      onChange={(e) => setForm({ ...form, bio: e.target.value })}
+                      value={profileForm.bio}
+                      onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
                     />
                   </label>
                   <label className="cu-field">
                     <span className="cu-label">Location</span>
                     <input
                       className="cu-input"
-                      value={form.location}
-                      onChange={(e) => setForm({ ...form, location: e.target.value })}
+                      value={profileForm.location}
+                      onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
                     />
                   </label>
                   <button className="cu-btn cu-btn-accent cu-btn-sm" type="submit">
@@ -398,23 +398,23 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
             </div>
 
             <div className="cu-card cu-card-pad">
-              <h3 className="cu-result-h3">Recent activity</h3>
-              <ul className="cu-activity">
-                {(activity || []).map((a, i) => (
-                  <li key={i}>
+              <h3 className="result-section-title">Recent activity</h3>
+              <ul className="activity-timeline-list">
+                {(activity || []).map((activityItem, index) => (
+                  <li key={index}>
                     <span
-                      className={`cu-dot ${
-                        a.action.includes('deleted') || a.action.includes('unsaved')
-                          ? 'cu-dot-warn'
-                          : 'cu-dot-ok'
+                      className={`status-dot ${
+                        activityItem.action.includes('deleted') || activityItem.action.includes('unsaved')
+                          ? 'status-dot-warning'
+                          : 'status-dot-success'
                       }`}
                     />
                     <div>
                       <strong>
-                        {a.action.replace(/_/g, ' ')}
-                        {a.detail ? ` · ${a.detail}` : ''}
+                        {activityItem.action.replace(/_/g, ' ')}
+                        {activityItem.detail ? ` · ${activityItem.detail}` : ''}
                       </strong>
-                      <div className="cu-hint">{a.created_at}</div>
+                      <div className="cu-hint">{activityItem.created_at}</div>
                     </div>
                   </li>
                 ))}
@@ -422,7 +422,7 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
               </ul>
 
               <hr className="cu-divider" />
-              <h3 className="cu-result-h3">Database-backed facts</h3>
+              <h3 className="result-section-title">Database-backed facts</h3>
               <p className="cu-hint">
                 Counts and rank labels are computed live by MySQL views (v_user_overview),
                 and every saved analysis is kept in the code_analyses table with foreign

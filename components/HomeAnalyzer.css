@@ -1,6 +1,8 @@
-/* ===================== component: HomeAnalyzer ===================== */
+/* ==========================================================================
+   Component: HomeAnalyzer
+   ========================================================================== */
 
-.cu-hero {
+.hero-banner {
   position: relative;
   overflow: hidden;
   background:
@@ -9,13 +11,13 @@
   border-bottom: 1px solid var(--line);
 }
 
-.cu-hero-stars {
+.hero-stars-overlay {
   position: absolute;
   inset: 0;
   pointer-events: none;
 }
 
-.cu-hero-in {
+.hero-content {
   position: relative;
   padding: 84px 0 64px;
   text-align: center;
@@ -24,19 +26,19 @@
   align-items: center;
 }
 
-.cu-hero-title {
+.hero-title {
   font-size: clamp(38px, 6vw, 62px);
   line-height: 1.06;
   margin: 0 0 20px;
   color: var(--ink);
 }
 
-.cu-hero-title em {
+.hero-title em {
   font-style: italic;
   color: var(--accent);
 }
 
-.cu-hero-sub {
+.hero-subtitle {
   max-width: 620px;
   font-size: 17.5px;
   line-height: 1.65;
@@ -44,19 +46,19 @@
   margin-bottom: 26px;
 }
 
-/* ---------------- analyzer ---------------- */
-.cu-analyzer {
+/* ---------------- analyzer container & card ---------------- */
+.analyzer-section {
   margin-top: -26px;
   padding-bottom: 20px;
 }
 
-.cu-analyzer-card {
+.analyzer-card {
   padding: 18px;
   box-shadow: var(--shadow-md);
   border-radius: var(--radius-lg);
 }
 
-.cu-analyzer-toolbar {
+.analyzer-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -64,13 +66,13 @@
   padding: 4px 6px 14px;
 }
 
-.cu-analyzer-tool {
+.toolbar-group {
   display: flex;
   align-items: center;
   gap: 9px;
 }
 
-.cu-analyzer-tool > span {
+.toolbar-group > span {
   font-size: 12px;
   font-weight: 650;
   letter-spacing: 0.07em;
@@ -78,7 +80,7 @@
   color: var(--muted);
 }
 
-.cu-select-sm {
+.language-selector {
   height: 36px;
   padding: 0 30px 0 11px;
   font-size: 14px;
@@ -91,7 +93,7 @@
   background-repeat: no-repeat;
 }
 
-.cu-seg {
+.mode-toggle-group {
   display: inline-flex;
   background: var(--paper-2);
   border: 1px solid var(--line);
@@ -100,7 +102,7 @@
   gap: 2px;
 }
 
-.cu-seg button {
+.mode-toggle-group button {
   border: 0;
   background: transparent;
   color: var(--ink-2);
@@ -111,13 +113,13 @@
   cursor: pointer;
 }
 
-.cu-seg button.is-on {
+.mode-toggle-group button.is-active {
   background: var(--surface);
   color: var(--ink);
   box-shadow: var(--shadow-sm);
 }
 
-.cu-analyzer-samples {
+.sample-buttons-group {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -125,7 +127,7 @@
   flex-wrap: wrap;
 }
 
-.cu-analyzer-samples > span {
+.sample-buttons-group > span {
   font-size: 12px;
   font-weight: 650;
   letter-spacing: 0.07em;
@@ -133,7 +135,7 @@
   color: var(--muted);
 }
 
-.cu-linkish {
+.sample-btn {
   border: 0;
   background: none;
   padding: 0;
@@ -145,19 +147,19 @@
   border-bottom: 1px dashed rgba(67, 56, 202, 0.45);
 }
 
-.cu-linkish:hover {
+.sample-btn:hover {
   border-bottom-style: solid;
 }
 
-/* editor */
-.cu-editor {
+/* ---------------- code editor ---------------- */
+.code-editor-box {
   background: var(--code-bg);
   border: 1px solid #24242c;
   border-radius: 14px;
   overflow: hidden;
 }
 
-.cu-editor-area {
+.code-textarea {
   display: block;
   width: 100%;
   min-height: 300px;
@@ -175,12 +177,12 @@
   tab-size: 2;
 }
 
-.cu-editor-area::placeholder {
+.code-textarea::placeholder {
   color: #5a5a6b;
 }
 
-/* analyze action row */
-.cu-analyzer-actions {
+/* ---------------- action row ---------------- */
+.analyzer-action-bar {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -188,12 +190,12 @@
   flex-wrap: wrap;
 }
 
-/* results zone & placeholder */
-.cu-results-zone {
+/* ---------------- results container & placeholders ---------------- */
+.results-container {
   margin-top: 26px;
 }
 
-.cu-results-placeholder {
+.placeholder-card {
   border: 1px dashed var(--line-strong);
   border-radius: var(--radius-lg);
   padding: 34px 32px;
@@ -201,51 +203,52 @@
   color: var(--muted);
 }
 
-.cu-results-placeholder p {
+.placeholder-card p {
   margin-top: 16px;
   font-size: 14.5px;
 }
 
-.cu-ph-line {
+.placeholder-line {
   height: 10px;
   border-radius: 6px;
   background: var(--paper-2);
   margin: 10px 0;
 }
 
-.cu-ph-row {
+.placeholder-row {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 18px;
 }
 
-.cu-ph-pill {
+.placeholder-pill {
   width: 84px;
   height: 26px;
   border-radius: 999px;
   background: var(--accent-soft);
 }
 
-.cu-home-below {
+/* ---------------- home feature cards ---------------- */
+.home-features-section {
   padding: 46px 0 70px;
 }
 
-.cu-home-below h3 {
+.home-features-section h3 {
   font-size: 17px;
 }
 
-.cu-home-below p {
+.home-features-section p {
   color: var(--ink-2);
   font-size: 14.5px;
   margin: 0;
 }
 
 @media (max-width: 860px) {
-  .cu-hero-in {
+  .hero-content {
     padding: 56px 0 48px;
   }
-  .cu-analyzer {
+  .analyzer-section {
     margin-top: -12px;
   }
 }

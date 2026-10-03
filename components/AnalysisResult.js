@@ -9,19 +9,20 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
-  const conf = Math.round((Number(result.confidence) || 0.7) * 100);
+
+  const confidencePercent = Math.round((Number(result.confidence) || 0.7) * 100);
   const grade = gradeFor(result.time_complexity);
 
-  async function handleSave() {
+  async function handleSaveAnalysis() {
     setSaving(true);
     setSaveError('');
     try {
       await onSave();
-    } catch (err) {
-      if (err.message === 'Save failed' || err.message?.includes('Sign in')) {
+    } catch (error) {
+      if (error.message === 'Save failed' || error.message?.includes('Sign in')) {
         setSaveError('Sign in to save this analysis to your dashboard.');
       } else {
-        setSaveError(err.message || 'Could not save.');
+        setSaveError(error.message || 'Could not save analysis.');
       }
     } finally {
       setSaving(false);
@@ -30,25 +31,25 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
 
   const orbColorClass =
     grade === 'green'
-      ? 'cu-orb-green'
+      ? 'orb-green'
       : grade === 'blue'
-      ? 'cu-orb-blue'
+      ? 'orb-blue'
       : grade === 'amber'
-      ? 'cu-orb-amber'
+      ? 'orb-amber'
       : grade === 'red'
-      ? 'cu-orb-red'
-      : 'cu-orb-plain';
+      ? 'orb-red'
+      : 'orb-plain';
 
   return (
-    <div className="cu-result">
-      {/* headline card */}
-      <div className="cu-result-head">
-        <div className="cu-result-headline">
+    <div className="analysis-result">
+      {/* Overview Card */}
+      <div className="result-header">
+        <div className="result-headline">
           <div className="cu-chip-row" style={{ alignItems: 'center' }}>
             <ComplexityBadge label="Time" value={result.time_complexity} />
             <ComplexityBadge label="Space" value={result.space_complexity} />
             <span className="cu-badge cu-badge-plain" title="Analysis confidence">
-              {conf}% confidence
+              {confidencePercent}% confidence
             </span>
             <span className="cu-badge cu-badge-plain" title="Which engine produced this">
               {result.engine === 'gemini' ? 'Gemini AI' : 'AI engine'}
@@ -59,13 +60,14 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
               </span>
             ) : null}
           </div>
-          <p className="cu-result-summary">{result.summary}</p>
+          <p className="result-summary">{result.summary}</p>
         </div>
 
-        <div className="cu-result-headside">
-          <div className={`cu-result-orb ${orbColorClass}`}>
-            <span className="cu-result-orb-label">cost</span>
-            <span className="cu-result-orb-value mono">{result.time_complexity}</span>
+        {/* Complexity Orb & Save Button */}
+        <div className="result-actions-side">
+          <div className={`complexity-orb ${orbColorClass}`}>
+            <span className="orb-label">cost</span>
+            <span className="orb-value mono">{result.time_complexity}</span>
           </div>
           {onSave && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -75,7 +77,7 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
                 <button
                   type="button"
                   className="cu-btn cu-btn-primary cu-btn-sm"
-                  onClick={handleSave}
+                  onClick={handleSaveAnalysis}
                   disabled={saving}
                 >
                   {saving ? 'Saving…' : 'Save to dashboard'}
@@ -98,10 +100,10 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
         </div>
       </div>
 
-      {/* cases table */}
-      <div className="cu-result-grid">
+      {/* Cases & Breakdown Grid */}
+      <div className="result-grid">
         <section className="cu-card cu-card-pad">
-          <h3 className="cu-result-h3">Complexity by case</h3>
+          <h3 className="result-section-title">Complexity by case</h3>
           <table className="cu-table">
             <tbody>
               <tr>
@@ -121,60 +123,60 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
         </section>
 
         <section className="cu-card cu-card-pad">
-          <h3 className="cu-result-h3">Where the cost comes from</h3>
-          <ul className="cu-cost-list">
-            {(result.breakdown || []).map((b, i) => (
-              <li key={i}>
-                <div className="cu-cost-row">
-                  <strong>{b.label}</strong>
-                  {b.cost && <span className="mono cu-cost-tag">{b.cost}</span>}
+          <h3 className="result-section-title">Where the cost comes from</h3>
+          <ul className="cost-breakdown-list">
+            {(result.breakdown || []).map((breakdownItem, index) => (
+              <li key={index}>
+                <div className="cost-item-header">
+                  <strong>{breakdownItem.label}</strong>
+                  {breakdownItem.cost && <span className="mono cost-badge">{breakdownItem.cost}</span>}
                 </div>
-                <span>{b.detail}</span>
+                <span>{breakdownItem.detail}</span>
               </li>
             ))}
           </ul>
         </section>
       </div>
 
-      {/* approach */}
+      {/* Approach Explanation */}
       {result.approach && (
         <section className="cu-card cu-card-pad">
-          <h3 className="cu-result-h3">How this was measured</h3>
+          <h3 className="result-section-title">How this was measured</h3>
           <p style={{ color: 'var(--ink-2)' }}>{result.approach}</p>
         </section>
       )}
 
-      {/* bottlenecks + optimizations */}
-      <div className="cu-result-grid">
+      {/* Bottlenecks and Optimizations */}
+      <div className="result-grid">
         <section className="cu-card cu-card-pad">
-          <h3 className="cu-result-h3">Bottlenecks</h3>
-          <ul className="cu-bullet-warn">
-            {(result.bottlenecks || []).map((x, i) => (
-              <li key={i}>{x}</li>
+          <h3 className="result-section-title">Bottlenecks</h3>
+          <ul className="warning-bullets">
+            {(result.bottlenecks || []).map((bottleneck, index) => (
+              <li key={index}>{bottleneck}</li>
             ))}
           </ul>
         </section>
         <section className="cu-card cu-card-pad">
-          <h3 className="cu-result-h3">Optimization ideas</h3>
-          <ul className="cu-bullet-good">
-            {(result.optimizations || []).map((x, i) => (
-              <li key={i}>{x}</li>
+          <h3 className="result-section-title">Optimization ideas</h3>
+          <ul className="good-bullets">
+            {(result.optimizations || []).map((optimization, index) => (
+              <li key={index}>{optimization}</li>
             ))}
           </ul>
         </section>
       </div>
 
-      {/* code echo */}
+      {/* Echo of Code Analyzed */}
       {result.code && (
         <section>
-          <h3 className="cu-result-h3" style={{ marginLeft: 2 }}>
+          <h3 className="result-section-title" style={{ marginLeft: 2 }}>
             Analyzed code
           </h3>
           <CodeBlock code={result.code} language={result.language || 'code'} />
         </section>
       )}
 
-      {result.notes && <p className="cu-hint cu-result-notes">{result.notes}</p>}
+      {result.notes && <p className="cu-hint result-notes">{result.notes}</p>}
     </div>
   );
 }

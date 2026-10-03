@@ -6,24 +6,24 @@ import ComplexityBadge from './ComplexityBadge';
 import CodeBlock from './CodeBlock';
 
 function SaveTopicButton({ topicId }) {
-  const [state, setState] = useState('idle'); // idle | saved | loading
-  const [error, setError] = useState('');
+  const [saveStatus, setSaveStatus] = useState('idle'); // idle | saved | loading
+  const [errorMessage, setErrorMessage] = useState('');
 
-  async function toggle() {
-    setState('loading');
-    setError('');
+  async function handleToggleSave() {
+    setSaveStatus('loading');
+    setErrorMessage('');
     try {
-      const res = await fetch(`/api/topics/${topicId}/save`, {
+      const response = await fetch(`/api/topics/${topicId}/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({}),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Could not save');
-      setState(data.saved ? 'saved' : 'idle');
-    } catch (err) {
-      setError(err.message);
-      setState('idle');
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Could not save topic');
+      setSaveStatus(data.saved ? 'saved' : 'idle');
+    } catch (error) {
+      setErrorMessage(error.message);
+      setSaveStatus('idle');
     }
   }
 
@@ -31,19 +31,19 @@ function SaveTopicButton({ topicId }) {
     <span style={{ display: 'inline-flex', flexDirection: 'column', gap: 4 }}>
       <button
         type="button"
-        className={`cu-btn cu-btn-sm ${state === 'saved' ? 'cu-btn-accent' : 'cu-btn-ghost'}`}
-        onClick={toggle}
+        className={`cu-btn cu-btn-sm ${saveStatus === 'saved' ? 'cu-btn-accent' : 'cu-btn-ghost'}`}
+        onClick={handleToggleSave}
       >
-        {state === 'saved' ? '★ Saved' : '☆ Save topic'}
+        {saveStatus === 'saved' ? '★ Saved' : '☆ Save topic'}
       </button>
-      {error && (
+      {errorMessage && (
         <span className="cu-error-text" style={{ fontSize: 12 }}>
-          {error === 'Sign in to save topics.' ? (
+          {errorMessage === 'Sign in to save topics.' ? (
             <>
               <Link href="/login">Sign in</Link> to save
             </>
           ) : (
-            error
+            errorMessage
           )}
         </span>
       )}
@@ -52,46 +52,46 @@ function SaveTopicButton({ topicId }) {
 }
 
 export default function LearnView({ topics }) {
-  const [filter, setFilter] = useState('');
-  const [active, setActive] = useState(topics[0]?.slug || '');
-  const mainRef = useRef(null);
+  const [filterQuery, setFilterQuery] = useState('');
+  const [activeTopicSlug, setActiveTopicSlug] = useState(topics[0]?.slug || '');
+  const contentAreaRef = useRef(null);
 
-  const grouped = useMemo(() => {
-    const f = filter.trim().toLowerCase();
-    const list = topics.filter(
-      (t) =>
-        !f ||
-        t.topic_name.toLowerCase().includes(f) ||
-        t.summary.toLowerCase().includes(f) ||
-        t.category.toLowerCase().includes(f)
+  const groupedCategories = useMemo(() => {
+    const searchKeyword = filterQuery.trim().toLowerCase();
+    const filteredTopics = topics.filter(
+      (topic) =>
+        !searchKeyword ||
+        topic.topic_name.toLowerCase().includes(searchKeyword) ||
+        topic.summary.toLowerCase().includes(searchKeyword) ||
+        topic.category.toLowerCase().includes(searchKeyword)
     );
-    const map = new Map();
-    for (const t of list) {
-      if (!map.has(t.category)) map.set(t.category, []);
-      map.get(t.category).push(t);
+    const categoryMap = new Map();
+    for (const topic of filteredTopics) {
+      if (!categoryMap.has(topic.category)) categoryMap.set(topic.category, []);
+      categoryMap.get(topic.category).push(topic);
     }
-    return [...map.entries()];
-  }, [topics, filter]);
+    return [...categoryMap.entries()];
+  }, [topics, filterQuery]);
 
-  // scroll-spy: highlight the topic currently in view
+  // Scroll-spy: highlight the topic currently visible on screen
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            setActive(e.target.id.replace('topic-', ''));
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveTopicSlug(entry.target.id.replace('topic-', ''));
             break;
           }
         }
       },
       { rootMargin: '-25% 0px -60% 0px', threshold: 0.01 }
     );
-    document.querySelectorAll('.cu-topic-section').forEach((el) => observer.observe(el));
+    document.querySelectorAll('.topic-article-card').forEach((element) => observer.observe(element));
     return () => observer.disconnect();
-  }, [grouped]);
+  }, [groupedCategories]);
 
   return (
-    <div className="cu-wrap cu-page cu-learn">
+    <div className="cu-wrap cu-page">
       <div className="cu-section-head">
         <span className="cu-eyebrow">Learn library</span>
         <h1 className="cu-display" style={{ fontSize: 'clamp(30px, 4vw, 42px)' }}>
@@ -103,80 +103,80 @@ export default function LearnView({ topics }) {
         </p>
       </div>
 
-      <div className="cu-learn-grid">
-        {/* -------- left: topics -------- */}
-        <aside className="cu-learn-side">
+      <div className="learn-layout">
+        {/* -------- Left Sidebar: Topic List -------- */}
+        <aside className="learn-sidebar">
           <input
-            className="cu-input cu-learn-search"
+            className="cu-input topic-filter-input"
             placeholder="Filter topics…"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
+            value={filterQuery}
+            onChange={(e) => setFilterQuery(e.target.value)}
           />
-          <nav className="cu-learn-nav">
-            {grouped.map(([category, items]) => (
-              <div key={category} className="cu-learn-group">
-                <div className="cu-learn-group-title">{category}</div>
-                {items.map((t) => (
+          <nav className="sidebar-navigation">
+            {groupedCategories.map(([categoryName, categoryTopics]) => (
+              <div key={categoryName} className="category-group">
+                <div className="category-group-title">{categoryName}</div>
+                {categoryTopics.map((topic) => (
                   <a
-                    key={t.id}
-                    href={`#topic-${t.slug}`}
-                    className={`cu-learn-link ${active === t.slug ? 'is-active' : ''}`}
+                    key={topic.id}
+                    href={`#topic-${topic.slug}`}
+                    className={`topic-nav-link ${activeTopicSlug === topic.slug ? 'is-active' : ''}`}
                   >
-                    <span>{t.topic_name}</span>
-                    {t.time_complexity && <span className="mono cu-learn-link-tag">{t.time_complexity}</span>}
+                    <span>{topic.topic_name}</span>
+                    {topic.time_complexity && <span className="mono topic-complexity-tag">{topic.time_complexity}</span>}
                   </a>
                 ))}
               </div>
             ))}
-            {!grouped.length && <p className="cu-hint">No topics match “{filter}”.</p>}
+            {!groupedCategories.length && <p className="cu-hint">No topics match “{filterQuery}”.</p>}
           </nav>
         </aside>
 
-        {/* -------- right: notes -------- */}
-        <div className="cu-learn-main" ref={mainRef}>
-          {grouped.map(([category, items]) => (
-            <section key={category} className="cu-learn-category">
-              <h2 className="cu-learn-cat-title">{category}</h2>
+        {/* -------- Right Side: Topic Content & Examples -------- */}
+        <div ref={contentAreaRef}>
+          {groupedCategories.map(([categoryName, categoryTopics]) => (
+            <section key={categoryName} className="category-section">
+              <h2 className="category-heading">{categoryName}</h2>
 
-              {items.map((t) => (
+              {categoryTopics.map((topic) => (
                 <article
-                  key={t.id}
-                  id={`topic-${t.slug}`}
-                  className="cu-card cu-topic-section"
+                  key={topic.id}
+                  id={`topic-${topic.slug}`}
+                  className="cu-card topic-article-card"
                 >
-                  <header className="cu-topic-head">
+                  <header className="topic-header">
                     <div>
-                      <h3 className="cu-topic-title">{t.topic_name}</h3>
-                      <p className="cu-topic-summary">{t.summary}</p>
+                      <h3 className="topic-title">{topic.topic_name}</h3>
+                      <p className="topic-summary-text">{topic.summary}</p>
                       <div className="cu-chip-row">
-                        <span className="cu-badge cu-badge-plain">{t.difficulty}</span>
-                        <ComplexityBadge label="Time" value={t.time_complexity} />
-                        <ComplexityBadge label="Space" value={t.space_complexity} />
-                        {t.example_count > 0 && (
+                        <span className="cu-badge cu-badge-plain">{topic.difficulty}</span>
+                        <ComplexityBadge label="Time" value={topic.time_complexity} />
+                        <ComplexityBadge label="Space" value={topic.space_complexity} />
+                        {topic.example_count > 0 && (
                           <span className="cu-badge cu-badge-plain">
-                            {t.example_count} example{t.example_count > 1 ? 's' : ''}
+                            {topic.example_count} example{topic.example_count > 1 ? 's' : ''}
                           </span>
                         )}
                       </div>
                     </div>
-                    <SaveTopicButton topicId={t.id} />
+                    <SaveTopicButton topicId={topic.id} />
                   </header>
 
-                  <div className="cu-prose" dangerouslySetInnerHTML={{ __html: t.notes_html }} />
+                  <div className="cu-prose" dangerouslySetInnerHTML={{ __html: topic.notes_html }} />
 
-                  {(t.examples || []).map((ex) => (
-                    <div key={ex.id} className="cu-topic-example">
-                      <div className="cu-topic-example-head">
-                        <strong>{ex.title}</strong>
+                  {(topic.examples || []).map((example) => (
+                    <div key={example.id} className="example-card">
+                      <div className="example-header">
+                        <strong>{example.title}</strong>
                         <span className="cu-chip-row">
-                          <ComplexityBadge label="Time" value={ex.time_complexity} />
-                          <ComplexityBadge label="Space" value={ex.space_complexity} />
+                          <ComplexityBadge label="Time" value={example.time_complexity} />
+                          <ComplexityBadge label="Space" value={example.space_complexity} />
                         </span>
                       </div>
-                      <CodeBlock code={ex.code_text} language={ex.language} />
+                      <CodeBlock code={example.code_text} language={example.language} />
                       <div
-                        className="cu-prose cu-topic-example-analysis"
-                        dangerouslySetInnerHTML={{ __html: ex.analysis_html }}
+                        className="cu-prose example-analysis-notes"
+                        dangerouslySetInnerHTML={{ __html: example.analysis_html }}
                       />
                     </div>
                   ))}

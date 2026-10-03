@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import StarField from './StarField';
 import AnalysisResult from './AnalysisResult';
 
-const LANGUAGES = [
+const SUPPORTED_LANGUAGES = [
   ['auto', 'Auto-detect'],
   ['javascript', 'JavaScript'],
   ['typescript', 'TypeScript'],
@@ -17,7 +17,7 @@ const LANGUAGES = [
   ['php', 'PHP'],
 ];
 
-const SAMPLE_LABELS = {
+const SAMPLE_NAMES = {
   binary: 'Binary search',
   nested: 'Nested loops',
   recursion: 'Naive Fibonacci',
@@ -28,61 +28,61 @@ export default function HomeAnalyzer({ samples }) {
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState('auto');
   const [mode, setMode] = useState('detailed');
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-  const [result, setResult] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [analysisResult, setAnalysisResult] = useState(null);
   const [promptInfo, setPromptInfo] = useState(null);
-  const [saved, setSaved] = useState(false);
-  const resultRef = useRef(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const resultsRef = useRef(null);
 
-  async function analyze() {
+  async function handleAnalyze() {
     if (!code.trim()) {
-      setError('Paste some code first — even a small function works.');
+      setErrorMessage('Paste some code first — even a small function works.');
       return;
     }
-    setBusy(true);
-    setError('');
-    setSaved(false);
+    setIsAnalyzing(true);
+    setErrorMessage('');
+    setIsSaved(false);
     try {
-      const res = await fetch('/api/analyze', {
+      const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code, language, mode }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Analysis failed');
-      setResult(data.result);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Analysis failed');
+      setAnalysisResult(data.result);
       setPromptInfo(data.prompt);
       requestAnimationFrame(() => {
-        resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
-    } catch (err) {
-      setError(err.message || 'Something went wrong. Try again.');
+    } catch (error) {
+      setErrorMessage(error.message || 'Something went wrong. Try again.');
     } finally {
-      setBusy(false);
+      setIsAnalyzing(false);
     }
   }
 
-  function onKeyDown(e) {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-      e.preventDefault();
-      analyze();
+  function handleKeyDown(event) {
+    if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+      event.preventDefault();
+      handleAnalyze();
     }
   }
 
   return (
     <div>
-      {/* ---------------- hero ---------------- */}
-      <section className="cu-hero">
-        <StarField className="cu-hero-stars" />
-        <div className="cu-wrap cu-hero-in">
+      {/* ---------------- Hero Section ---------------- */}
+      <section className="hero-banner">
+        <StarField className="hero-stars-overlay" />
+        <div className="cu-wrap hero-content">
           <span className="cu-eyebrow">Time &amp; space complexity, decoded</span>
-          <h1 className="cu-display cu-hero-title">
+          <h1 className="cu-display hero-title">
             Understand what your code
             <br />
             actually <em>costs</em>.
           </h1>
-          <p className="cu-hero-sub">
+          <p className="hero-subtitle">
             Paste any function or algorithm. ComplexityUniverse measures how it grows —
             with a line-by-line breakdown, bottlenecks and concrete optimizations, saved to
             your personal dashboard.
@@ -90,38 +90,38 @@ export default function HomeAnalyzer({ samples }) {
         </div>
       </section>
 
-      {/* ---------------- analyzer ---------------- */}
-      <section className="cu-wrap cu-analyzer">
-        <div className="cu-card cu-analyzer-card">
-          <div className="cu-analyzer-toolbar">
-            <label className="cu-analyzer-tool">
+      {/* ---------------- Code Analyzer ---------------- */}
+      <section className="cu-wrap analyzer-section">
+        <div className="cu-card analyzer-card">
+          <div className="analyzer-toolbar">
+            <label className="toolbar-group">
               <span>Language</span>
               <select
-                className="cu-select cu-select-sm"
+                className="cu-input language-selector"
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
               >
-                {LANGUAGES.map(([v, l]) => (
-                  <option key={v} value={v}>
-                    {l}
+                {SUPPORTED_LANGUAGES.map(([langValue, langLabel]) => (
+                  <option key={langValue} value={langValue}>
+                    {langLabel}
                   </option>
                 ))}
               </select>
             </label>
 
-            <div className="cu-analyzer-tool">
+            <div className="toolbar-group">
               <span>Detail</span>
-              <div className="cu-seg">
+              <div className="mode-toggle-group">
                 <button
                   type="button"
-                  className={mode === 'detailed' ? 'is-on' : ''}
+                  className={mode === 'detailed' ? 'is-active' : ''}
                   onClick={() => setMode('detailed')}
                 >
                   Detailed
                 </button>
                 <button
                   type="button"
-                  className={mode === 'short' ? 'is-on' : ''}
+                  className={mode === 'short' ? 'is-active' : ''}
                   onClick={() => setMode('short')}
                 >
                   Short
@@ -129,45 +129,45 @@ export default function HomeAnalyzer({ samples }) {
               </div>
             </div>
 
-            <div className="cu-analyzer-samples">
+            <div className="sample-buttons-group">
               <span>Try</span>
-              {Object.keys(samples).map((k) => (
+              {Object.keys(samples).map((sampleKey) => (
                 <button
-                  key={k}
+                  key={sampleKey}
                   type="button"
-                  className="cu-linkish"
+                  className="sample-btn"
                   onClick={() => {
-                    setCode(samples[k]);
-                    setError('');
+                    setCode(samples[sampleKey]);
+                    setErrorMessage('');
                   }}
                 >
-                  {SAMPLE_LABELS[k]}
+                  {SAMPLE_NAMES[sampleKey]}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="cu-editor">
+          <div className="code-editor-box">
             <textarea
-              className="cu-editor-area"
+              className="code-textarea"
               spellCheck={false}
               autoComplete="off"
               placeholder={'// Paste your code here\nfunction sum(arr) {\n  // ...\n}'}
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              onKeyDown={onKeyDown}
+              onKeyDown={handleKeyDown}
             />
           </div>
 
-          {/* Analyze button sits right below the textarea */}
-          <div className="cu-analyzer-actions">
+          {/* Action Row */}
+          <div className="analyzer-action-bar">
             <button
               type="button"
               className="cu-btn cu-btn-accent cu-btn-lg"
-              onClick={analyze}
-              disabled={busy}
+              onClick={handleAnalyze}
+              disabled={isAnalyzing}
             >
-              {busy ? (
+              {isAnalyzing ? (
                 <>
                   <span className="cu-spin" /> Analyzing
                 </>
@@ -178,71 +178,71 @@ export default function HomeAnalyzer({ samples }) {
             <span className="cu-hint">
               {code.trim() ? `${code.split('\n').length} lines ready` : 'Ctrl + Enter to analyze'}
             </span>
-            {error && <span className="cu-error-text">{error}</span>}
+            {errorMessage && <span className="cu-error-text">{errorMessage}</span>}
           </div>
         </div>
 
-        {/* ---------------- results ---------------- */}
-        <div ref={resultRef} className="cu-results-zone">
+        {/* ---------------- Results Section ---------------- */}
+        <div ref={resultsRef} className="results-container">
           <AnimatePresence mode="wait">
-            {result && (
+            {analysisResult && (
               <motion.div
-                key={`${result.time_complexity}-${result.space_complexity}-${Date.now()}`}
+                key={`${analysisResult.time_complexity}-${analysisResult.space_complexity}-${Date.now()}`}
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.35, ease: [0.22, 0.61, 0.36, 1] }}
               >
                 <AnalysisResult
-                  result={result}
+                  result={analysisResult}
                   promptInfo={promptInfo}
-                  saved={saved}
+                  saved={isSaved}
                   onSave={async () => {
-                    const res = await fetch('/api/analyses', {
+                    const response = await fetch('/api/analyses', {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({
                         code,
-                        language: result.language || language,
+                        language: analysisResult.language || language,
                         mode,
-                        title: `Analysis — ${(result.time_complexity || 'code').toString()}`,
-                        ...result,
+                        title: `Analysis — ${(analysisResult.time_complexity || 'code').toString()}`,
+                        ...analysisResult,
                         detailed_analysis: {
-                          summary: result.summary,
-                          approach: result.approach,
-                          breakdown: result.breakdown,
-                          cases: result.cases,
-                          bottlenecks: result.bottlenecks,
-                          optimizations: result.optimizations,
-                          notes: result.notes,
-                          confidence: result.confidence,
-                          time_complexity: result.time_complexity,
-                          space_complexity: result.space_complexity,
+                          summary: analysisResult.summary,
+                          approach: analysisResult.approach,
+                          breakdown: analysisResult.breakdown,
+                          cases: analysisResult.cases,
+                          bottlenecks: analysisResult.bottlenecks,
+                          optimizations: analysisResult.optimizations,
+                          notes: analysisResult.notes,
+                          confidence: analysisResult.confidence,
+                          time_complexity: analysisResult.time_complexity,
+                          space_complexity: analysisResult.space_complexity,
                         },
                       }),
                     });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.error || 'Save failed');
-                    setSaved(true);
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.error || 'Save failed');
+                    setIsSaved(true);
                   }}
                 />
               </motion.div>
             )}
 
-            {!result && (
+            {!analysisResult && (
               <motion.div
                 key="placeholder"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="cu-results-placeholder"
+                className="placeholder-card"
               >
-                <div className="cu-ph-row">
-                  <span className="cu-ph-pill" />
-                  <span className="cu-ph-line" style={{ width: '38%' }} />
+                <div className="placeholder-row">
+                  <span className="placeholder-pill" />
+                  <span className="placeholder-line" style={{ width: '38%' }} />
                 </div>
-                <div className="cu-ph-line" style={{ width: '92%' }} />
-                <div className="cu-ph-line" style={{ width: '84%' }} />
-                <div className="cu-ph-line" style={{ width: '60%' }} />
+                <div className="placeholder-line" style={{ width: '92%' }} />
+                <div className="placeholder-line" style={{ width: '84%' }} />
+                <div className="placeholder-line" style={{ width: '60%' }} />
                 <p>
                   Your detailed analysis will appear here — complexity classes, case table,
                   bottlenecks and optimizations.
@@ -253,8 +253,8 @@ export default function HomeAnalyzer({ samples }) {
         </div>
       </section>
 
-      {/* ---------------- how it helps ---------------- */}
-      <section className="cu-wrap cu-home-below">
+      {/* ---------------- Feature Highlights ---------------- */}
+      <section className="cu-wrap home-features-section">
         <div className="cu-grid-3">
           <div className="cu-card cu-card-pad">
             <h3>Cost, not vibes</h3>

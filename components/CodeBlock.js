@@ -2,25 +2,29 @@
 
 import { useState } from 'react';
 
-export default function CodeBlock({ code, language = 'javascript', title }) {
-  const [copied, setCopied] = useState(false);
+export default function CodeBlock({ code, language = 'code' }) {
+  const [hasCopied, setHasCopied] = useState(false);
 
-  async function copy() {
+  async function handleCopyCode() {
     try {
       await navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1600);
+      setHasCopied(true);
+      setTimeout(() => setHasCopied(false), 1600);
     } catch {
-      /* clipboard unavailable */
+      // Fallback if clipboard API is restricted
     }
   }
 
   return (
-    <div className="cu-code">
-      <div className="cu-code-bar">
-        <span>{title || language}</span>
-        <button type="button" className="cu-code-copy" onClick={copy}>
-          {copied ? 'Copied' : 'Copy'}
+    <div className="code-container">
+      <div className="code-bar">
+        <span>{language}</span>
+        <button
+          type="button"
+          className="copy-button"
+          onClick={handleCopyCode}
+        >
+          {hasCopied ? 'Copied ✓' : 'Copy'}
         </button>
       </div>
       <pre>

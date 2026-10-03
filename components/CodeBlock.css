@@ -1,6 +1,8 @@
-/* ===================== component: CodeBlock ===================== */
+/* ==========================================================================
+   Component: CodeBlock
+   ========================================================================== */
 
-.cu-code {
+.code-container {
   background: var(--code-bg);
   color: var(--code-ink);
   border-radius: var(--radius);
@@ -9,7 +11,7 @@
   text-align: left;
 }
 
-.cu-code-bar {
+.code-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -24,7 +26,7 @@
   font-weight: 600;
 }
 
-.cu-code pre {
+.code-container pre {
   margin: 0;
   padding: 16px 18px;
   overflow-x: auto;
@@ -32,7 +34,7 @@
   line-height: 1.65;
 }
 
-.cu-code-copy {
+.copy-button {
   background: transparent;
   border: 1px solid #3a3a45;
   color: #b9b9c6;
@@ -45,7 +47,7 @@
   cursor: pointer;
 }
 
-.cu-code-copy:hover {
+.copy-button:hover {
   border-color: #5a5a6a;
   color: #fff;
 }

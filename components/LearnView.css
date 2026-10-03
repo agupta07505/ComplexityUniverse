@@ -1,13 +1,15 @@
-/* ===================== component: LearnView ===================== */
+/* ==========================================================================
+   Component: LearnView
+   ========================================================================== */
 
-.cu-learn-grid {
+.learn-layout {
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 36px;
   align-items: flex-start;
 }
 
-.cu-learn-side {
+.learn-sidebar {
   position: sticky;
   top: calc(var(--header-h) + 18px);
   max-height: calc(100vh - var(--header-h) - 36px);
@@ -15,17 +17,17 @@
   padding-right: 6px;
 }
 
-.cu-learn-search {
+.topic-filter-input {
   margin-bottom: 14px;
 }
 
-.cu-learn-nav {
+.sidebar-navigation {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.cu-learn-group-title {
+.category-group-title {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -35,7 +37,7 @@
   padding-left: 8px;
 }
 
-.cu-learn-link {
+.topic-nav-link {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -48,28 +50,28 @@
   text-decoration: none;
 }
 
-.cu-learn-link:hover {
+.topic-nav-link:hover {
   background: var(--paper-2);
   color: var(--ink);
   text-decoration: none;
 }
 
-.cu-learn-link.is-active {
+.topic-nav-link.is-active {
   background: var(--accent-soft);
   color: var(--accent-ink);
   font-weight: 600;
 }
 
-.cu-learn-link-tag {
+.topic-complexity-tag {
   font-size: 11px;
   color: var(--muted);
 }
 
-.cu-learn-category {
+.category-section {
   margin-bottom: 46px;
 }
 
-.cu-learn-cat-title {
+.category-heading {
   font-size: 20px;
   letter-spacing: -0.01em;
   margin: 0 0 16px;
@@ -77,13 +79,13 @@
   border-bottom: 2px solid var(--ink);
 }
 
-.cu-topic-section {
+.topic-article-card {
   padding: 28px 30px;
   margin-bottom: 20px;
   scroll-margin-top: calc(var(--header-h) + 20px);
 }
 
-.cu-topic-head {
+.topic-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -93,19 +95,19 @@
   border-bottom: 1px solid var(--line);
 }
 
-.cu-topic-title {
+.topic-title {
   font-size: 22px;
   margin: 0 0 6px;
 }
 
-.cu-topic-summary {
+.topic-summary-text {
   font-size: 15px;
   color: var(--ink-2);
   margin-bottom: 12px;
   max-width: 64ch;
 }
 
-.cu-topic-example {
+.example-card {
   margin-top: 22px;
   background: var(--paper);
   border: 1px solid var(--line);
@@ -113,7 +115,7 @@
   padding: 18px 20px;
 }
 
-.cu-topic-example-head {
+.example-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -121,15 +123,15 @@
   margin-bottom: 12px;
 }
 
-.cu-topic-example-analysis {
+.example-analysis-notes {
   margin-top: 14px;
 }
 
 @media (max-width: 900px) {
-  .cu-learn-grid {
+  .learn-layout {
     grid-template-columns: 1fr;
   }
-  .cu-learn-side {
+  .learn-sidebar {
     position: static;
     max-height: none;
     overflow-y: visible;
