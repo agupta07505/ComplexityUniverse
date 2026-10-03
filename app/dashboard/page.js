@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation';
 import { query } from '@/lib/db';
 import { getSessionUser } from '@/lib/auth';
 import DashboardView from '@/components/DashboardView';
-import styles from './page.module.css';
 
 export const dynamic = 'force-dynamic';
 

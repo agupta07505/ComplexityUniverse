@@ -1,3 +1,20 @@
+/* ==========================================================================
+   COMPONENT STYLES (Modular Component CSS)
+   ========================================================================== */
+@import '../components/Header.css';
+@import '../components/Footer.css';
+@import '../components/CodeBlock.css';
+@import '../components/ComplexityBadge.css';
+@import '../components/StarField.css';
+@import '../components/HomeAnalyzer.css';
+@import '../components/AnalysisResult.css';
+@import '../components/DashboardView.css';
+@import '../components/LearnView.css';
+
+/* ==========================================================================
+   GLOBAL DESIGN SYSTEM (Shared Tokens, Resets, Layout & Reusable Atoms)
+   ========================================================================== */
+
 :root {
   --paper: #faf9f7;
   --paper-2: #f3f1ed;
@@ -117,83 +134,6 @@ button { font-family: inherit; }
   letter-spacing: -0.01em;
 }
 
-/* ---------- header ---------- */
-.cu-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  height: var(--header-h);
-  background: rgba(250, 249, 247, 0.86);
-  backdrop-filter: blur(12px) saturate(1.2);
-  -webkit-backdrop-filter: blur(12px) saturate(1.2);
-  border-bottom: 1px solid var(--line);
-}
-
-.cu-header-in {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.cu-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--ink);
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 17px;
-  letter-spacing: -0.02em;
-}
-
-.cu-logo:hover { text-decoration: none; }
-.cu-logo .lo-2 { color: var(--accent); }
-
-.cu-nav {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.cu-nav a {
-  color: var(--ink-2);
-  font-size: 14.5px;
-  font-weight: 550;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.cu-nav a:hover { background: var(--paper-2); color: var(--ink); text-decoration: none; }
-.cu-nav a.is-active { color: var(--ink); background: var(--paper-2); }
-
-.cu-nav-user {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: 8px;
-  padding-left: 14px;
-  border-left: 1px solid var(--line);
-}
-
-.cu-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12.5px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  flex-shrink: 0;
-}
-
 /* ---------- buttons ---------- */
 .cu-btn {
   display: inline-flex;
@@ -278,78 +218,6 @@ button { font-family: inherit; }
 
 .cu-card-pad { padding: 24px; }
 
-/* ---------- badges ---------- */
-.cu-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 26px;
-  padding: 0 10px;
-  border-radius: 999px;
-  font-size: 12.5px;
-  font-weight: 650;
-  letter-spacing: 0.01em;
-  border: 1px solid transparent;
-  white-space: nowrap;
-}
-
-.cu-badge .mono { font-size: 12px; }
-
-.cu-badge-green { background: var(--green-soft); color: var(--green); border-color: #c8e3d3; }
-.cu-badge-blue  { background: var(--blue-soft); color: var(--blue); border-color: #cdd9f3; }
-.cu-badge-amber { background: var(--amber-soft); color: var(--amber); border-color: #ecd9bb; }
-.cu-badge-red   { background: var(--red-soft); color: var(--red); border-color: #efc8c3; }
-.cu-badge-plain { background: var(--paper-2); color: var(--ink-2); border-color: var(--line); }
-.cu-badge-accent { background: var(--accent-soft); color: var(--accent-ink); border-color: #d6daf6; }
-
-/* ---------- code block ---------- */
-.cu-code {
-  background: var(--code-bg);
-  color: var(--code-ink);
-  border-radius: var(--radius);
-  overflow: hidden;
-  border: 1px solid #24242c;
-  text-align: left;
-}
-
-.cu-code-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 9px 14px;
-  background: var(--code-bar);
-  border-bottom: 1px solid #2a2a33;
-  font-size: 12px;
-  color: #9a9aa8;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-.cu-code pre {
-  margin: 0;
-  padding: 16px 18px;
-  overflow-x: auto;
-  font-size: 13px;
-  line-height: 1.65;
-}
-
-.cu-code-copy {
-  background: transparent;
-  border: 1px solid #3a3a45;
-  color: #b9b9c6;
-  font-size: 11px;
-  font-weight: 650;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.cu-code-copy:hover { border-color: #5a5a6a; color: #fff; }
-
 /* ---------- tables ---------- */
 .cu-table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
 .cu-table th {
@@ -384,28 +252,7 @@ button { font-family: inherit; }
 .cu-prose .cu-table { margin: 1em 0 1.4em; }
 .cu-prose .cu-table td, .cu-prose .cu-table th { border: 1px solid var(--line); }
 
-/* ---------- footer ---------- */
-.cu-footer {
-  border-top: 1px solid var(--line);
-  background: var(--paper);
-  padding: 40px 0 34px;
-  color: var(--muted);
-  font-size: 13.5px;
-}
-
-.cu-footer-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 28px 64px;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.cu-footer a { color: var(--ink-2); }
-.cu-footer-col { display: flex; flex-direction: column; gap: 8px; }
-.cu-footer-col strong { color: var(--ink); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2px; }
-
-/* ---------- misc ---------- */
+/* ---------- misc & utility elements ---------- */
 .cu-divider { height: 1px; background: var(--line); border: 0; margin: 28px 0; }
 
 .cu-chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -487,5 +334,4 @@ button { font-family: inherit; }
 @media (max-width: 640px) {
   .cu-grid-2, .cu-grid-3, .cu-grid-4 { grid-template-columns: 1fr; }
   .cu-page { padding: 30px 0 64px; }
-  .cu-nav a { padding: 8px 9px; font-size: 13.5px; }
 }

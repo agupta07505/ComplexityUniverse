@@ -1,0 +1,151 @@
+/* ===================== component: DashboardView ===================== */
+
+.cu-dash-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 28px 30px;
+  box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
+}
+
+.cu-dash-id {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.cu-avatar-lg {
+  width: 64px;
+  height: 64px;
+  font-size: 21px;
+  letter-spacing: 0.02em;
+  background: linear-gradient(145deg, var(--accent), #6d63e8);
+}
+
+.cu-dash-stats {
+  margin: 20px 0 26px;
+}
+
+.cu-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 22px;
+}
+
+.cu-tab {
+  border: 0;
+  background: none;
+  padding: 11px 16px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.cu-tab:hover {
+  color: var(--ink);
+}
+
+.cu-tab.is-on {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+.cu-dash-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cu-dash-item {
+  padding: 20px 22px;
+}
+
+.cu-dash-item-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.cu-dash-item-title {
+  font-size: 16px;
+}
+
+.cu-dash-item-summary {
+  color: var(--ink-2);
+  font-size: 14px;
+  margin: 10px 0 0;
+  max-width: 62ch;
+}
+
+.cu-dash-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.cu-dash-detail {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.cu-activity {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.cu-activity li {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+}
+
+.cu-activity strong {
+  font-size: 13.5px;
+  text-transform: capitalize;
+}
+
+.cu-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+
+.cu-dot-ok {
+  background: var(--green);
+}
+
+.cu-dot-warn {
+  background: var(--amber);
+}
+
+@media (max-width: 720px) {
+  .cu-dash-hero {
+    flex-direction: column;
+  }
+  .cu-dash-item-head {
+    flex-direction: column;
+  }
+  .cu-dash-item-actions {
+    flex-direction: row;
+    width: 100%;
+  }
+}

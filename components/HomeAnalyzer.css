@@ -1,0 +1,251 @@
+/* ===================== component: HomeAnalyzer ===================== */
+
+.cu-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(1100px 420px at 50% -80px, rgba(67, 56, 202, 0.07), transparent 65%),
+    linear-gradient(180deg, #f6f4f0 0%, var(--paper) 100%);
+  border-bottom: 1px solid var(--line);
+}
+
+.cu-hero-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cu-hero-in {
+  position: relative;
+  padding: 84px 0 64px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cu-hero-title {
+  font-size: clamp(38px, 6vw, 62px);
+  line-height: 1.06;
+  margin: 0 0 20px;
+  color: var(--ink);
+}
+
+.cu-hero-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.cu-hero-sub {
+  max-width: 620px;
+  font-size: 17.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+  margin-bottom: 26px;
+}
+
+/* ---------------- analyzer ---------------- */
+.cu-analyzer {
+  margin-top: -26px;
+  padding-bottom: 20px;
+}
+
+.cu-analyzer-card {
+  padding: 18px;
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-lg);
+}
+
+.cu-analyzer-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  padding: 4px 6px 14px;
+}
+
+.cu-analyzer-tool {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.cu-analyzer-tool > span {
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cu-select-sm {
+  height: 36px;
+  padding: 0 30px 0 11px;
+  font-size: 14px;
+  width: auto;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-2) 50%),
+    linear-gradient(135deg, var(--ink-2) 50%, transparent 50%);
+  background-position: calc(100% - 16px) 15px, calc(100% - 11px) 15px;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.cu-seg {
+  display: inline-flex;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.cu-seg button {
+  border: 0;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 13px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.cu-seg button.is-on {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+
+.cu-analyzer-samples {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.cu-analyzer-samples > span {
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cu-linkish {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--accent);
+  font-size: 13.5px;
+  font-weight: 570;
+  cursor: pointer;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(67, 56, 202, 0.45);
+}
+
+.cu-linkish:hover {
+  border-bottom-style: solid;
+}
+
+/* editor */
+.cu-editor {
+  background: var(--code-bg);
+  border: 1px solid #24242c;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.cu-editor-area {
+  display: block;
+  width: 100%;
+  min-height: 300px;
+  max-height: 560px;
+  resize: vertical;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--code-ink);
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.7;
+  padding: 20px 22px;
+  caret-color: #8b8cf0;
+  tab-size: 2;
+}
+
+.cu-editor-area::placeholder {
+  color: #5a5a6b;
+}
+
+/* analyze action row */
+.cu-analyzer-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 6px 4px;
+  flex-wrap: wrap;
+}
+
+/* results zone & placeholder */
+.cu-results-zone {
+  margin-top: 26px;
+}
+
+.cu-results-placeholder {
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-lg);
+  padding: 34px 32px;
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.cu-results-placeholder p {
+  margin-top: 16px;
+  font-size: 14.5px;
+}
+
+.cu-ph-line {
+  height: 10px;
+  border-radius: 6px;
+  background: var(--paper-2);
+  margin: 10px 0;
+}
+
+.cu-ph-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.cu-ph-pill {
+  width: 84px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+}
+
+.cu-home-below {
+  padding: 46px 0 70px;
+}
+
+.cu-home-below h3 {
+  font-size: 17px;
+}
+
+.cu-home-below p {
+  color: var(--ink-2);
+  font-size: 14.5px;
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .cu-hero-in {
+    padding: 56px 0 48px;
+  }
+  .cu-analyzer {
+    margin-top: -12px;
+  }
+}

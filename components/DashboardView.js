@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import ComplexityBadge from './ComplexityBadge';
 import CodeBlock from './CodeBlock';
-import styles from '@/app/dashboard/page.module.css';
 
 function formatDate(s) {
   if (!s) return '';
@@ -64,7 +63,7 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
   async function saveProfile(e) {
     e.preventDefault();
     setProfileMsg('');
-    const res = await fetch('/api/profile', {
+    const res = await fetch('/api/auth/profile', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
@@ -87,9 +86,9 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
   return (
     <div className="cu-wrap cu-page">
       {/* -------- identity banner -------- */}
-      <div className={styles.dashHero}>
-        <div className={styles.dashId}>
-          <span className={`cu-avatar ${styles.avatarLg}`}>{initials}</span>
+      <div className="cu-dash-hero">
+        <div className="cu-dash-id">
+          <span className="cu-avatar cu-avatar-lg">{initials}</span>
           <div>
             <h1 className="cu-display" style={{ fontSize: 30, marginBottom: 4 }}>
               {profile.name}
@@ -113,7 +112,7 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
       </div>
 
       {/* -------- stat cards -------- */}
-      <div className={`cu-grid-4 ${styles.dashStats}`}>
+      <div className="cu-grid-4 cu-dash-stats">
         <div className="cu-stat">
           <div className="cu-stat-label">Saved analyses</div>
           <div className="cu-stat-value">{stats.total_analyses ?? rows.length}</div>
@@ -137,7 +136,7 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
       {flash && <p className="cu-success-text" style={{ marginTop: 12 }}>{flash}</p>}
 
       {/* -------- tabs -------- */}
-      <div className={styles.tabs}>
+      <div className="cu-tabs">
         {[
           ['analyses', `Analyses (${rows.length})`],
           ['topics', `Saved topics (${topics.length})`],
@@ -146,7 +145,7 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
           <button
             key={key}
             type="button"
-            className={`${styles.tab} ${tab === key ? styles.isOn : ''}`}
+            className={`cu-tab ${tab === key ? 'is-on' : ''}`}
             onClick={() => setTab(key)}
           >
             {label}
@@ -163,7 +162,7 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22 }}
-            className={styles.dashList}
+            className="cu-dash-list"
           >
             {rows.length === 0 && (
               <div className="cu-empty">
@@ -177,10 +176,10 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
             {rows.map((a) => {
               const detail = openId === a.id ? safeParse(a.detailed_analysis) : null;
               return (
-                <div key={a.id} className={`cu-card ${styles.dashItem}`}>
-                  <div className={styles.dashItemHead}>
+                <div key={a.id} className="cu-card cu-dash-item">
+                  <div className="cu-dash-item-head">
                     <div style={{ minWidth: 0 }}>
-                      <strong className={styles.dashItemTitle}>{a.title}</strong>
+                      <strong className="cu-dash-item-title">{a.title}</strong>
                       <div className="cu-chip-row" style={{ marginTop: 8 }}>
                         <span className="cu-badge cu-badge-plain">{a.language}</span>
                         <ComplexityBadge label="Time" value={a.time_complexity} />
@@ -191,9 +190,9 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
                           {a.engine === 'gemini' ? 'Gemini' : 'AI'}
                         </span>
                       </div>
-                      <p className={styles.dashItemSummary}>{a.summary}</p>
+                      <p className="cu-dash-item-summary">{a.summary}</p>
                     </div>
-                    <div className={styles.dashItemActions}>
+                    <div className="cu-dash-item-actions">
                       <button
                         type="button"
                         className="cu-btn cu-btn-ghost cu-btn-sm"
@@ -215,23 +214,23 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
-                      className={styles.dashDetail}
+                      className="cu-dash-detail"
                     >
                       {detail.approach && (
                         <p style={{ color: 'var(--ink-2)' }}>{detail.approach}</p>
                       )}
                       <div className="cu-grid-2">
                         <div>
-                          <div className={styles.resultH3}>Bottlenecks</div>
-                          <ul className={styles.bulletWarn}>
+                          <div className="cu-result-h3">Bottlenecks</div>
+                          <ul className="cu-bullet-warn">
                             {(detail.bottlenecks || []).map((x, i) => (
                               <li key={i}>{x}</li>
                             ))}
                           </ul>
                         </div>
                         <div>
-                          <div className={styles.resultH3}>Optimizations</div>
-                          <ul className={styles.bulletGood}>
+                          <div className="cu-result-h3">Optimizations</div>
+                          <ul className="cu-bullet-good">
                             {(detail.optimizations || []).map((x, i) => (
                               <li key={i}>{x}</li>
                             ))}
@@ -254,7 +253,7 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22 }}
-            className={styles.dashList}
+            className="cu-dash-list"
           >
             {topics.length === 0 && (
               <div className="cu-empty">
@@ -266,10 +265,10 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
               </div>
             )}
             {topics.map((t) => (
-              <div key={t.bookmark_id} className={`cu-card ${styles.dashItem}`}>
-                <div className={styles.dashItemHead}>
+              <div key={t.bookmark_id} className="cu-card cu-dash-item">
+                <div className="cu-dash-item-head">
                   <div style={{ minWidth: 0 }}>
-                    <strong className={styles.dashItemTitle}>{t.topic_name}</strong>
+                    <strong className="cu-dash-item-title">{t.topic_name}</strong>
                     <div className="cu-chip-row" style={{ marginTop: 8 }}>
                       <span className="cu-badge cu-badge-plain">{t.category}</span>
                       <span className="cu-badge cu-badge-plain">{t.difficulty}</span>
@@ -277,9 +276,9 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
                       <ComplexityBadge label="Space" value={t.space_complexity} />
                       <span className="cu-badge cu-badge-plain">Saved {formatDate(t.saved_at)}</span>
                     </div>
-                    <p className={styles.dashItemSummary}>{t.summary}</p>
+                    <p className="cu-dash-item-summary">{t.summary}</p>
                   </div>
-                  <div className={styles.dashItemActions}>
+                  <div className="cu-dash-item-actions">
                     <Link href={`/learn#topic-${t.slug}`} className="cu-btn cu-btn-ghost cu-btn-sm">
                       Open notes
                     </Link>
@@ -399,11 +398,17 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
             </div>
 
             <div className="cu-card cu-card-pad">
-              <h3 className={styles.resultH3}>Recent activity</h3>
-              <ul className={styles.activity}>
+              <h3 className="cu-result-h3">Recent activity</h3>
+              <ul className="cu-activity">
                 {(activity || []).map((a, i) => (
                   <li key={i}>
-                    <span className={`${styles.dot} ${a.action.includes('deleted') || a.action.includes('unsaved') ? styles.dotWarn : styles.dotOk}`} />
+                    <span
+                      className={`cu-dot ${
+                        a.action.includes('deleted') || a.action.includes('unsaved')
+                          ? 'cu-dot-warn'
+                          : 'cu-dot-ok'
+                      }`}
+                    />
                     <div>
                       <strong>
                         {a.action.replace(/_/g, ' ')}
@@ -417,7 +422,7 @@ export default function DashboardView({ profile, stats, analyses, savedTopics, a
               </ul>
 
               <hr className="cu-divider" />
-              <h3 className={styles.resultH3}>Database-backed facts</h3>
+              <h3 className="cu-result-h3">Database-backed facts</h3>
               <p className="cu-hint">
                 Counts and rank labels are computed live by MySQL views (v_user_overview),
                 and every saved analysis is kept in the code_analyses table with foreign

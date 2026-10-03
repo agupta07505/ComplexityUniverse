@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import ComplexityBadge from './ComplexityBadge';
 import CodeBlock from './CodeBlock';
-import styles from '@/app/learn/page.module.css';
 
 function SaveTopicButton({ topicId }) {
   const [state, setState] = useState('idle'); // idle | saved | loading
@@ -104,27 +103,27 @@ export default function LearnView({ topics }) {
         </p>
       </div>
 
-      <div className={styles.learnGrid}>
+      <div className="cu-learn-grid">
         {/* -------- left: topics -------- */}
-        <aside className={styles.learnSide}>
+        <aside className="cu-learn-side">
           <input
-            className={`cu-input ${styles.learnSearch}`}
+            className="cu-input cu-learn-search"
             placeholder="Filter topics…"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           />
-          <nav className={styles.learnNav}>
+          <nav className="cu-learn-nav">
             {grouped.map(([category, items]) => (
               <div key={category} className="cu-learn-group">
-                <div className={styles.learnGroupTitle}>{category}</div>
+                <div className="cu-learn-group-title">{category}</div>
                 {items.map((t) => (
                   <a
                     key={t.id}
                     href={`#topic-${t.slug}`}
-                    className={`${styles.learnLink} ${active === t.slug ? styles.isActive : ''}`}
+                    className={`cu-learn-link ${active === t.slug ? 'is-active' : ''}`}
                   >
                     <span>{t.topic_name}</span>
-                    {t.time_complexity && <span className={`mono ${styles.learnLinkTag}`}>{t.time_complexity}</span>}
+                    {t.time_complexity && <span className="mono cu-learn-link-tag">{t.time_complexity}</span>}
                   </a>
                 ))}
               </div>
@@ -136,19 +135,19 @@ export default function LearnView({ topics }) {
         {/* -------- right: notes -------- */}
         <div className="cu-learn-main" ref={mainRef}>
           {grouped.map(([category, items]) => (
-            <section key={category} className={styles.learnCategory}>
-              <h2 className={styles.learnCatTitle}>{category}</h2>
+            <section key={category} className="cu-learn-category">
+              <h2 className="cu-learn-cat-title">{category}</h2>
 
               {items.map((t) => (
                 <article
                   key={t.id}
                   id={`topic-${t.slug}`}
-                  className={`cu-card ${styles.topicSection}`}
+                  className="cu-card cu-topic-section"
                 >
-                  <header className={styles.topicHead}>
+                  <header className="cu-topic-head">
                     <div>
-                      <h3 className={styles.topicTitle}>{t.topic_name}</h3>
-                      <p className={styles.topicSummary}>{t.summary}</p>
+                      <h3 className="cu-topic-title">{t.topic_name}</h3>
+                      <p className="cu-topic-summary">{t.summary}</p>
                       <div className="cu-chip-row">
                         <span className="cu-badge cu-badge-plain">{t.difficulty}</span>
                         <ComplexityBadge label="Time" value={t.time_complexity} />
@@ -166,8 +165,8 @@ export default function LearnView({ topics }) {
                   <div className="cu-prose" dangerouslySetInnerHTML={{ __html: t.notes_html }} />
 
                   {(t.examples || []).map((ex) => (
-                    <div key={ex.id} className={styles.topicExample}>
-                      <div className={styles.topicExampleHead}>
+                    <div key={ex.id} className="cu-topic-example">
+                      <div className="cu-topic-example-head">
                         <strong>{ex.title}</strong>
                         <span className="cu-chip-row">
                           <ComplexityBadge label="Time" value={ex.time_complexity} />
@@ -176,7 +175,7 @@ export default function LearnView({ topics }) {
                       </div>
                       <CodeBlock code={ex.code_text} language={ex.language} />
                       <div
-                        className={`cu-prose ${styles.topicExampleAnalysis}`}
+                        className="cu-prose cu-topic-example-analysis"
                         dangerouslySetInnerHTML={{ __html: ex.analysis_html }}
                       />
                     </div>

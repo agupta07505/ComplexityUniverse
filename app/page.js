@@ -1,5 +1,4 @@
 import HomeAnalyzer from '@/components/HomeAnalyzer';
-import styles from './page.module.css';
 
 export const metadata = {
   title: 'ComplexityUniverse — Time & space complexity analyzer',

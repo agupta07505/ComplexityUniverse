@@ -4,7 +4,6 @@ import { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import StarField from './StarField';
 import AnalysisResult from './AnalysisResult';
-import styles from '@/app/page.module.css';
 
 const LANGUAGES = [
   ['auto', 'Auto-detect'],
@@ -74,16 +73,16 @@ export default function HomeAnalyzer({ samples }) {
   return (
     <div>
       {/* ---------------- hero ---------------- */}
-      <section className={styles.hero}>
-        <StarField className={styles.heroStars} />
-        <div className={`cu-wrap ${styles.heroIn}`}>
+      <section className="cu-hero">
+        <StarField className="cu-hero-stars" />
+        <div className="cu-wrap cu-hero-in">
           <span className="cu-eyebrow">Time &amp; space complexity, decoded</span>
-          <h1 className={`cu-display ${styles.heroTitle}`}>
+          <h1 className="cu-display cu-hero-title">
             Understand what your code
             <br />
             actually <em>costs</em>.
           </h1>
-          <p className={styles.heroSub}>
+          <p className="cu-hero-sub">
             Paste any function or algorithm. ComplexityUniverse measures how it grows —
             with a line-by-line breakdown, bottlenecks and concrete optimizations, saved to
             your personal dashboard.
@@ -92,13 +91,13 @@ export default function HomeAnalyzer({ samples }) {
       </section>
 
       {/* ---------------- analyzer ---------------- */}
-      <section className={`cu-wrap ${styles.analyzer}`}>
-        <div className={`cu-card ${styles.analyzerCard}`}>
-          <div className={styles.analyzerToolbar}>
-            <label className={styles.analyzerTool}>
+      <section className="cu-wrap cu-analyzer">
+        <div className="cu-card cu-analyzer-card">
+          <div className="cu-analyzer-toolbar">
+            <label className="cu-analyzer-tool">
               <span>Language</span>
               <select
-                className={`cu-select ${styles.selectSm}`}
+                className="cu-select cu-select-sm"
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
               >
@@ -110,19 +109,19 @@ export default function HomeAnalyzer({ samples }) {
               </select>
             </label>
 
-            <div className={styles.analyzerTool}>
+            <div className="cu-analyzer-tool">
               <span>Detail</span>
-              <div className={styles.seg}>
+              <div className="cu-seg">
                 <button
                   type="button"
-                  className={mode === 'detailed' ? styles.isOn : ''}
+                  className={mode === 'detailed' ? 'is-on' : ''}
                   onClick={() => setMode('detailed')}
                 >
                   Detailed
                 </button>
                 <button
                   type="button"
-                  className={mode === 'short' ? styles.isOn : ''}
+                  className={mode === 'short' ? 'is-on' : ''}
                   onClick={() => setMode('short')}
                 >
                   Short
@@ -130,13 +129,13 @@ export default function HomeAnalyzer({ samples }) {
               </div>
             </div>
 
-            <div className={styles.analyzerSamples}>
+            <div className="cu-analyzer-samples">
               <span>Try</span>
               {Object.keys(samples).map((k) => (
                 <button
                   key={k}
                   type="button"
-                  className={styles.linkish}
+                  className="cu-linkish"
                   onClick={() => {
                     setCode(samples[k]);
                     setError('');
@@ -148,9 +147,9 @@ export default function HomeAnalyzer({ samples }) {
             </div>
           </div>
 
-          <div className={styles.editor}>
+          <div className="cu-editor">
             <textarea
-              className={styles.editorArea}
+              className="cu-editor-area"
               spellCheck={false}
               autoComplete="off"
               placeholder={'// Paste your code here\nfunction sum(arr) {\n  // ...\n}'}
@@ -161,7 +160,7 @@ export default function HomeAnalyzer({ samples }) {
           </div>
 
           {/* Analyze button sits right below the textarea */}
-          <div className={styles.analyzerActions}>
+          <div className="cu-analyzer-actions">
             <button
               type="button"
               className="cu-btn cu-btn-accent cu-btn-lg"
@@ -184,7 +183,7 @@ export default function HomeAnalyzer({ samples }) {
         </div>
 
         {/* ---------------- results ---------------- */}
-        <div ref={resultRef} className={styles.resultsZone}>
+        <div ref={resultRef} className="cu-results-zone">
           <AnimatePresence mode="wait">
             {result && (
               <motion.div
@@ -235,15 +234,15 @@ export default function HomeAnalyzer({ samples }) {
                 key="placeholder"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className={styles.resultsPlaceholder}
+                className="cu-results-placeholder"
               >
-                <div className={styles.phRow}>
-                  <span className={styles.phPill} />
-                  <span className={styles.phLine} style={{ width: '38%' }} />
+                <div className="cu-ph-row">
+                  <span className="cu-ph-pill" />
+                  <span className="cu-ph-line" style={{ width: '38%' }} />
                 </div>
-                <div className={styles.phLine} style={{ width: '92%' }} />
-                <div className={styles.phLine} style={{ width: '84%' }} />
-                <div className={styles.phLine} style={{ width: '60%' }} />
+                <div className="cu-ph-line" style={{ width: '92%' }} />
+                <div className="cu-ph-line" style={{ width: '84%' }} />
+                <div className="cu-ph-line" style={{ width: '60%' }} />
                 <p>
                   Your detailed analysis will appear here — complexity classes, case table,
                   bottlenecks and optimizations.
@@ -255,7 +254,7 @@ export default function HomeAnalyzer({ samples }) {
       </section>
 
       {/* ---------------- how it helps ---------------- */}
-      <section className={`cu-wrap ${styles.homeBelow}`}>
+      <section className="cu-wrap cu-home-below">
         <div className="cu-grid-3">
           <div className="cu-card cu-card-pad">
             <h3>Cost, not vibes</h3>

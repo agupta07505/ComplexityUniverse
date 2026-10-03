@@ -1,0 +1,35 @@
+/* ===================== component: Footer ===================== */
+
+.cu-footer {
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+  padding: 40px 0 34px;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.cu-footer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px 64px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cu-footer a {
+  color: var(--ink-2);
+}
+
+.cu-footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cu-footer-col strong {
+  color: var(--ink);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}

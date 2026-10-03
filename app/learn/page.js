@@ -1,6 +1,5 @@
 import { query } from '@/lib/db';
 import LearnView from '@/components/LearnView';
-import styles from './page.module.css';
 
 export const dynamic = 'force-dynamic';
 

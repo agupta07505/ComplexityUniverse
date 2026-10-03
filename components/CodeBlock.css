@@ -1,0 +1,51 @@
+/* ===================== component: CodeBlock ===================== */
+
+.cu-code {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid #24242c;
+  text-align: left;
+}
+
+.cu-code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 14px;
+  background: var(--code-bar);
+  border-bottom: 1px solid #2a2a33;
+  font-size: 12px;
+  color: #9a9aa8;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.cu-code pre {
+  margin: 0;
+  padding: 16px 18px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.cu-code-copy {
+  background: transparent;
+  border: 1px solid #3a3a45;
+  color: #b9b9c6;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cu-code-copy:hover {
+  border-color: #5a5a6a;
+  color: #fff;
+}

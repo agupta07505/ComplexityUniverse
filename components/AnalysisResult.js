@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ComplexityBadge, { gradeFor } from './ComplexityBadge';
 import CodeBlock from './CodeBlock';
-import styles from '@/app/page.module.css';
 
 export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
   const router = useRouter();
@@ -31,27 +30,27 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
 
   const orbColorClass =
     grade === 'green'
-      ? styles.orbGreen
+      ? 'cu-orb-green'
       : grade === 'blue'
-      ? styles.orbBlue
+      ? 'cu-orb-blue'
       : grade === 'amber'
-      ? styles.orbAmber
+      ? 'cu-orb-amber'
       : grade === 'red'
-      ? styles.orbRed
-      : styles.orbPlain;
+      ? 'cu-orb-red'
+      : 'cu-orb-plain';
 
   return (
-    <div className={styles.result}>
+    <div className="cu-result">
       {/* headline card */}
-      <div className={styles.resultHead}>
-        <div className={styles.resultHeadline}>
+      <div className="cu-result-head">
+        <div className="cu-result-headline">
           <div className="cu-chip-row" style={{ alignItems: 'center' }}>
             <ComplexityBadge label="Time" value={result.time_complexity} />
             <ComplexityBadge label="Space" value={result.space_complexity} />
-            <span className={`cu-badge cu-badge-plain`} title="Analysis confidence">
+            <span className="cu-badge cu-badge-plain" title="Analysis confidence">
               {conf}% confidence
             </span>
-            <span className={`cu-badge cu-badge-plain`} title="Which engine produced this">
+            <span className="cu-badge cu-badge-plain" title="Which engine produced this">
               {result.engine === 'gemini' ? 'Gemini AI' : 'AI engine'}
             </span>
             {promptInfo?.version ? (
@@ -60,13 +59,13 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
               </span>
             ) : null}
           </div>
-          <p className={styles.resultSummary}>{result.summary}</p>
+          <p className="cu-result-summary">{result.summary}</p>
         </div>
 
-        <div className={styles.resultHeadside}>
-          <div className={`${styles.resultOrb} ${orbColorClass}`}>
-            <span className={styles.resultOrbLabel}>cost</span>
-            <span className={`${styles.resultOrbValue} mono`}>{result.time_complexity}</span>
+        <div className="cu-result-headside">
+          <div className={`cu-result-orb ${orbColorClass}`}>
+            <span className="cu-result-orb-label">cost</span>
+            <span className="cu-result-orb-value mono">{result.time_complexity}</span>
           </div>
           {onSave && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -100,9 +99,9 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
       </div>
 
       {/* cases table */}
-      <div className={styles.resultGrid}>
+      <div className="cu-result-grid">
         <section className="cu-card cu-card-pad">
-          <h3 className={styles.resultH3}>Complexity by case</h3>
+          <h3 className="cu-result-h3">Complexity by case</h3>
           <table className="cu-table">
             <tbody>
               <tr>
@@ -122,13 +121,13 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
         </section>
 
         <section className="cu-card cu-card-pad">
-          <h3 className={styles.resultH3}>Where the cost comes from</h3>
-          <ul className={styles.costList}>
+          <h3 className="cu-result-h3">Where the cost comes from</h3>
+          <ul className="cu-cost-list">
             {(result.breakdown || []).map((b, i) => (
               <li key={i}>
-                <div className={styles.costRow}>
+                <div className="cu-cost-row">
                   <strong>{b.label}</strong>
-                  {b.cost && <span className={`mono ${styles.costTag}`}>{b.cost}</span>}
+                  {b.cost && <span className="mono cu-cost-tag">{b.cost}</span>}
                 </div>
                 <span>{b.detail}</span>
               </li>
@@ -140,24 +139,24 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
       {/* approach */}
       {result.approach && (
         <section className="cu-card cu-card-pad">
-          <h3 className={styles.resultH3}>How this was measured</h3>
+          <h3 className="cu-result-h3">How this was measured</h3>
           <p style={{ color: 'var(--ink-2)' }}>{result.approach}</p>
         </section>
       )}
 
       {/* bottlenecks + optimizations */}
-      <div className={styles.resultGrid}>
+      <div className="cu-result-grid">
         <section className="cu-card cu-card-pad">
-          <h3 className={styles.resultH3}>Bottlenecks</h3>
-          <ul className={styles.bulletWarn}>
+          <h3 className="cu-result-h3">Bottlenecks</h3>
+          <ul className="cu-bullet-warn">
             {(result.bottlenecks || []).map((x, i) => (
               <li key={i}>{x}</li>
             ))}
           </ul>
         </section>
         <section className="cu-card cu-card-pad">
-          <h3 className={styles.resultH3}>Optimization ideas</h3>
-          <ul className={styles.bulletGood}>
+          <h3 className="cu-result-h3">Optimization ideas</h3>
+          <ul className="cu-bullet-good">
             {(result.optimizations || []).map((x, i) => (
               <li key={i}>{x}</li>
             ))}
@@ -168,14 +167,14 @@ export default function AnalysisResult({ result, promptInfo, onSave, saved }) {
       {/* code echo */}
       {result.code && (
         <section>
-          <h3 className={styles.resultH3} style={{ marginLeft: 2 }}>
+          <h3 className="cu-result-h3" style={{ marginLeft: 2 }}>
             Analyzed code
           </h3>
           <CodeBlock code={result.code} language={result.language || 'code'} />
         </section>
       )}
 
-      {result.notes && <p className={`cu-hint ${styles.resultNotes}`}>{result.notes}</p>}
+      {result.notes && <p className="cu-hint cu-result-notes">{result.notes}</p>}
     </div>
   );
 }
