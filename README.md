@@ -637,6 +637,15 @@ This ensures atomicity when multiple related operations must succeed or fail tog
 
 ---
 
+## Project Report Documentation
+
+For academic report writing, viva preparation, and submission artifacts, refer to the dedicated DBMS documentation files:
+
+- **[ER-Diagrams.md](file:///a:/ComplexityUniverse/ER-Diagrams.md)** — Complete Entity-Relationship diagrams (Mermaid format), attribute classifications (identifying, composite, derived, multi-valued), relationship cardinalities (1:1, 1:N, M:N), participation constraints (total vs. partial), and drawing guidelines.
+- **[Functional_Dependencies.md](file:///a:/ComplexityUniverse/Functional_Dependencies.md)** — Formal functional dependencies ($FDs$) for all 9 relations, attribute closure proofs ($X^+$), candidate key derivations, 1NF/2NF/3NF/BCNF normalization analysis, Canonical Cover ($F_c$), lossless join / dependency preservation proofs, and viva defense Q&A.
+
+---
+
 ## License
 
 This project is developed as an **academic project** for the **Database Management System (DBMS)** course. It is intended solely for **educational and evaluation purposes**.

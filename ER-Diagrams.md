@@ -1,33 +1,71 @@
-# ComplexityUniverse — ER Diagram Reference
+# ComplexityUniverse — Complete ER Diagram Reference & Drawing Guide
 
-> **DBMS Course Project** — This document contains every detail you need to draw the Entity-Relationship (ER) diagrams for the `complexity_universe` database.
+> **DBMS Course Project Documentation**  
+> **Database:** `complexity_universe` (MySQL 8.0+ / Aiven Cloud)  
+> **Purpose:** This reference contains every verified detail, attribute classification, cardinality constraint, structural rule, and notation guideline needed to draw 100% accurate Entity-Relationship (ER) diagrams for your DBMS course project report, presentation, and oral viva.
 
 ---
 
 ## Table of Contents
 
-- [1. Complete ER Diagram (Mermaid)](#1-complete-er-diagram-mermaid)
-- [2. Entities — Full Attribute List](#2-entities--full-attribute-list)
-  - [2.1 users](#21-users)
-  - [2.2 user_profiles](#22-user_profiles)
-  - [2.3 analysis_prompts](#23-analysis_prompts)
-  - [2.4 code_analyses](#24-code_analyses)
-  - [2.5 complexity_topics](#25-complexity_topics)
-  - [2.6 topic_examples](#26-topic_examples)
-  - [2.7 user_saved_topics](#27-user_saved_topics)
-  - [2.8 activity_log](#28-activity_log)
-  - [2.9 app_settings](#29-app_settings)
-- [3. Relationships — Complete Details](#3-relationships--complete-details)
-- [4. Cardinality Summary Table](#4-cardinality-summary-table)
-- [5. Foreign Key Constraints Summary](#5-foreign-key-constraints-summary)
-- [6. ER Diagram Drawing Guide](#6-er-diagram-drawing-guide)
-- [7. Relational Schema (Textual Notation)](#7-relational-schema-textual-notation)
+- [1. Two Types of ER Diagrams for Your Report](#1-two-types-of-er-diagrams-for-your-report)
+  - [1.1 Conceptual ER Diagram (Chen's Classical Notation)](#11-conceptual-er-diagram-chens-classical-notation)
+  - [1.2 Logical / Relational ER Diagram (Crow's Foot / IE Notation)](#12-logical--relational-er-diagram-crows-foot--ie-notation)
+- [2. Complete Relational ER Diagram (Mermaid Crow's Foot)](#2-complete-relational-er-diagram-mermaid-crows-foot)
+- [3. Complete Conceptual ER Diagram (Mermaid Chen Notation)](#3-complete-conceptual-er-diagram-mermaid-chen-notation)
+- [4. Entity Classification & Attribute Taxonomy](#4-entity-classification--attribute-taxonomy)
+  - [4.1 Master Entity Classification Table](#41-master-entity-classification-table)
+  - [4.2 Detailed Entity Attribute Breakdown](#42-detailed-entity-attribute-breakdown)
+    - [4.2.1 users](#421-users)
+    - [4.2.2 user_profiles](#422-user_profiles)
+    - [4.2.3 analysis_prompts](#423-analysis_prompts)
+    - [4.2.4 code_analyses](#424-code_analyses)
+    - [4.2.5 complexity_topics](#425-complexity_topics)
+    - [4.2.6 topic_examples](#426-topic_examples)
+    - [4.2.7 user_saved_topics](#427-user_saved_topics)
+    - [4.2.8 activity_log](#428-activity_log)
+    - [4.2.9 app_settings](#429-app_settings)
+- [5. Relationships & Structural Constraints](#5-relationships--structural-constraints)
+  - [5.1 Comprehensive Relationship Specifications](#51-comprehensive-relationship-specifications)
+  - [5.2 (Min, Max) Structural Constraint Table](#52-min-max-structural-constraint-table)
+  - [5.3 Participation & Cardinality Summary Table](#53-participation--cardinality-summary-table)
+- [6. Foreign Key Referential Integrity Constraints](#6-foreign-key-referential-integrity-constraints)
+- [7. Critical Academic Distinctions: Conceptual ER vs. Relational Schema](#7-critical-academic-distinctions-conceptual-er-vs-relational-schema)
+- [8. Step-by-Step Drawing Guide (Chen & Crow's Foot)](#8-step-by-step-drawing-guide-chen--crows-foot)
+  - [8.1 Standard Symbol Reference](#81-standard-symbol-reference)
+  - [8.2 Recommended Color Palette & Aesthetics](#82-recommended-color-palette--aesthetics)
+  - [8.3 Layout & Alignment Blueprint](#83-layout--alignment-blueprint)
+  - [8.4 Common Drawing Mistakes to Avoid](#84-common-drawing-mistakes-to-avoid)
+- [9. Relational Schema (Formal Academic Notation)](#9-relational-schema-formal-academic-notation)
+- [10. DBMS Report / Viva Defense Q&A](#10-dbms-report--viva-defense-qa)
 
 ---
 
-## 1. Complete ER Diagram (Mermaid)
+## 1. Two Types of ER Diagrams for Your Report
 
-You can paste this into any Mermaid renderer (VS Code, GitHub, [mermaid.live](https://mermaid.live)) to get a rendered ER diagram.
+In academic DBMS evaluations (following textbooks like *Silberschatz, Korth, Sudarshan* or *Elmasri & Navathe*), professors distinguish between two modeling phases:
+
+1. **Conceptual ER Model (Peter Chen's Notation):**
+   - High-level conceptual view.
+   - Uses **Rectangles** for Entities, **Diamonds** for Relationships, and **Ellipses** for Attributes.
+   - Many-to-Many ($M:N$) relationships are kept as **diamonds** with relationship attributes directly attached (e.g., `note`, `saved_at`).
+   - Foreign Keys are **NOT** drawn as attributes in Chen notation (relationships replace them).
+   - Derived attributes are drawn as **Dashed Ellipses**.
+
+2. **Logical / Physical ER Model (Crow's Foot / Information Engineering Notation):**
+   - Implementation-level view representing the actual MySQL schema.
+   - $M:N$ relationships are decomposed into an **Associative Entity** (`user_saved_topics`) connected by two $1:N$ relationships.
+   - Shows all physical columns, exact SQL data types, Primary Keys (`PK`), Foreign Keys (`FK`), and unique constraints.
+   - Shows precise cardinality symbols (one, many, zero-or-one, zero-or-many).
+
+> [!TIP]
+> **Best Practice for Your Report:** Include **both** diagrams in your project report. Section 3 gives you the Conceptual Chen diagram, and Section 2 gives you the Logical Crow's Foot diagram.
+
+---
+
+## 2. Complete Relational ER Diagram (Mermaid Crow's Foot)
+
+You can view this directly in any Markdown previewer (VS Code, GitHub, or [mermaid.live](https://mermaid.live)):
 
 ```mermaid
 erDiagram
@@ -39,7 +77,7 @@ erDiagram
         DATETIME last_login_at "NULL"
         ENUM role "user | admin, DEFAULT user"
         ENUM status "active | suspended, DEFAULT active"
-        INT_UNSIGNED analysis_count "DEFAULT 0"
+        INT_UNSIGNED analysis_count "DERIVED (Triggers)"
         TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
         TIMESTAMP updated_at "ON UPDATE CURRENT_TIMESTAMP"
     }
@@ -58,7 +96,7 @@ erDiagram
         VARCHAR_80 name "NOT NULL"
         MEDIUMTEXT prompt_template "NOT NULL"
         TINYINT is_active "DEFAULT 1"
-        INT_UNSIGNED version "DEFAULT 1"
+        INT_UNSIGNED version "DEFAULT 1 (Triggers)"
         INT_UNSIGNED updated_by FK "NULL"
         TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
         TIMESTAMP updated_at "ON UPDATE CURRENT_TIMESTAMP"
@@ -74,7 +112,7 @@ erDiagram
         VARCHAR_40 time_complexity "NOT NULL"
         VARCHAR_40 space_complexity "NOT NULL"
         TEXT summary "NOT NULL"
-        MEDIUMTEXT detailed_analysis "NOT NULL"
+        MEDIUMTEXT detailed_analysis "NOT NULL (JSON)"
         ENUM detail_mode "short | detailed, DEFAULT detailed"
         VARCHAR_20 engine "DEFAULT 'gemini'"
         INT_UNSIGNED prompt_version "NULL"
@@ -135,564 +173,579 @@ erDiagram
         TIMESTAMP updated_at "ON UPDATE CURRENT_TIMESTAMP"
     }
 
-    users ||--|| user_profiles : "has profile"
-    users ||--o{ code_analyses : "saves analyses"
-    users ||--o{ user_saved_topics : "bookmarks topics"
-    users ||--o{ activity_log : "generates activity"
-    users ||--o| analysis_prompts : "edits prompts"
-    complexity_topics ||--o{ topic_examples : "has examples"
-    complexity_topics ||--o{ user_saved_topics : "bookmarked by users"
+    users ||--|| user_profiles : "1:1 HAS PROFILE (CASCADE)"
+    users ||--o{ code_analyses : "1:N SAVES (CASCADE)"
+    users ||--o{ user_saved_topics : "1:N BOOKMARKS (CASCADE)"
+    users |o--o{ activity_log : "1:N GENERATES (CASCADE)"
+    users ||--o{ analysis_prompts : "1:N EDITS (SET NULL)"
+    complexity_topics ||--o{ topic_examples : "1:N HAS EXAMPLE (CASCADE)"
+    complexity_topics ||--o{ user_saved_topics : "1:N BOOKMARKED BY (CASCADE)"
 ```
 
 ---
 
-## 2. Entities — Full Attribute List
+## 3. Complete Conceptual ER Diagram (Mermaid Chen Notation)
 
-Below is every entity (table) with every attribute, its data type, constraints, and role in the ER diagram.
+This diagram visualizes Peter Chen's notation directly in Markdown. Entities are rectangles, relationships are rhombuses/diamonds, and attributes are ovals/stadiums:
 
-### 2.1 users
+```mermaid
+flowchart TD
+    %% Entities
+    U["[users]"]
+    UP["[user_profiles]"]
+    CA["[code_analyses]"]
+    AP["[analysis_prompts]"]
+    CT["[complexity_topics]"]
+    TE["[topic_examples]"]
+    AL["[activity_log]"]
+    AS["[app_settings]"]
 
-> **The central entity** — every other entity (except `app_settings` and `complexity_topics`) directly or indirectly references `users`.
+    %% Relationships (Diamonds)
+    R_PROF{"has_profile<br>(1,1) : (1,1)"}
+    R_SAVE{"saves_analysis<br>(0,N) : (1,1)"}
+    R_EDIT{"edits_prompt<br>(0,N) : (0,1)"}
+    R_ACT{"generates_log<br>(0,N) : (0,1)"}
+    R_BOOK{"bookmarks<br>(0,N) : (0,N)"}
+    R_EX{"has_example<br>(0,N) : (1,1)"}
 
-| Attribute | Data Type | Constraints | ER Notation |
-|---|---|---|---|
-| `id` | INT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | 🔑 Primary Key |
-| `name` | VARCHAR(100) | NOT NULL | Simple Attribute |
-| `email` | VARCHAR(190) | NOT NULL, UNIQUE (`uq_users_email`) | Simple Attribute (unique) |
-| `password_hash` | VARCHAR(255) | NOT NULL | Simple Attribute |
-| `last_login_at` | DATETIME | NULL, DEFAULT NULL | Simple Attribute (optional) |
-| `role` | ENUM('user', 'admin') | NOT NULL, DEFAULT 'user' | Simple Attribute |
-| `status` | ENUM('active', 'suspended') | NOT NULL, DEFAULT 'active' | Simple Attribute |
-| `analysis_count` | INT UNSIGNED | NOT NULL, DEFAULT 0 | **Derived Attribute** (maintained by triggers on `code_analyses`) |
-| `created_at` | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Simple Attribute |
-| `updated_at` | TIMESTAMP | NOT NULL, ON UPDATE CURRENT_TIMESTAMP | Simple Attribute |
+    %% Descriptive Attributes on M:N Relationship
+    R_BOOK --- ATT_NOTE(["note"])
+    R_BOOK --- ATT_SAVED(["saved_at"])
 
-**Indexes:**
-- `uq_users_email` — Unique index on `email`
-- `idx_users_role` — Index on `role`
+    %% Entity Connections
+    U === R_PROF === UP
+    U --- R_SAVE === CA
+    U --- R_EDIT --- AP
+    U --- R_ACT --- AL
+    U --- R_BOOK --- CT
+    CT --- R_EX === TE
 
----
+    %% Styling
+    classDef entity fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#f8fafc;
+    classDef rel fill:#0f172a,stroke:#f59e0b,stroke-width:2px,color:#fef08a;
+    classDef standalone fill:#334155,stroke:#94a3b8,stroke-width:1px,color:#cbd5e1;
+    classDef relAttr fill:#1e293b,stroke:#a855f7,stroke-width:1px,color:#e9d5ff;
 
-### 2.2 user_profiles
-
-> **1:1 relationship with `users`** — created automatically by the `trg_users_after_insert` trigger.
-
-| Attribute | Data Type | Constraints | ER Notation |
-|---|---|---|---|
-| `id` | INT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | 🔑 Primary Key |
-| `user_id` | INT UNSIGNED | NOT NULL, UNIQUE (`uq_profile_user`), FK → `users.id` | 🔗 Foreign Key |
-| `headline` | VARCHAR(140) | NOT NULL, DEFAULT 'Curious about the cost of code' | Simple Attribute |
-| `bio` | VARCHAR(500) | NOT NULL, DEFAULT '' | Simple Attribute |
-| `location` | VARCHAR(100) | NOT NULL, DEFAULT '' | Simple Attribute |
-| `avatar_seed` | VARCHAR(60) | NOT NULL, DEFAULT '' | Simple Attribute |
-
-**Foreign Key:**
-- `fk_profile_user`: `user_id` → `users(id)` — ON DELETE **CASCADE**, ON UPDATE **CASCADE**
-
-**Participation:** Total on `user_profiles` side (every profile must belong to a user), Total on `users` side (trigger ensures every user gets a profile).
-
----
-
-### 2.3 analysis_prompts
-
-> **Admin-editable AI prompt template.** Versioned automatically by a trigger on update.
-
-| Attribute | Data Type | Constraints | ER Notation |
-|---|---|---|---|
-| `id` | TINYINT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | 🔑 Primary Key |
-| `name` | VARCHAR(80) | NOT NULL | Simple Attribute |
-| `prompt_template` | MEDIUMTEXT | NOT NULL | Simple Attribute |
-| `is_active` | TINYINT(1) | NOT NULL, DEFAULT 1 | Simple Attribute |
-| `version` | INT UNSIGNED | NOT NULL, DEFAULT 1 | Simple Attribute (auto-incremented by trigger) |
-| `updated_by` | INT UNSIGNED | NULL, FK → `users.id` | 🔗 Foreign Key (optional) |
-| `created_at` | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Simple Attribute |
-| `updated_at` | TIMESTAMP | NOT NULL, ON UPDATE CURRENT_TIMESTAMP | Simple Attribute |
-
-**Foreign Key:**
-- `fk_prompt_admin`: `updated_by` → `users(id)` — ON DELETE **SET NULL**, ON UPDATE **CASCADE**
-
-**Participation:** Partial on both sides (a prompt may or may not have an admin who edited it; an admin may or may not have edited any prompt).
-
----
-
-### 2.4 code_analyses
-
-> **Stores every saved complexity analysis.** Contains a **generated (computed) column** `code_lines`.
-
-| Attribute | Data Type | Constraints | ER Notation |
-|---|---|---|---|
-| `id` | BIGINT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | 🔑 Primary Key |
-| `user_id` | INT UNSIGNED | NOT NULL, FK → `users.id` | 🔗 Foreign Key |
-| `title` | VARCHAR(140) | NOT NULL, DEFAULT 'Untitled analysis' | Simple Attribute |
-| `language` | VARCHAR(30) | NOT NULL, DEFAULT 'javascript' | Simple Attribute |
-| `code_text` | MEDIUMTEXT | NOT NULL | Simple Attribute |
-| `code_lines` | INT UNSIGNED | **GENERATED ALWAYS AS** (computed from `code_text`) **STORED** | **Derived Attribute** |
-| `time_complexity` | VARCHAR(40) | NOT NULL | Simple Attribute |
-| `space_complexity` | VARCHAR(40) | NOT NULL | Simple Attribute |
-| `summary` | TEXT | NOT NULL | Simple Attribute |
-| `detailed_analysis` | MEDIUMTEXT | NOT NULL (stores JSON) | Simple Attribute |
-| `detail_mode` | ENUM('short', 'detailed') | NOT NULL, DEFAULT 'detailed' | Simple Attribute |
-| `engine` | VARCHAR(20) | NOT NULL, DEFAULT 'gemini' | Simple Attribute |
-| `prompt_version` | INT UNSIGNED | NULL (soft reference to `analysis_prompts.version`) | Simple Attribute |
-| `created_at` | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Simple Attribute |
-| `updated_at` | TIMESTAMP | NOT NULL, ON UPDATE CURRENT_TIMESTAMP | Simple Attribute |
-
-**Foreign Key:**
-- `fk_analyses_user`: `user_id` → `users(id)` — ON DELETE **CASCADE**, ON UPDATE **CASCADE**
-
-**Indexes:**
-- `idx_analyses_user_created` — Composite index on `(user_id, created_at)`
-- `idx_analyses_complexity` — Index on `time_complexity`
-- `idx_analyses_prompt_version` — Index on `prompt_version`
-
-**Participation:** Total on `code_analyses` side (every analysis must belong to a user), Partial on `users` side (a user may have zero analyses).
-
----
-
-### 2.5 complexity_topics
-
-> **Learn library content.** Topics are managed by admins and displayed on the Learn page.
-
-| Attribute | Data Type | Constraints | ER Notation |
-|---|---|---|---|
-| `id` | INT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | 🔑 Primary Key |
-| `topic_name` | VARCHAR(120) | NOT NULL | Simple Attribute |
-| `slug` | VARCHAR(140) | NOT NULL, UNIQUE (`uq_topics_slug`) | Simple Attribute (auto-generated by trigger) |
-| `category` | VARCHAR(60) | NOT NULL, DEFAULT 'Fundamentals' | Simple Attribute |
-| `difficulty` | ENUM('Beginner', 'Intermediate', 'Advanced') | NOT NULL, DEFAULT 'Beginner' | Simple Attribute |
-| `time_complexity` | VARCHAR(40) | NULL | Simple Attribute (optional) |
-| `space_complexity` | VARCHAR(40) | NULL | Simple Attribute (optional) |
-| `summary` | VARCHAR(300) | NOT NULL, DEFAULT '' | Simple Attribute |
-| `notes_html` | MEDIUMTEXT | NOT NULL | Simple Attribute |
-| `sort_order` | SMALLINT | NOT NULL, DEFAULT 0 | Simple Attribute |
-| `is_published` | TINYINT(1) | NOT NULL, DEFAULT 1 | Simple Attribute |
-| `created_at` | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Simple Attribute |
-| `updated_at` | TIMESTAMP | NOT NULL, ON UPDATE CURRENT_TIMESTAMP | Simple Attribute |
-
-**Indexes:**
-- `uq_topics_slug` — Unique index on `slug`
-- `idx_topics_category` — Index on `category`
-- `ft_topics_search` — **FULLTEXT** index on `(topic_name, summary, notes_html)`
-
-**Participation:** This is an independent entity — no FK pointing to other tables.
-
----
-
-### 2.6 topic_examples
-
-> **Runnable code examples** for each Learn topic. Cascades on topic deletion.
-
-| Attribute | Data Type | Constraints | ER Notation |
-|---|---|---|---|
-| `id` | INT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | 🔑 Primary Key |
-| `topic_id` | INT UNSIGNED | NOT NULL, FK → `complexity_topics.id` | 🔗 Foreign Key |
-| `title` | VARCHAR(140) | NOT NULL | Simple Attribute |
-| `language` | VARCHAR(30) | NOT NULL, DEFAULT 'javascript' | Simple Attribute |
-| `code_text` | MEDIUMTEXT | NOT NULL | Simple Attribute |
-| `analysis_html` | MEDIUMTEXT | NOT NULL | Simple Attribute |
-| `time_complexity` | VARCHAR(40) | NULL | Simple Attribute (optional) |
-| `space_complexity` | VARCHAR(40) | NULL | Simple Attribute (optional) |
-| `sort_order` | SMALLINT | NOT NULL, DEFAULT 0 | Simple Attribute |
-| `created_at` | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Simple Attribute |
-
-**Foreign Key:**
-- `fk_examples_topic`: `topic_id` → `complexity_topics(id)` — ON DELETE **CASCADE**, ON UPDATE **CASCADE**
-
-**Participation:** Total on `topic_examples` side (every example must belong to a topic), Partial on `complexity_topics` side (a topic may have zero examples).
-
----
-
-### 2.7 user_saved_topics
-
-> **Associative (junction) entity** — represents the many-to-many relationship between `users` and `complexity_topics` (bookmarks).
-
-| Attribute | Data Type | Constraints | ER Notation |
-|---|---|---|---|
-| `id` | BIGINT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | 🔑 Primary Key |
-| `user_id` | INT UNSIGNED | NOT NULL, FK → `users.id` | 🔗 Foreign Key |
-| `topic_id` | INT UNSIGNED | NOT NULL, FK → `complexity_topics.id` | 🔗 Foreign Key |
-| `note` | VARCHAR(255) | NOT NULL, DEFAULT '' | Simple Attribute |
-| `saved_at` | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Simple Attribute |
-
-**Foreign Keys:**
-- `fk_saved_user`: `user_id` → `users(id)` — ON DELETE **CASCADE**, ON UPDATE **CASCADE**
-- `fk_saved_topic`: `topic_id` → `complexity_topics(id)` — ON DELETE **CASCADE**, ON UPDATE **CASCADE**
-
-**Unique Constraint:**
-- `uq_saved_user_topic` — UNIQUE on `(user_id, topic_id)` — each user can bookmark a topic at most once
-
-**Participation:** Partial on both sides (a user may have zero bookmarks; a topic may have zero bookmarks).
-
----
-
-### 2.8 activity_log
-
-> **Audit trail** — written exclusively by triggers. Records user actions like registration, analysis saved/deleted, topic saved/unsaved.
-
-| Attribute | Data Type | Constraints | ER Notation |
-|---|---|---|---|
-| `id` | BIGINT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | 🔑 Primary Key |
-| `user_id` | INT UNSIGNED | NULL, FK → `users.id` | 🔗 Foreign Key (optional) |
-| `action` | VARCHAR(40) | NOT NULL | Simple Attribute |
-| `entity` | VARCHAR(40) | NOT NULL | Simple Attribute |
-| `entity_id` | BIGINT UNSIGNED | NULL | Simple Attribute (optional) |
-| `detail` | VARCHAR(255) | NOT NULL, DEFAULT '' | Simple Attribute |
-| `created_at` | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Simple Attribute |
-
-**Foreign Key:**
-- `fk_log_user`: `user_id` → `users(id)` — ON DELETE **CASCADE**, ON UPDATE **CASCADE**
-
-**Participation:** Partial on `users` side (a user may have zero log entries), Partial on `activity_log` side (`user_id` is nullable).
-
----
-
-### 2.9 app_settings
-
-> **Standalone entity** — key-value store for site-wide settings. No foreign keys.
-
-| Attribute | Data Type | Constraints | ER Notation |
-|---|---|---|---|
-| `setting_key` | VARCHAR(60) | PRIMARY KEY | 🔑 Primary Key |
-| `setting_value` | TEXT | NOT NULL | Simple Attribute |
-| `updated_at` | TIMESTAMP | NOT NULL, ON UPDATE CURRENT_TIMESTAMP | Simple Attribute |
-
-**No relationships.** This is an independent configuration table.
-
----
-
-## 3. Relationships — Complete Details
-
-### R1: users ↔ user_profiles (HAS PROFILE)
-
-```
-┌──────────┐   1      1   ┌────────────────┐
-│  users   │──────────────│ user_profiles  │
-└──────────┘  has profile  └────────────────┘
+    class U,UP,CA,AP,CT,TE,AL entity;
+    class AS standalone;
+    class R_PROF,R_SAVE,R_EDIT,R_ACT,R_BOOK,R_EX rel;
+    class ATT_NOTE,ATT_SAVED relAttr;
 ```
 
-| Property | Value |
-|---|---|
-| **Relationship Name** | HAS PROFILE |
-| **Type** | One-to-One (1:1) |
-| **Cardinality** | One user has exactly one profile; one profile belongs to exactly one user |
-| **Participation (users side)** | **Total** — every user gets a profile (enforced by `trg_users_after_insert` trigger) |
-| **Participation (user_profiles side)** | **Total** — every profile must reference a valid user (NOT NULL FK + UNIQUE) |
-| **Foreign Key** | `user_profiles.user_id` → `users.id` |
-| **ON DELETE** | CASCADE (deleting a user deletes their profile) |
-| **ON UPDATE** | CASCADE |
-| **Enforced By** | FK constraint `fk_profile_user` + UNIQUE constraint `uq_profile_user` + trigger `trg_users_after_insert` |
+> **Legend for Chen Diagram Above:**
+> - Blue Rectangles = Entity sets
+> - Gold Diamonds = Relationships with structural `(min, max)` constraints
+> - Purple Ovals = Descriptive attributes belonging to the $M:N$ `bookmarks` relationship
+> - Double lines (`===`) = **Total participation** (every entity instance must participate)
+> - Single lines (`---`) = **Partial participation** (optional participation)
 
 ---
 
-### R2: users ↔ code_analyses (SAVES ANALYSIS)
+## 4. Entity Classification & Attribute Taxonomy
 
-```
-┌──────────┐   1      N   ┌────────────────┐
-│  users   │──────────────│ code_analyses  │
-└──────────┘ saves analysis└────────────────┘
-```
+### 4.1 Master Entity Classification Table
 
-| Property | Value |
-|---|---|
-| **Relationship Name** | SAVES ANALYSIS |
-| **Type** | One-to-Many (1:N) |
-| **Cardinality** | One user can save many analyses; each analysis belongs to exactly one user |
-| **Participation (users side)** | **Partial** — a user may have zero saved analyses |
-| **Participation (code_analyses side)** | **Total** — every analysis must belong to a user (NOT NULL FK) |
-| **Foreign Key** | `code_analyses.user_id` → `users.id` |
-| **ON DELETE** | CASCADE (deleting a user deletes all their analyses) |
-| **ON UPDATE** | CASCADE |
-| **Side Effects** | Trigger `trg_analyses_after_insert` increments `users.analysis_count`; trigger `trg_analyses_after_delete` decrements it |
+| Entity Name | Entity Type | Role in Schema | Primary Key | Alternate / Candidate Key | Foreign Keys |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`users`** | Strong Entity | Central core user accounts | `id` | `email` | None |
+| **`user_profiles`** | Dependent Entity | 1:1 user extended details | `id` | `user_id` | `user_id` $\to$ `users(id)` |
+| **`analysis_prompts`** | Strong Entity | Admin-configurable AI templates | `id` | None | `updated_by` $\to$ `users(id)` |
+| **`code_analyses`** | Strong Entity | Saved user code analyses | `id` | None | `user_id` $\to$ `users(id)` |
+| **`complexity_topics`** | Strong Entity | Educational learning library | `id` | `slug` | None |
+| **`topic_examples`** | Strong Entity | Code examples attached to topics | `id` | None | `topic_id` $\to$ `complexity_topics(id)` |
+| **`user_saved_topics`** | Associative Entity | Decomposes $M:N$ bookmarks | `id` | `(user_id, topic_id)` | `user_id`, `topic_id` |
+| **`activity_log`** | Strong Entity | Immutable audit trail ledger | `id` | None | `user_id` $\to$ `users(id)` |
+| **`app_settings`** | Standalone Entity | Site-wide system configuration | `setting_key` | None | None |
 
 ---
 
-### R3: users ↔ user_saved_topics (BOOKMARKS — user side)
+### 4.2 Detailed Entity Attribute Breakdown
 
-```
-┌──────────┐   1      N   ┌─────────────────────┐
-│  users   │──────────────│ user_saved_topics   │
-└──────────┘  bookmarks    └─────────────────────┘
-```
+Use this taxonomy to determine the exact visual symbol when drawing attribute ellipses in Chen notation:
 
-| Property | Value |
-|---|---|
-| **Relationship Name** | BOOKMARKS (user side of the M:N relationship) |
-| **Type** | One-to-Many (1:N) — part of M:N decomposition |
-| **Cardinality** | One user can bookmark many topics |
-| **Participation (users side)** | **Partial** — a user may have zero bookmarks |
-| **Participation (user_saved_topics side)** | **Total** — every bookmark must reference a user (NOT NULL FK) |
-| **Foreign Key** | `user_saved_topics.user_id` → `users.id` |
-| **ON DELETE** | CASCADE |
-| **ON UPDATE** | CASCADE |
+- **Key Attribute (Solid Underline):** Identifies tuples uniquely.
+- **Candidate Key (Solid Underline + [CK]):** Alternate unique attribute.
+- **Simple Attribute (Standard Oval):** Indivisible atomic data item.
+- **Derived Attribute (Dashed Oval):** Computed dynamically or maintained via triggers.
+- **Optional / Nullable Attribute (Standard Oval with `(0..1)`):** Can hold a `NULL` value.
+- **Foreign Key (In Chen: Omitted; in Crow's Foot: Marked `FK`):** Referential linkage.
 
 ---
 
-### R4: complexity_topics ↔ user_saved_topics (BOOKMARKED BY — topic side)
+#### 4.2.1 users
+*The central account entity.*
 
-```
-┌─────────────────────┐   1      N   ┌─────────────────────┐
-│ complexity_topics   │──────────────│ user_saved_topics   │
-└─────────────────────┘ bookmarked by└─────────────────────┘
-```
-
-| Property | Value |
-|---|---|
-| **Relationship Name** | BOOKMARKED BY (topic side of the M:N relationship) |
-| **Type** | One-to-Many (1:N) — part of M:N decomposition |
-| **Cardinality** | One topic can be bookmarked by many users |
-| **Participation (complexity_topics side)** | **Partial** — a topic may have zero bookmarks |
-| **Participation (user_saved_topics side)** | **Total** — every bookmark must reference a topic (NOT NULL FK) |
-| **Foreign Key** | `user_saved_topics.topic_id` → `complexity_topics.id` |
-| **ON DELETE** | CASCADE |
-| **ON UPDATE** | CASCADE |
-
-> **Combined:** R3 + R4 form a **Many-to-Many (M:N)** relationship between `users` and `complexity_topics`, resolved through the associative entity `user_saved_topics`. The UNIQUE constraint `uq_saved_user_topic(user_id, topic_id)` ensures each user can bookmark a topic at most once.
+| Attribute | Data Type | Constraint | Chen Symbol | Description / Semantics |
+|---|---|---|---|---|
+| `id` | INT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | <u>Solid Underlined</u> | Unique account identifier |
+| `name` | VARCHAR(100) | NOT NULL | Standard Oval | Full display name |
+| `email` | VARCHAR(190) | UNIQUE, NOT NULL | <u>Solid Underlined</u> [CK] | Login email address |
+| `password_hash` | VARCHAR(255) | NOT NULL | Standard Oval | bcrypt-hashed password |
+| `last_login_at` | DATETIME | NULL | Standard Oval (opt) | Timestamp of most recent sign-in |
+| `role` | ENUM('user','admin')| NOT NULL, DEFAULT 'user' | Standard Oval | Authorization level |
+| `status` | ENUM('active','suspended')| NOT NULL, DEFAULT 'active' | Standard Oval | Account moderation status |
+| `analysis_count` | INT UNSIGNED | NOT NULL, DEFAULT 0 | **Dashed Oval** | **Derived attribute** (maintained by triggers) |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Standard Oval | Account registration timestamp |
+| `updated_at` | TIMESTAMP | ON UPDATE CURRENT_TIMESTAMP| Standard Oval | Last account update timestamp |
 
 ---
 
-### R5: complexity_topics ↔ topic_examples (HAS EXAMPLE)
+#### 4.2.2 user_profiles
+*Stores biographical data in a strict 1:1 relationship with `users`.*
 
-```
-┌─────────────────────┐   1      N   ┌──────────────────┐
-│ complexity_topics   │──────────────│ topic_examples   │
-└─────────────────────┘ has example  └──────────────────┘
-```
-
-| Property | Value |
-|---|---|
-| **Relationship Name** | HAS EXAMPLE |
-| **Type** | One-to-Many (1:N) |
-| **Cardinality** | One topic can have many code examples; each example belongs to exactly one topic |
-| **Participation (complexity_topics side)** | **Partial** — a topic may have zero examples |
-| **Participation (topic_examples side)** | **Total** — every example must belong to a topic (NOT NULL FK) |
-| **Foreign Key** | `topic_examples.topic_id` → `complexity_topics.id` |
-| **ON DELETE** | CASCADE (deleting a topic deletes all its examples) |
-| **ON UPDATE** | CASCADE |
+| Attribute | Data Type | Constraint | Chen Symbol | Description / Semantics |
+|---|---|---|---|---|
+| `id` | INT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | <u>Solid Underlined</u> | Profile row identifier |
+| `user_id` | INT UNSIGNED | UNIQUE, NOT NULL, FK $\to$ `users.id` | <u>Solid Underlined</u> [CK] | Referenced user account |
+| `headline` | VARCHAR(140) | NOT NULL | Standard Oval | Professional tagline / slogan |
+| `bio` | VARCHAR(500) | NOT NULL | Standard Oval | User biography / background |
+| `location` | VARCHAR(100) | NOT NULL | Standard Oval | City / country location string |
+| `avatar_seed` | VARCHAR(60) | NOT NULL | Standard Oval | Seed for deterministic SVG avatar |
 
 ---
 
-### R6: users ↔ analysis_prompts (EDITS PROMPT)
+#### 4.2.3 analysis_prompts
+*Configurable Gemini prompt templates with audit-versioning.*
 
-```
-┌──────────┐   1      N   ┌─────────────────────┐
-│  users   │──────────────│ analysis_prompts    │
-└──────────┘ edits prompt  └─────────────────────┘
-```
-
-| Property | Value |
-|---|---|
-| **Relationship Name** | EDITS PROMPT |
-| **Type** | One-to-Many (1:N) |
-| **Cardinality** | One admin user can edit many prompts; each prompt records at most one editor |
-| **Participation (users side)** | **Partial** — most users never edit a prompt (only admins) |
-| **Participation (analysis_prompts side)** | **Partial** — `updated_by` is NULL until an admin edits the prompt |
-| **Foreign Key** | `analysis_prompts.updated_by` → `users.id` |
-| **ON DELETE** | **SET NULL** (if the admin user is deleted, the prompt remains but loses the editor reference) |
-| **ON UPDATE** | CASCADE |
+| Attribute | Data Type | Constraint | Chen Symbol | Description / Semantics |
+|---|---|---|---|---|
+| `id` | TINYINT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | <u>Solid Underlined</u> | Prompt identifier |
+| `name` | VARCHAR(80) | NOT NULL | Standard Oval | Internal prompt name |
+| `prompt_template` | MEDIUMTEXT | NOT NULL | Standard Oval | Complete LLM system prompt text |
+| `is_active` | TINYINT(1) | NOT NULL, DEFAULT 1 | Standard Oval | Flag indicating currently active prompt |
+| `version` | INT UNSIGNED | NOT NULL, DEFAULT 1 | Standard Oval | Version counter (auto-incremented by trigger) |
+| `updated_by` | INT UNSIGNED | NULL, FK $\to$ `users.id` | Standard Oval (opt) | Admin user who modified the template |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Standard Oval | Creation timestamp |
+| `updated_at` | TIMESTAMP | ON UPDATE CURRENT_TIMESTAMP| Standard Oval | Modification timestamp |
 
 ---
 
-### R7: users ↔ activity_log (GENERATES ACTIVITY)
+#### 4.2.4 code_analyses
+*Stores saved Big-O evaluations.*
 
-```
-┌──────────┐   1      N   ┌────────────────┐
-│  users   │──────────────│ activity_log   │
-└──────────┘  generates    └────────────────┘
-```
-
-| Property | Value |
-|---|---|
-| **Relationship Name** | GENERATES ACTIVITY |
-| **Type** | One-to-Many (1:N) |
-| **Cardinality** | One user can have many activity log entries |
-| **Participation (users side)** | **Partial** — a user may have zero log entries |
-| **Participation (activity_log side)** | **Partial** — `user_id` is nullable |
-| **Foreign Key** | `activity_log.user_id` → `users.id` |
-| **ON DELETE** | CASCADE (deleting a user deletes all their log entries) |
-| **ON UPDATE** | CASCADE |
-
----
-
-### R8 (M:N): users ↔ complexity_topics — SAVES/BOOKMARKS (via user_saved_topics)
-
-> This is the **logical Many-to-Many** relationship decomposed by R3 + R4.
-
-```
-┌──────────┐   M              N   ┌─────────────────────┐
-│  users   │──────────────────────│ complexity_topics   │
-└──────────┘   saves / bookmarks   └─────────────────────┘
-                    │
-                    ▼
-          ┌─────────────────────┐
-          │ user_saved_topics   │  (Associative Entity)
-          │                     │
-          │ user_id  FK ────────── users.id
-          │ topic_id FK ────────── complexity_topics.id
-          │ note                │
-          │ saved_at            │
-          └─────────────────────┘
-          UNIQUE(user_id, topic_id)
-```
-
-| Property | Value |
-|---|---|
-| **Relationship Name** | SAVES / BOOKMARKS |
-| **Type** | Many-to-Many (M:N) — resolved via associative entity |
-| **Cardinality** | A user can bookmark many topics; a topic can be bookmarked by many users |
-| **Constraint** | Each (user, topic) pair is unique |
-| **Associative Entity** | `user_saved_topics` |
-| **Relationship Attributes** | `note` (VARCHAR 255), `saved_at` (TIMESTAMP) |
+| Attribute | Data Type | Constraint | Chen Symbol | Description / Semantics |
+|---|---|---|---|---|
+| `id` | BIGINT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | <u>Solid Underlined</u> | Analysis record identifier |
+| `user_id` | INT UNSIGNED | NOT NULL, FK $\to$ `users.id` | FK (Omit in Chen) | Owning user |
+| `title` | VARCHAR(140) | NOT NULL | Standard Oval | User-assigned snippet title |
+| `language` | VARCHAR(30) | NOT NULL | Standard Oval | Programming language (js, py, cpp, etc.) |
+| `code_text` | MEDIUMTEXT | NOT NULL | Standard Oval | Submitted source code |
+| `code_lines` | INT UNSIGNED | GENERATED ALWAYS ... STORED | **Dashed Oval** | **Derived attribute** (computed from newlines) |
+| `time_complexity` | VARCHAR(40) | NOT NULL | Standard Oval | Asymptotic time complexity (e.g., O(n)) |
+| `space_complexity` | VARCHAR(40) | NOT NULL | Standard Oval | Asymptotic space complexity (e.g., O(1)) |
+| `summary` | TEXT | NOT NULL | Standard Oval | Plain-text explanation |
+| `detailed_analysis` | MEDIUMTEXT | NOT NULL | Standard Oval | JSON-structured line-by-line breakdown |
+| `detail_mode` | ENUM('short','detailed') | NOT NULL | Standard Oval | Analysis mode |
+| `engine` | VARCHAR(20) | NOT NULL | Standard Oval | Engine name ('gemini') |
+| `prompt_version` | INT UNSIGNED | NULL | Standard Oval (opt) | Prompt version used (audit trail) |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Standard Oval | Analysis date and time |
+| `updated_at` | TIMESTAMP | ON UPDATE CURRENT_TIMESTAMP| Standard Oval | Last modified date and time |
 
 ---
 
-## 4. Cardinality Summary Table
+#### 4.2.5 complexity_topics
+*Educational content for the Learn library.*
 
-| # | Entity A | Relationship | Entity B | Cardinality | A Participation | B Participation |
-|---|---|---|---|---|---|---|
-| R1 | `users` | HAS PROFILE | `user_profiles` | **1 : 1** | Total | Total |
-| R2 | `users` | SAVES ANALYSIS | `code_analyses` | **1 : N** | Partial | Total |
-| R3 | `users` | BOOKMARKS | `user_saved_topics` | **1 : N** | Partial | Total |
-| R4 | `complexity_topics` | BOOKMARKED BY | `user_saved_topics` | **1 : N** | Partial | Total |
-| R5 | `complexity_topics` | HAS EXAMPLE | `topic_examples` | **1 : N** | Partial | Total |
-| R6 | `users` | EDITS PROMPT | `analysis_prompts` | **1 : N** | Partial | Partial |
-| R7 | `users` | GENERATES ACTIVITY | `activity_log` | **1 : N** | Partial | Partial |
-| R8 | `users` | SAVES TOPIC *(M:N)* | `complexity_topics` | **M : N** | Partial | Partial |
+| Attribute | Data Type | Constraint | Chen Symbol | Description / Semantics |
+|---|---|---|---|---|
+| `id` | INT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | <u>Solid Underlined</u> | Topic identifier |
+| `topic_name` | VARCHAR(120) | NOT NULL | Standard Oval | Display title (e.g., "Binary Search") |
+| `slug` | VARCHAR(140) | UNIQUE, NOT NULL | <u>Solid Underlined</u> [CK] | URL slug (e.g., "binary-search") |
+| `category` | VARCHAR(60) | NOT NULL | Standard Oval | Topic category (Fundamentals, Trees, etc.) |
+| `difficulty` | ENUM('Beginner',...) | NOT NULL | Standard Oval | Difficulty tier |
+| `time_complexity` | VARCHAR(40) | NULL | Standard Oval (opt) | Characteristic time complexity |
+| `space_complexity` | VARCHAR(40) | NULL | Standard Oval (opt) | Characteristic space complexity |
+| `summary` | VARCHAR(300) | NOT NULL | Standard Oval | Brief teaser description |
+| `notes_html` | MEDIUMTEXT | NOT NULL | Standard Oval | HTML educational body content |
+| `sort_order` | SMALLINT | NOT NULL, DEFAULT 0 | Standard Oval | Presentation sequence order |
+| `is_published` | TINYINT(1) | NOT NULL, DEFAULT 1 | Standard Oval | Publication status toggle |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Standard Oval | Creation timestamp |
+| `updated_at` | TIMESTAMP | ON UPDATE CURRENT_TIMESTAMP| Standard Oval | Last edit timestamp |
 
 ---
 
-## 5. Foreign Key Constraints Summary
+#### 4.2.6 topic_examples
+*Runnable algorithms attached to educational topics.*
 
-| FK Name | Child Table | Child Column | Parent Table | Parent Column | ON DELETE | ON UPDATE |
-|---|---|---|---|---|---|---|
-| `fk_profile_user` | `user_profiles` | `user_id` | `users` | `id` | CASCADE | CASCADE |
+| Attribute | Data Type | Constraint | Chen Symbol | Description / Semantics |
+|---|---|---|---|---|
+| `id` | INT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | <u>Solid Underlined</u> | Example identifier |
+| `topic_id` | INT UNSIGNED | NOT NULL, FK $\to$ `complexity_topics.id` | FK (Omit in Chen) | Parent educational topic |
+| `title` | VARCHAR(140) | NOT NULL | Standard Oval | Example title |
+| `language` | VARCHAR(30) | NOT NULL | Standard Oval | Language code |
+| `code_text` | MEDIUMTEXT | NOT NULL | Standard Oval | Executable source code snippet |
+| `analysis_html` | MEDIUMTEXT | NOT NULL | Standard Oval | Explanation of code complexity |
+| `time_complexity` | VARCHAR(40) | NULL | Standard Oval (opt) | Measured/analyzed time complexity |
+| `space_complexity` | VARCHAR(40) | NULL | Standard Oval (opt) | Measured/analyzed space complexity |
+| `sort_order` | SMALLINT | NOT NULL, DEFAULT 0 | Standard Oval | Display order within topic |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Standard Oval | Timestamp created |
+
+---
+
+#### 4.2.7 user_saved_topics
+*Associative junction table resolving the $M:N$ bookmark relationship.*
+
+| Attribute | Data Type | Constraint | Chen Symbol | Description / Semantics |
+|---|---|---|---|---|
+| `id` | BIGINT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | <u>Solid Underlined</u> | Surrogate bookmark identifier |
+| `user_id` | INT UNSIGNED | NOT NULL, FK $\to$ `users.id` | FK (Part of CK) | Bookmarking user |
+| `topic_id` | INT UNSIGNED | NOT NULL, FK $\to$ `complexity_topics.id` | FK (Part of CK) | Bookmarked topic |
+| `note` | VARCHAR(255) | NOT NULL, DEFAULT '' | Standard Oval | User's personal bookmark note |
+| `saved_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Standard Oval | Bookmark creation timestamp |
+
+> **Chen Modeling Note:** In a pure Chen diagram, `user_saved_topics` does not appear as a rectangle. It appears as the **diamond** `bookmarks` connecting `users` and `complexity_topics`, with `note` and `saved_at` attached as attribute ovals.
+
+---
+
+#### 4.2.8 activity_log
+*Audit trail recording trigger-generated events.*
+
+| Attribute | Data Type | Constraint | Chen Symbol | Description / Semantics |
+|---|---|---|---|---|
+| `id` | BIGINT UNSIGNED | PRIMARY KEY, AUTO_INCREMENT | <u>Solid Underlined</u> | Unique event sequence ID |
+| `user_id` | INT UNSIGNED | NULL, FK $\to$ `users.id` | Standard Oval (opt) | Actor ID (NULL for system events) |
+| `action` | VARCHAR(40) | NOT NULL | Standard Oval | Action type (register, analysis_saved) |
+| `entity` | VARCHAR(40) | NOT NULL | Standard Oval | Affected entity table name |
+| `entity_id` | BIGINT UNSIGNED | NULL | Standard Oval (opt) | Affected entity primary key |
+| `detail` | VARCHAR(255) | NOT NULL | Standard Oval | Human-readable event description |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Standard Oval | Event occurrence timestamp |
+
+---
+
+#### 4.2.9 app_settings
+*Standalone system configuration dictionary.*
+
+| Attribute | Data Type | Constraint | Chen Symbol | Description / Semantics |
+|---|---|---|---|---|
+| `setting_key` | VARCHAR(60) | PRIMARY KEY | <u>Solid Underlined</u> | Configuration key (e.g., 'gemini_model') |
+| `setting_value` | TEXT | NOT NULL | Standard Oval | Stored value string |
+| `updated_at` | TIMESTAMP | ON UPDATE CURRENT_TIMESTAMP| Standard Oval | Last modification timestamp |
+
+---
+
+## 5. Relationships & Structural Constraints
+
+### 5.1 Comprehensive Relationship Specifications
+
+#### R1: users ↔ user_profiles (`has_profile`)
+- **Cardinality Ratio:** $1:1$ (One-to-One)
+- **Structural Constraint (users):** $(1, 1)$ — Every user must have exactly 1 profile. Enforced via database trigger `trg_users_after_insert`.
+- **Structural Constraint (user_profiles):** $(1, 1)$ — Every profile row must reference exactly 1 valid user account (`user_id NOT NULL UNIQUE`).
+- **Participation:** **Total on both sides** (Double lines on both entity links).
+- **Referential Integrity:** `ON DELETE CASCADE`, `ON UPDATE CASCADE`.
+
+---
+
+#### R2: users ↔ code_analyses (`saves_analysis`)
+- **Cardinality Ratio:** $1:N$ (One-to-Many)
+- **Structural Constraint (users):** $(0, N)$ — A user starts with 0 analyses and can save infinitely many.
+- **Structural Constraint (code_analyses):** $(1, 1)$ — Every analysis must belong to exactly one user account (`user_id NOT NULL`).
+- **Participation:** Partial on `users`, **Total on `code_analyses`** (Double line on `code_analyses` link).
+- **Referential Integrity:** `ON DELETE CASCADE`, `ON UPDATE CASCADE`.
+
+---
+
+#### R3: users ↔ complexity_topics (`bookmarks`) — *Conceptual M:N*
+- **Cardinality Ratio:** $M:N$ (Many-to-Many)
+- **Structural Constraint (users):** $(0, N)$ — A user can bookmark 0 or many topics.
+- **Structural Constraint (complexity_topics):** $(0, N)$ — A topic can be bookmarked by 0 or many users.
+- **Participation:** Partial on both sides (Single lines on both links).
+- **Descriptive Attributes of Relationship:** `note`, `saved_at`.
+- **Relational Decomposition:** Decomposed into associative table `user_saved_topics` with two $1:N$ foreign key constraints.
+
+---
+
+#### R4: complexity_topics ↔ topic_examples (`has_example`)
+- **Cardinality Ratio:** $1:N$ (One-to-Many)
+- **Structural Constraint (complexity_topics):** $(0, N)$ — A topic can have 0 or many runnable examples.
+- **Structural Constraint (topic_examples):** $(1, 1)$ — Every example must belong to exactly one topic (`topic_id NOT NULL`).
+- **Participation:** Partial on `complexity_topics`, **Total on `topic_examples`** (Double line on `topic_examples` link).
+- **Referential Integrity:** `ON DELETE CASCADE`, `ON UPDATE CASCADE`.
+
+---
+
+#### R5: users ↔ analysis_prompts (`edits_prompt`)
+- **Cardinality Ratio:** $1:N$ (One-to-Many)
+- **Structural Constraint (users):** $(0, N)$ — A user (specifically an admin) can edit 0, 1, or many prompt templates.
+- **Structural Constraint (analysis_prompts):** $(0, 1)$ — A prompt template is either initial (no editor, `updated_by = NULL`) or has been edited by at most 1 user.
+- **Participation:** Partial on both sides (Single lines on both links).
+- **Referential Integrity:** `ON DELETE SET NULL`, `ON UPDATE CASCADE`. If the editing admin account is deleted, the prompt template remains preserved with `updated_by = NULL`.
+
+---
+
+#### R6: users ↔ activity_log (`generates_log`)
+- **Cardinality Ratio:** $1:N$ (One-to-Many)
+- **Structural Constraint (users):** $(0, N)$ — A user can generate 0 or many activity logs.
+- **Structural Constraint (activity_log):** $(0, 1)$ — An activity log row is either tied to 1 registered user or is a system-level event with `user_id = NULL`.
+- **Participation:** Partial on both sides (Single lines on both links).
+- **Referential Integrity:** `ON DELETE CASCADE`, `ON UPDATE CASCADE`.
+
+---
+
+### 5.2 (Min, Max) Structural Constraint Table
+
+In textbook ER modeling, the $(min, max)$ notation replaces cardinality ratios and participation flags with a single, unambiguous pair:
+
+| Relationship Name | Participating Entity | Min Instances | Max Instances | $(min, max)$ Notation | Meaning |
+| :--- | :--- | :---: | :---: | :---: | :--- |
+| **`has_profile`** | `users` | 1 | 1 | **(1, 1)** | Mandatory: Exactly 1 profile per user |
+| | `user_profiles` | 1 | 1 | **(1, 1)** | Mandatory: Exactly 1 user per profile |
+| **`saves_analysis`**| `users` | 0 | $N$ | **(0, N)** | Optional: 0 to many analyses per user |
+| | `code_analyses` | 1 | 1 | **(1, 1)** | Mandatory: Must belong to 1 user |
+| **`bookmarks`** *(M:N)*| `users` | 0 | $N$ | **(0, N)** | Optional: 0 to many bookmarked topics |
+| | `complexity_topics` | 0 | $N$ | **(0, N)** | Optional: Bookmarked by 0 to many users |
+| **`has_example`** | `complexity_topics` | 0 | $N$ | **(0, N)** | Optional: 0 to many code examples |
+| | `topic_examples` | 1 | 1 | **(1, 1)** | Mandatory: Must belong to 1 topic |
+| **`edits_prompt`** | `users` | 0 | $N$ | **(0, N)** | Optional: Admin edits 0 to many prompts |
+| | `analysis_prompts` | 0 | 1 | **(0, 1)** | Optional: Edited by 0 or 1 user |
+| **`generates_log`** | `users` | 0 | $N$ | **(0, N)** | Optional: Generates 0 to many logs |
+| | `activity_log` | 0 | 1 | **(0, 1)** | Optional: Generated by 0 or 1 user |
+
+---
+
+### 5.3 Participation & Cardinality Summary Table
+
+| Relationship | Entity 1 | Cardinality | Entity 2 | Participation 1 | Participation 2 | Visual Line Style |
+| :--- | :--- | :---: | :--- | :---: | :---: | :--- |
+| **`has_profile`** | `users` | **1 : 1** | `user_profiles` | **Total** | **Total** | Double line ↔ Double line |
+| **`saves_analysis`**| `users` | **1 : N** | `code_analyses` | Partial | **Total** | Single line ↔ Double line |
+| **`has_example`** | `complexity_topics` | **1 : N** | `topic_examples` | Partial | **Total** | Single line ↔ Double line |
+| **`edits_prompt`** | `users` | **1 : N** | `analysis_prompts` | Partial | Partial | Single line ↔ Single line |
+| **`generates_log`** | `users` | **1 : N** | `activity_log` | Partial | Partial | Single line ↔ Single line |
+| **`bookmarks`** *(M:N)* | `users` | **M : N** | `complexity_topics` | Partial | Partial | Single line ↔ Single line |
+
+---
+
+## 6. Foreign Key Referential Integrity Constraints
+
+| Constraint Symbol | Child Table | Child Column | Parent Table | Parent Column | Action ON DELETE | Action ON UPDATE |
+| :--- | :--- | :--- | :--- | :--- | :---: | :---: |
+| `fk_profile_user` | `user_profiles` | `user_id` | `users` | `id` | **CASCADE** | CASCADE |
+| `fk_analyses_user` | `code_analyses` | `user_id` | `users` | `id` | **CASCADE** | CASCADE |
+| `fk_saved_user` | `user_saved_topics` | `user_id` | `users` | `id` | **CASCADE** | CASCADE |
+| `fk_saved_topic` | `user_saved_topics` | `topic_id` | `complexity_topics` | `id` | **CASCADE** | CASCADE |
+| `fk_examples_topic` | `topic_examples` | `topic_id` | `complexity_topics` | `id` | **CASCADE** | CASCADE |
+| `fk_log_user` | `activity_log` | `user_id` | `users` | `id` | **CASCADE** | CASCADE |
 | `fk_prompt_admin` | `analysis_prompts` | `updated_by` | `users` | `id` | **SET NULL** | CASCADE |
-| `fk_analyses_user` | `code_analyses` | `user_id` | `users` | `id` | CASCADE | CASCADE |
-| `fk_examples_topic` | `topic_examples` | `topic_id` | `complexity_topics` | `id` | CASCADE | CASCADE |
-| `fk_saved_user` | `user_saved_topics` | `user_id` | `users` | `id` | CASCADE | CASCADE |
-| `fk_saved_topic` | `user_saved_topics` | `topic_id` | `complexity_topics` | `id` | CASCADE | CASCADE |
-| `fk_log_user` | `activity_log` | `user_id` | `users` | `id` | CASCADE | CASCADE |
 
-> **Note:** 6 out of 7 foreign keys use `ON DELETE CASCADE`. Only `fk_prompt_admin` uses `ON DELETE SET NULL` because the prompt should survive even if the admin who edited it is deleted.
+> **Architectural Defense:** 6 out of 7 foreign keys use `ON DELETE CASCADE` to prevent orphaned records upon user or topic deletion. Only `fk_prompt_admin` uses `ON DELETE SET NULL` because AI prompt templates are mission-critical application configurations that must survive even if the administrator who modified them leaves the system.
 
 ---
 
-## 6. ER Diagram Drawing Guide
+## 7. Critical Academic Distinctions: Conceptual ER vs. Relational Schema
 
-Use the conventions below when drawing the ER diagram by hand or with a tool like draw.io / Lucidchart / ERDPlus.
-
-### Symbol Reference
-
-| Symbol | Meaning |
-|---|---|
-| **Rectangle** | Entity (table) |
-| **Ellipse** | Attribute |
-| **Underlined ellipse** | Primary Key attribute |
-| **Dashed ellipse** | Derived Attribute (`analysis_count`, `code_lines`) |
-| **Diamond** | Relationship |
-| **Double rectangle** | Weak Entity (none in this schema — all entities have their own PK) |
-| **Double diamond** | Identifying relationship (none needed — no weak entities) |
-| **1, N, M** on lines | Cardinality |
-| **Total participation** (double line) | Every instance of this entity must participate |
-| **Partial participation** (single line) | Instances may or may not participate |
-
-### Step-by-Step Drawing
-
-1. **Draw 9 entity rectangles**: `users`, `user_profiles`, `analysis_prompts`, `code_analyses`, `complexity_topics`, `topic_examples`, `user_saved_topics`, `activity_log`, `app_settings`
-
-2. **Add attributes** as ellipses around each entity:
-   - Underline primary keys
-   - Use dashed ellipses for derived attributes (`analysis_count` in `users`, `code_lines` in `code_analyses`)
-   - Mark `email` in `users` and `slug` in `complexity_topics` with a unique indicator
-
-3. **Draw relationship diamonds** between entities:
-   - Label each diamond with the relationship name
-   - Write cardinality (1, N, M) on each connecting line
-   - Use double lines for total participation, single lines for partial
-
-4. **`user_saved_topics` is an associative entity** (resolves M:N):
-   - Draw it as a rectangle inside or connected to a diamond
-   - Connect with two lines: one to `users` (N side) and one to `complexity_topics` (N side)
-   - Add its own attributes (`note`, `saved_at`) to the diamond or rectangle
-
-5. **`app_settings` stands alone** — no lines connecting it to other entities
-
-### Layout Suggestion
+Examiners strictly look for students' understanding of the transition from conceptual models to relational tables:
 
 ```
-                        ┌─────────────────┐
-                        │  app_settings   │  (standalone)
-                        └─────────────────┘
-
-    ┌─────────────────────────────────────────────────────────┐
-    │                                                         │
-    │                    ┌──────────┐                          │
-    │               ┌───►│  users   │◄───┐                    │
-    │               │    └──┬───┬───┘    │                    │
-    │               │       │   │        │                    │
-    │          1:1  │    1:N│   │1:N     │ 1:N                │
-    │               │       │   │        │                    │
-    │    ┌──────────┴──┐    │   │   ┌────┴──────────────┐     │
-    │    │user_profiles│    │   │   │ analysis_prompts  │     │
-    │    └─────────────┘    │   │   └───────────────────┘     │
-    │                       │   │                              │
-    │                       ▼   ▼                              │
-    │              ┌────────────────┐  ┌──────────────────┐    │
-    │              │ code_analyses  │  │  activity_log    │    │
-    │              └────────────────┘  └──────────────────┘    │
-    │                                                          │
-    │     ┌─────────────────────┐     ┌───────────────────┐    │
-    │     │ complexity_topics   │────►│ topic_examples    │    │
-    │     └──────────┬──────────┘     └───────────────────┘    │
-    │                │                                         │
-    │                │ M:N (via associative entity)             │
-    │                ▼                                         │
-    │     ┌─────────────────────┐                              │
-    │     │ user_saved_topics   │◄──── users                   │
-    │     └─────────────────────┘                              │
-    └──────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────┐
+│                        CONCEPTUAL ER (CHEN)                            │
+│                                                                        │
+│   ┌─────────┐                ┌───────────┐                ┌──────────┐ │
+│   │  users  │────────(0,N)───│ bookmarks │───(0,N)────────│  topics  │ │
+│   └─────────┘                └─────┬─────┘                └──────────┘ │
+│                                    │                                   │
+│                               ┌────┴────┐                              │
+│                               │ note    │                              │
+│                               │ saved_at│                              │
+│                               └─────────┘                              │
+└────────────────────────────────────┬───────────────────────────────────┘
+                                     │ Relational Mapping (M:N Rule)
+                                     ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                   LOGICAL / RELATIONAL SCHEMA (CROW'S FOOT)            │
+│                                                                        │
+│   ┌─────────┐              ┌───────────────────┐          ┌──────────┐ │
+│   │  users  │───1──────N───│ user_saved_topics │───N──────│  topics  │ │
+│   └─────────┘              └───────────────────┘          └──────────┘ │
+│                              • id (PK)                                 │
+│                              • user_id (FK)                            │
+│                              • topic_id (FK)                           │
+│                              • note                                    │
+│                              • saved_at                                │
+└────────────────────────────────────────────────────────────────────────┘
 ```
+
+1. **Foreign Keys in Chen Diagrams:** In pure Chen notation, **never draw foreign keys as attribute ellipses**. The relationship diamond itself models the connection! Writing `user_id` as an attribute of `code_analyses` in a Chen diagram is a common grading penalty.
+2. **Associative Entities:** In Chen notation, $M:N$ relationships are diamonds with attributes. In relational schema, relational engines (MySQL) cannot directly store an $M:N$ pointer array, so the relationship collapses into an associative junction table (`user_saved_topics`).
+3. **Derived Attributes:** Attributes calculated from other values (`analysis_count` and `code_lines`) must be drawn with a **dashed ellipse** in Chen notation.
 
 ---
 
-## 7. Relational Schema (Textual Notation)
+## 8. Step-by-Step Drawing Guide (Chen & Crow's Foot)
 
-Use this notation for your DBMS report/submission. Primary keys are **underlined**, foreign keys are marked with *italic*.
+### 8.1 Standard Symbol Reference
+
+| Modeling Element | Chen Notation Symbol | Crow's Foot / IE Symbol |
+| :--- | :--- | :--- |
+| **Regular Entity** | Solid Rectangle | Table Box with name header |
+| **Weak Entity** | Double Rectangle *(Not present)* | Child table with identifying FK |
+| **Relationship** | Diamond / Rhombus | Connecting Line with crows foot |
+| **Key Attribute** | Ellipse with solid underlined text | Attribute marked with `PK` |
+| **Partial / Candidate Key**| Ellipse with dashed underline / `[CK]` | Attribute marked with `UQ` / `AK` |
+| **Derived Attribute** | **Dashed Ellipse** | Marked `[derived]` or `GENERATED` |
+| **Total Participation** | **Double Line** to relationship diamond | Line with mandatory vertical bar (`\|`) |
+| **Partial Participation**| **Single Line** to relationship diamond | Line with circle (`o`) |
+
+---
+
+### 8.2 Recommended Color Palette & Aesthetics
+
+When using software like **draw.io**, **Lucidchart**, or **Canva**, use this consistent, professional palette:
+
+- **Entity Rectangles:** Slate Blue / Navy (`#1E293B` background, `#38BDF8` border, white bold text)
+- **Relationship Diamonds:** Dark Amber (`#0F172A` background, `#F59E0B` border, golden text)
+- **Attribute Ellipses:** Light Gray / Soft Steel (`#F8FAFC` background, `#64748B` border, dark text)
+- **Key Attributes:** Soft Yellow highlight (`#FEF08A` background, bold underlined text)
+- **Derived Attributes:** Dashed border (`#94A3B8` dashed border)
+- **Relationship Lines:** Dark Charcoal (`#334155`, 1.5pt thickness)
+- **Total Participation Lines:** Double parallel lines (`===`, 2pt thickness)
+
+---
+
+### 8.3 Layout & Alignment Blueprint
+
+To keep your diagram neat and prevent intersecting diagonal lines:
 
 ```
-users (__id__, name, email, password_hash, last_login_at, role, status,
-       analysis_count, created_at, updated_at)
+                            ┌────────────────┐
+                            │  app_settings  │  (Standalone, Top Right)
+                            └────────────────┘
 
-user_profiles (__id__, *user_id*, headline, bio, location, avatar_seed)
-    user_id → users(id)  [ON DELETE CASCADE]
-
-analysis_prompts (__id__, name, prompt_template, is_active, version,
-                  *updated_by*, created_at, updated_at)
-    updated_by → users(id)  [ON DELETE SET NULL]
-
-code_analyses (__id__, *user_id*, title, language, code_text, code_lines[derived],
-              time_complexity, space_complexity, summary, detailed_analysis,
-              detail_mode, engine, prompt_version, created_at, updated_at)
-    user_id → users(id)  [ON DELETE CASCADE]
-
-complexity_topics (__id__, topic_name, slug, category, difficulty,
-                   time_complexity, space_complexity, summary, notes_html,
-                   sort_order, is_published, created_at, updated_at)
-
-topic_examples (__id__, *topic_id*, title, language, code_text, analysis_html,
-               time_complexity, space_complexity, sort_order, created_at)
-    topic_id → complexity_topics(id)  [ON DELETE CASCADE]
-
-user_saved_topics (__id__, *user_id*, *topic_id*, note, saved_at)
-    user_id  → users(id)              [ON DELETE CASCADE]
-    topic_id → complexity_topics(id)  [ON DELETE CASCADE]
-    UNIQUE(user_id, topic_id)
-
-activity_log (__id__, *user_id*, action, entity, entity_id, detail, created_at)
-    user_id → users(id)  [ON DELETE CASCADE]
-
-app_settings (__setting_key__, setting_value, updated_at)
+       ┌────────────────────────────────────────────────────────┐
+       │                                                        │
+       │                   ┌──────────────┐                     │
+       │     ┌────────────►│    users     │◄────────────┐       │
+       │     │ (1,1):(1,1) └──────┬───────┘ (0,N):(0,1) │       │
+       │     │                    │                     │       │
+       │ ┌───┴──────────┐   (0,N) │ (1,1)          ┌────┴─────┐ │
+       │ │user_profiles │         ▼                │ analysis_│ │
+       │ └──────────────┘  ┌──────────────┐        │ prompts  │ │
+       │                   │code_analyses │        └──────────┘ │
+       │                   └──────────────┘                     │
+       │                                                        │
+       │   ┌───────────────────┐          ┌────────────────┐    │
+       │   │complexity_topics  │─────────►│ topic_examples │    │
+       │   └─────────┬─────────┘ (0,N)    └────────────────┘    │
+       │             │           (1,1)                          │
+       │       (0,N) │                                          │
+       │             ▼                                          │
+       │   ┌───────────────────┐                                │
+       │   │ user_saved_topics │◄──────── users (0,N)           │
+       │   └───────────────────┘                                │
+       │                                                        │
+       │   ┌───────────────────┐                                │
+       │   │   activity_log    │◄──────── users (0,N)           │
+       │   └───────────────────┘                                │
+       └────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-> **Tip:** For tools like draw.io or ERDPlus, import the Mermaid diagram from [Section 1](#1-complete-er-diagram-mermaid) to auto-generate the diagram, then manually adjust positioning and add participation indicators (double lines).
+### 8.4 Common Drawing Mistakes to Avoid
+
+1. ❌ **Drawing Foreign Keys in Chen Diagrams:** Do not connect an ellipse labeled `user_id` to `code_analyses` in Chen notation. The `saves_analysis` diamond represents the connection!
+2. ❌ **Forgetting Dashed Ellipses:** `analysis_count` in `users` and `code_lines` in `code_analyses` are derived. Drawing them as solid ovals will lose points.
+3. ❌ **Confusing Total and Partial Participation:**
+   - A new user might not have any analyses yet $\implies$ `users` participation in `saves_analysis` is **partial** (single line).
+   - An analysis cannot exist without a user $\implies$ `code_analyses` participation is **total** (double line).
+4. ❌ **Drawing `app_settings` with lines:** `app_settings` is a standalone configuration entity with no foreign keys. Do not invent relationships to it.
+
+---
+
+## 9. Relational Schema (Formal Academic Notation)
+
+For text-based report submissions, use the standard relational notation where **Primary Keys** are underlined and **Foreign Keys** are marked with an asterisk (`*`):
+
+```
+users (
+    __id__, name, email [CK], password_hash, last_login_at, role, status,
+    analysis_count [derived], created_at, updated_at
+)
+
+user_profiles (
+    __id__, *user_id* [CK], headline, bio, location, avatar_seed
+)
+    FOREIGN KEY (*user_id*) REFERENCES users(id) ON DELETE CASCADE
+
+analysis_prompts (
+    __id__, name, prompt_template, is_active, version, *updated_by*,
+    created_at, updated_at
+)
+    FOREIGN KEY (*updated_by*) REFERENCES users(id) ON DELETE SET NULL
+
+code_analyses (
+    __id__, *user_id*, title, language, code_text, code_lines [derived],
+    time_complexity, space_complexity, summary, detailed_analysis,
+    detail_mode, engine, prompt_version, created_at, updated_at
+)
+    FOREIGN KEY (*user_id*) REFERENCES users(id) ON DELETE CASCADE
+
+complexity_topics (
+    __id__, topic_name, slug [CK], category, difficulty,
+    time_complexity, space_complexity, summary, notes_html,
+    sort_order, is_published, created_at, updated_at
+)
+
+topic_examples (
+    __id__, *topic_id*, title, language, code_text, analysis_html,
+    time_complexity, space_complexity, sort_order, created_at
+)
+    FOREIGN KEY (*topic_id*) REFERENCES complexity_topics(id) ON DELETE CASCADE
+
+user_saved_topics (
+    __id__, *user_id*, *topic_id*, note, saved_at
+)
+    CANDIDATE KEY: (*user_id*, *topic_id*)
+    FOREIGN KEY (*user_id*) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (*topic_id*) REFERENCES complexity_topics(id) ON DELETE CASCADE
+
+activity_log (
+    __id__, *user_id*, action, entity, entity_id, detail, created_at
+)
+    FOREIGN KEY (*user_id*) REFERENCES users(id) ON DELETE CASCADE
+
+app_settings (
+    __setting_key__, setting_value, updated_at
+)
+```
+
+---
+
+## 10. DBMS Report / Viva Defense Q&A
+
+### Q1: Is there any Weak Entity in this database schema?
+**Answer:**
+No. In strict relational theory, a **Weak Entity** cannot be identified by its own attributes alone and must borrow the primary key of an identifying owner entity via an identifying relationship (drawn with a double rectangle).  
+In `complexity_universe`, all 9 tables possess their own independent Primary Keys (`id` or `setting_key`). While tables like `topic_examples` and `user_profiles` depend on parent records for their existential lifecycle (`ON DELETE CASCADE`), their physical identification uses independent surrogate auto-increment keys. Thus, all entities are formally **Strong Entities**.
+
+---
+
+### Q2: Why is the relationship between `users` and `user_profiles` 1:1, and why is participation total on both sides?
+**Answer:**
+- **Cardinality:** One user has at most one profile, and each profile belongs to exactly one user. This is strictly enforced in MySQL by placing a `UNIQUE KEY uq_profile_user (user_id)` constraint on the foreign key column.
+- **Participation:**
+  - `user_profiles` $\to$ `users`: Total, because `user_id` is defined as `NOT NULL`. A profile cannot exist without a user.
+  - `users` $\to$ `user_profiles`: Total, because the database trigger `trg_users_after_insert` automatically creates a corresponding `user_profiles` row immediately whenever a new user registers.
+
+---
+
+### Q3: How is the Many-to-Many ($M:N$) bookmark relationship represented in the Conceptual ER vs. Relational Model?
+**Answer:**
+- In the **Conceptual ER model (Chen's notation)**, it is represented as a single relationship diamond labeled `bookmarks` connecting `users` and `complexity_topics` with $(0, N)$ constraints on both sides. The descriptive attributes `note` and `saved_at` are attached directly to this diamond.
+- In the **Relational model**, relational database engines cannot store direct $M:N$ arrays. It is therefore mapped into an **Associative Entity** (`user_saved_topics`) containing two foreign keys (`user_id` and `topic_id`) along with a composite candidate key constraint `UNIQUE KEY (user_id, topic_id)`.
+
+---
+
+### Q4: Why are `users.analysis_count` and `code_analyses.code_lines` drawn as dashed ellipses?
+**Answer:**
+In Peter Chen's notation, a **Dashed Ellipse** represents a **Derived Attribute** — an attribute whose value is computed from other attributes or aggregated from related tuples rather than being an independent primary data fact:
+- `users.analysis_count` is derived by counting the rows in `code_analyses` for that user (`COUNT(*)`), maintained in real-time by insert/delete triggers.
+- `code_analyses.code_lines` is a MySQL `GENERATED ALWAYS AS (CHAR_LENGTH(code_text) - CHAR_LENGTH(REPLACE(code_text, '\n', '')) + 1) STORED` column computed directly from the newline count in `code_text`.
+
+---
+
+### Q5: Why is `analysis_prompts.updated_by` set to `ON DELETE SET NULL` while all other foreign keys use `ON DELETE CASCADE`?
+**Answer:**
+This is an important design choice for system durability:
+- Entities like `user_profiles`, `code_analyses`, and `activity_log` are personal data belonging exclusively to that user. When a user is purged, their private data should be cleaned up automatically (`CASCADE`).
+- In contrast, `analysis_prompts` contains global application-wide AI prompt templates. If the administrator who last edited the prompt template deletes their account, the application must **NOT** delete the AI prompt template (which would break the entire code analysis engine). Instead, `updated_by` is set to `NULL`, preserving the template while maintaining referential integrity.
