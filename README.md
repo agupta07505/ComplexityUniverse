@@ -28,6 +28,8 @@ Built with **Next.js 16 (App Router · Turbopack · JavaScript)**, **React 19**,
 - [Authentication & Authorization](#authentication--authorization)
 - [Design & Styling Architecture](#design--styling-architecture)
 - [Demo Accounts](#demo-accounts)
+- [Documentation — DBMS Concepts Demonstrated](#documentation--dbms-concepts-demonstrated)
+- [License](#license)
 
 ---
 
@@ -549,6 +551,98 @@ The admin account provides access to the Admin console at `/admin`, where you ca
 
 ---
 
+## Documentation — DBMS Concepts Demonstrated
+
+ComplexityUniverse was built as a **Database Management System (DBMS) course project** to demonstrate practical, real-world application of core DBMS concepts within a full-stack web application. The following concepts are exercised throughout the codebase:
+
+### Core DBMS Concepts
+
+| # | Concept | Where It's Used |
+|---|---|---|
+| 1 | **Database Creation** | `CREATE DATABASE complexity_universe CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci` |
+| 2 | **Table Design (DDL)** | 9 tables created with `CREATE TABLE`, each using InnoDB engine |
+| 3 | **Primary Keys** | Every table has a primary key (`id` or `setting_key`) |
+| 4 | **Foreign Keys** | 8 foreign key constraints linking users → profiles, users → analyses, topics → examples, etc. |
+| 5 | **Referential Integrity** | `ON DELETE CASCADE`, `ON UPDATE CASCADE` on all foreign keys — deleting a user removes all their analyses, profiles, saved topics, and activity logs |
+| 6 | **Unique Constraints** | `uq_users_email`, `uq_profile_user`, `uq_topics_slug`, `uq_saved_user_topic` |
+| 7 | **Indexes** | Regular indexes (`idx_*`), unique indexes, and a `FULLTEXT` index on `complexity_topics` for search |
+| 8 | **ENUM Data Types** | `users.role` (user/admin), `users.status` (active/suspended), `complexity_topics.difficulty` (Beginner/Intermediate/Advanced), `code_analyses.detail_mode` (short/detailed) |
+| 9 | **Generated (Computed) Columns** | `code_analyses.code_lines` — automatically computed from `code_text` using `CHAR_LENGTH` and `REPLACE` |
+| 10 | **ALTER TABLE** | Schema evolution demonstrated: adding `last_login_at` and `status` columns to `users`, widening `summary` column in `complexity_topics` |
+
+### CRUD Operations
+
+| Operation | Examples |
+|---|---|
+| **INSERT** | User registration, saving analyses, bookmarking topics, admin creating topics/examples, `INSERT … ON DUPLICATE KEY UPDATE` for app settings |
+| **SELECT** | Dashboard queries using views and subqueries, topic listing with joins, user profile lookups, admin statistics |
+| **UPDATE** | Profile editing, admin user management (suspend/activate), AI settings update, prompt editing, `UPDATE … CASE` for counter maintenance |
+| **DELETE** | Removing saved analyses, unsaving topics, admin deleting topics/examples |
+
+### Views (5 Total)
+
+| View | DBMS Concepts Shown |
+|---|---|
+| `v_user_overview` | `LEFT JOIN`, `CASE` expression for rank calculation, correlated subquery |
+| `v_analysis_feed` | `JOIN`, `CASE` expression for cost grading |
+| `v_topic_overview` | Correlated subqueries for aggregate counts |
+| `v_user_saved_topics` | Multi-table `JOIN` |
+| `v_complexity_distribution` | `GROUP BY`, `COUNT(*)`, `CASE` for bucket classification, `ORDER BY` |
+
+### Triggers (10 Total)
+
+| Trigger | DBMS Concepts Shown |
+|---|---|
+| `trg_users_before_insert` | `BEFORE INSERT`, data normalisation (`LOWER()`, `TRIM()`) |
+| `trg_users_after_insert` | `AFTER INSERT`, automatic row creation in related table, audit logging |
+| `trg_users_before_update` | `BEFORE UPDATE`, data validation on modification |
+| `trg_analyses_after_insert` | `AFTER INSERT`, counter maintenance via `UPDATE` |
+| `trg_analyses_after_delete` | `AFTER DELETE`, safe counter decrement with `CASE` (floor at 0) |
+| `trg_topics_before_insert` | `BEFORE INSERT`, string transformation (`LOWER()`, `REPLACE()`, `TRIM()`) |
+| `trg_topics_before_update` | `BEFORE UPDATE`, conditional logic (`IF` statement) |
+| `trg_saved_after_insert` | `AFTER INSERT`, audit trail logging |
+| `trg_saved_after_delete` | `AFTER DELETE`, audit trail logging |
+| `trg_prompt_before_update` | `BEFORE UPDATE`, auto-increment versioning |
+
+### Transactions
+
+The application uses explicit transaction management in `lib/db.js`:
+```javascript
+await conn.beginTransaction();
+// ... multiple statements ...
+await conn.commit();
+// on error:
+await conn.rollback();
+```
+This ensures atomicity when multiple related operations must succeed or fail together.
+
+### Additional SQL Features
+
+- **Subqueries** — Used in dashboard stats (6 correlated subqueries in a single SELECT)
+- **Aggregate Functions** — `COUNT(*)`, `SUM()`, `COALESCE()`
+- **`INSERT … ON DUPLICATE KEY UPDATE`** — For upsert operations on app settings
+- **`INSERT IGNORE`** — For idempotent seed data insertion
+- **`GROUP BY` with `ORDER BY`** — For complexity distribution and most-common-complexity stats
+- **`DISTINCT`** — For counting unique languages analyzed
+- **`LIMIT`** — For pagination and top-N queries
+- **Connection Pooling** — `mysql2/promise` pool cached on `globalThis` to prevent connection leaks
+- **SSL/TLS Encryption** — Aiven MySQL connection uses `ca.pem` certificate for encrypted transport
+- **Character Set** — `utf8mb4_unicode_ci` for full Unicode support
+
+### What Is NOT Used (by design)
+
+- **Stored Procedures** — Not used; all business logic lives in the application layer (Next.js API routes)
+- **Cursors** — Not needed; all queries use set-based operations
+- **User-Defined Functions** — Not used; MySQL built-in functions suffice
+
+---
+
 ## License
 
-This project is private and not published under any open-source license.
+This project is developed as an **academic project** for the **Database Management System (DBMS)** course. It is intended solely for **educational and evaluation purposes**.
+
+- **Not for commercial use** — This project is not licensed for commercial distribution or deployment.
+- **Not open source** — The source code is private and shared only for academic evaluation.
+- **Academic integrity** — If you are a student, do not copy or submit this project as your own work. Use it as a reference to understand full-stack DBMS application design.
+
+© 2026 ComplexityUniverse — DBMS Course Project. All rights reserved.
