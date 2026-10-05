@@ -13,6 +13,7 @@
   - [1.2 Logical / Relational ER Diagram (Crow's Foot / IE Notation)](#12-logical--relational-er-diagram-crows-foot--ie-notation)
 - [2. Complete Relational ER Diagram (Mermaid Crow's Foot)](#2-complete-relational-er-diagram-mermaid-crows-foot)
 - [3. Complete Conceptual ER Diagram (Mermaid Chen Notation)](#3-complete-conceptual-er-diagram-mermaid-chen-notation)
+  - [3.1 Module-Wise Subsystem ER Diagrams (For Multi-Diagram Reports)](#31-module-wise-subsystem-er-diagrams-for-multi-diagram-reports)
 - [4. Entity Classification & Attribute Taxonomy](#4-entity-classification--attribute-taxonomy)
   - [4.1 Master Entity Classification Table](#41-master-entity-classification-table)
   - [4.2 Detailed Entity Attribute Breakdown](#42-detailed-entity-attribute-breakdown)
@@ -238,6 +239,211 @@ flowchart TD
 > - Purple Ovals = Descriptive attributes belonging to the $M:N$ `bookmarks` relationship
 > - Double lines (`===`) = **Total participation** (every entity instance must participate)
 > - Single lines (`---`) = **Partial participation** (optional participation)
+
+---
+
+## 3.1 Module-Wise Subsystem ER Diagrams (For Multi-Diagram Reports)
+
+If your project report structure requires individual diagrams for each functional module (or if you want to include both the master ERD and detailed subsystem ERDs in your report chapters), use the modular diagrams below.
+
+---
+
+### Module 1: User Identity, Profile & Audit Subsystem
+> **Report Chapter Section:** *User Management Subsystem*  
+> **Scope:** User registration, credential security, profile personalization, and automated activity auditing.
+
+```mermaid
+erDiagram
+    users {
+        INT_UNSIGNED id PK "AUTO_INCREMENT"
+        VARCHAR_100 name "NOT NULL"
+        VARCHAR_190 email "UNIQUE, NOT NULL"
+        VARCHAR_255 password_hash "NOT NULL"
+        DATETIME last_login_at "NULL"
+        ENUM role "user | admin, DEFAULT user"
+        ENUM status "active | suspended, DEFAULT active"
+        INT_UNSIGNED analysis_count "DERIVED"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+        TIMESTAMP updated_at "ON UPDATE CURRENT_TIMESTAMP"
+    }
+
+    user_profiles {
+        INT_UNSIGNED id PK "AUTO_INCREMENT"
+        INT_UNSIGNED user_id FK "UNIQUE, NOT NULL"
+        VARCHAR_140 headline "DEFAULT 'Curious about the cost of code'"
+        VARCHAR_500 bio "DEFAULT ''"
+        VARCHAR_100 location "DEFAULT ''"
+        VARCHAR_60 avatar_seed "DEFAULT ''"
+    }
+
+    activity_log {
+        BIGINT_UNSIGNED id PK "AUTO_INCREMENT"
+        INT_UNSIGNED user_id FK "NULL"
+        VARCHAR_40 action "NOT NULL"
+        VARCHAR_40 entity "NOT NULL"
+        BIGINT_UNSIGNED entity_id "NULL"
+        VARCHAR_255 detail "DEFAULT ''"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    users ||--|| user_profiles : "1:1 HAS PROFILE (CASCADE)"
+    users |o--o{ activity_log : "1:N GENERATES (CASCADE)"
+```
+
+- **Relationships & Constraints:**
+  1. `users ↔ user_profiles`: Mandatory 1:1 relationship (`(1,1) : (1,1)`). Every user is automatically given a profile row via `trg_users_after_insert`.
+  2. `users ↔ activity_log`: Optional 1:N audit trail (`(0,N) : (0,1)`). User actions trigger append-only log records.
+
+---
+
+### Module 2: Code Analysis & AI Prompt Subsystem
+> **Report Chapter Section:** *Code Complexity Analysis Subsystem*  
+> **Scope:** Source code submission, automated line count calculation, Big-O complexity inference, JSON-structured line explanations, and versioned AI prompts.
+
+```mermaid
+erDiagram
+    users {
+        INT_UNSIGNED id PK "AUTO_INCREMENT"
+        VARCHAR_100 name "NOT NULL"
+        VARCHAR_190 email "UNIQUE, NOT NULL"
+        INT_UNSIGNED analysis_count "DERIVED"
+    }
+
+    code_analyses {
+        BIGINT_UNSIGNED id PK "AUTO_INCREMENT"
+        INT_UNSIGNED user_id FK "NOT NULL"
+        VARCHAR_140 title "DEFAULT 'Untitled analysis'"
+        VARCHAR_30 language "DEFAULT 'javascript'"
+        MEDIUMTEXT code_text "NOT NULL"
+        INT_UNSIGNED code_lines "GENERATED STORED"
+        VARCHAR_40 time_complexity "NOT NULL"
+        VARCHAR_40 space_complexity "NOT NULL"
+        TEXT summary "NOT NULL"
+        MEDIUMTEXT detailed_analysis "NOT NULL (JSON)"
+        ENUM detail_mode "short | detailed"
+        VARCHAR_20 engine "DEFAULT 'gemini'"
+        INT_UNSIGNED prompt_version "NULL"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+        TIMESTAMP updated_at "ON UPDATE CURRENT_TIMESTAMP"
+    }
+
+    analysis_prompts {
+        TINYINT_UNSIGNED id PK "AUTO_INCREMENT"
+        VARCHAR_80 name "NOT NULL"
+        MEDIUMTEXT prompt_template "NOT NULL"
+        TINYINT is_active "DEFAULT 1"
+        INT_UNSIGNED version "DEFAULT 1"
+        INT_UNSIGNED updated_by FK "NULL"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+        TIMESTAMP updated_at "ON UPDATE CURRENT_TIMESTAMP"
+    }
+
+    users ||--o{ code_analyses : "1:N SAVES (CASCADE)"
+    users ||--o{ analysis_prompts : "1:N EDITS (SET NULL)"
+```
+
+- **Relationships & Constraints:**
+  1. `users ↔ code_analyses`: 1:N relationship (`(0,N) : (1,1)`). Each analysis belongs strictly to one user. Triggers `trg_analyses_after_insert` and `trg_analyses_after_delete` maintain `users.analysis_count`.
+  2. `users ↔ analysis_prompts`: 1:N relationship (`(0,N) : (0,1)`). Admin users edit system prompt templates. `updated_by` uses `ON DELETE SET NULL`.
+  3. `code_analyses.prompt_version`: An intentional soft reference / audit pointer to the prompt version active during inference.
+
+---
+
+### Module 3: Educational Library & Bookmarks Subsystem
+> **Report Chapter Section:** *Educational Library Subsystem*  
+> **Scope:** Complexity theory topics, runnable code examples, and user bookmark management with custom notes.
+
+```mermaid
+erDiagram
+    users {
+        INT_UNSIGNED id PK "AUTO_INCREMENT"
+        VARCHAR_100 name "NOT NULL"
+        VARCHAR_190 email "UNIQUE, NOT NULL"
+    }
+
+    complexity_topics {
+        INT_UNSIGNED id PK "AUTO_INCREMENT"
+        VARCHAR_120 topic_name "NOT NULL"
+        VARCHAR_140 slug "UNIQUE, NOT NULL"
+        VARCHAR_60 category "DEFAULT 'Fundamentals'"
+        ENUM difficulty "Beginner | Intermediate | Advanced"
+        VARCHAR_40 time_complexity "NULL"
+        VARCHAR_40 space_complexity "NULL"
+        VARCHAR_300 summary "DEFAULT ''"
+        MEDIUMTEXT notes_html "NOT NULL"
+        SMALLINT sort_order "DEFAULT 0"
+        TINYINT is_published "DEFAULT 1"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+        TIMESTAMP updated_at "ON UPDATE CURRENT_TIMESTAMP"
+    }
+
+    topic_examples {
+        INT_UNSIGNED id PK "AUTO_INCREMENT"
+        INT_UNSIGNED topic_id FK "NOT NULL"
+        VARCHAR_140 title "NOT NULL"
+        VARCHAR_30 language "DEFAULT 'javascript'"
+        MEDIUMTEXT code_text "NOT NULL"
+        MEDIUMTEXT analysis_html "NOT NULL"
+        VARCHAR_40 time_complexity "NULL"
+        VARCHAR_40 space_complexity "NULL"
+        SMALLINT sort_order "DEFAULT 0"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    user_saved_topics {
+        BIGINT_UNSIGNED id PK "AUTO_INCREMENT"
+        INT_UNSIGNED user_id FK "NOT NULL"
+        INT_UNSIGNED topic_id FK "NOT NULL"
+        VARCHAR_255 note "DEFAULT ''"
+        TIMESTAMP saved_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    complexity_topics ||--o{ topic_examples : "1:N HAS EXAMPLE (CASCADE)"
+    users ||--o{ user_saved_topics : "1:N BOOKMARKS (CASCADE)"
+    complexity_topics ||--o{ user_saved_topics : "1:N BOOKMARKED BY (CASCADE)"
+```
+
+- **Relationships & Constraints:**
+  1. `complexity_topics ↔ topic_examples`: 1:N relationship (`(0,N) : (1,1)`). One topic contains multiple educational code snippets.
+  2. `users` and `complexity_topics` via `user_saved_topics`: M:N relationship resolved via the associative table with `UNIQUE(user_id, topic_id)` ensuring a user cannot save the same topic twice.
+
+---
+
+### Module 4: System Administration & Configuration Subsystem
+> **Report Chapter Section:** *System Administration Subsystem*  
+> **Scope:** Site-wide configuration, Gemini API model selection, and prompt management.
+
+```mermaid
+erDiagram
+    users {
+        INT_UNSIGNED id PK "AUTO_INCREMENT"
+        VARCHAR_100 name "NOT NULL"
+        VARCHAR_190 email "UNIQUE, NOT NULL"
+        ENUM role "user | admin"
+        ENUM status "active | suspended"
+    }
+
+    analysis_prompts {
+        TINYINT_UNSIGNED id PK "AUTO_INCREMENT"
+        VARCHAR_80 name "NOT NULL"
+        MEDIUMTEXT prompt_template "NOT NULL"
+        TINYINT is_active "DEFAULT 1"
+        INT_UNSIGNED version "DEFAULT 1"
+        INT_UNSIGNED updated_by FK "NULL"
+    }
+
+    app_settings {
+        VARCHAR_60 setting_key PK "NOT NULL"
+        TEXT setting_value "NOT NULL"
+        TIMESTAMP updated_at "ON UPDATE CURRENT_TIMESTAMP"
+    }
+
+    users ||--o{ analysis_prompts : "admin configures"
+```
+
+- **Configuration Management:**
+  1. `app_settings`: Standalone key-value store holding the encrypted Gemini API key, model selection (`gemini-2.5-flash`), and system maintenance toggles.
+  2. `analysis_prompts`: Admin-managed system prompt templates versioned by `trg_prompt_before_update`.
 
 ---
 
