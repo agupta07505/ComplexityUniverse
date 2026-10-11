@@ -12,14 +12,17 @@ Project-Report/
 ├── main.tex                 # Original DBMS Project Template format provided for reference
 ├── report.md                # Markdown documentation version of the report
 ├── NotionReport.md          # Comprehensive Notion-style technical report
+├── Code Analysis Data Lifecycle Flowchart.png # Algorithmic Analysis Execution Lifecycle Flowchart
+├── High-Level Architecture Diagram.png       # Full-Stack Architecture Diagram
 ├── README.md                # Documentation and guide
 └── assets/                  # High-resolution ER diagrams and subsystem schematics
+    ├── Code Analysis Data Lifecycle Flowchart.png # Lifecycle flowchart asset copy
+    ├── High-Level Architecture Diagram.png       # Architecture diagram asset copy
     ├── Fig 1.1.png          # Type 1: Complete Conceptual ER Diagram (Peter Chen Notation)
     ├── Fig 1.2.png          # Type 1: Subsystem 1 (Users, Profiles, Activity Log)
     ├── Fig 1.3.png          # Type 1: Subsystem 2 (Code Analysis & AI Prompts)
     ├── Fig 1.4.png          # Type 1: Subsystem 3 (Curriculum Topics & Bookmarks)
     ├── Fig 1.5.png          # Type 1: Subsystem 4 (System Administration & Prompts)
-    ├── Fig 2.1.png          # Type 2: Complete Relational ER Diagram (Crow's Foot Notation)
     ├── Fig 2.2.png          # Type 2: Relational Subsystem 1 (Identity & Profile Schema)
     ├── Fig 2.3.png          # Type 2: Relational Subsystem 2 (Code Analysis Schema)
     ├── Fig 2.4.png          # Type 2: Relational Subsystem 3 (Educational Library Schema)

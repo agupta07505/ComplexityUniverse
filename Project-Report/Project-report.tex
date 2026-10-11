@@ -1,6 +1,6 @@
 \documentclass[12pt,a4paper]{report}
 
-\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[a4paper,left=1in,right=1in,top=1in,bottom=1in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{microtype}
@@ -17,6 +17,17 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{listings}
+\usepackage[htt]{hyphenat}
+\usepackage{xurl}
+
+% Enforce strict margin compliance: text wraps to next line instead of overflowing
+\sloppy
+\setlength{\emergencystretch}{3.5em}
+\hfuzz=1pt
+\vfuzz=1pt
+
+% Allow line breaking at underscores in table/column identifiers
+\renewcommand{\_}{\textunderscore\allowbreak}
 
 \hypersetup{
     colorlinks=true,
@@ -26,12 +37,14 @@
 }
 
 \setstretch{1.15}
-\setlist[itemize]{leftmargin=1.5em}
-\setlist[enumerate]{leftmargin=1.8em}
+\setlist[itemize]{leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=1.8em, itemsep=2pt, parsep=0pt}
 
 \lstset{
     basicstyle=\ttfamily\footnotesize,
     breaklines=true,
+    breakatwhitespace=true,
+    columns=fullflexible,
     frame=single,
     backgroundcolor=\color{gray!8},
     keywordstyle=\color{blue!80!black}\bfseries,
@@ -53,21 +66,21 @@
 %-------------------- TITLE PAGE --------------------
 \begin{titlepage}
     \centering
-    \vspace*{1.5cm}
+    \vspace*{1.2cm}
     {\Large \textbf{\coursename}\par}
-    \vspace{1.5cm}
+    \vspace{1.2cm}
     {\Huge \bfseries Project Report\par}
-    \vspace{0.7cm}
+    \vspace{0.6cm}
     {\LARGE \projecttitle\par}
-    \vspace{1.8cm}
+    \vspace{1.5cm}
 
     \begin{tabular}{>{\bfseries}p{4.5cm} p{5.0cm} p{3.2cm}}
         Student Name(s): & Animesh Gupta & (25U024044) \\
                          & Aditya Chaudhary & (25U024045) \\
                          & Ritik Raj & (25U024041) \\
-                         & Gaurav Kumar Singh & (25U024043) \\[0.6cm]
-        Branch \& Section: & \multicolumn{2}{l}{Computer Science and Engineering} \\[0.6cm]
-        Course Instructor: & \multicolumn{2}{l}{Priyankar} \\[0.6cm]
+                         & Gaurav Kumar Singh & (25U024043) \\[0.5cm]
+        Branch \& Section: & \multicolumn{2}{l}{Computer Science and Engineering} \\[0.5cm]
+        Course Instructor: & \multicolumn{2}{l}{Priyankar} \\[0.5cm]
         Academic Session:  & \multicolumn{2}{l}{2026--2027 (Monsoon Semester)}
     \end{tabular}
 
@@ -75,7 +88,7 @@
     {\large Department of Computer Science}
     \vspace{0.3cm}
     {\large Indian Institute of Information Technology Bhopal}
-    \vspace{1cm}
+    \vspace{0.8cm}
 \end{titlepage}
 
 \tableofcontents
@@ -85,743 +98,500 @@
 \chapter*{General Instructions}
 \addcontentsline{toc}{chapter}{General Instructions}
 
-This project report adheres strictly to all academic instructions and project specifications prescribed for the Database Management Systems (DBMS) laboratory curriculum at the Indian Institute of Information Technology Bhopal:
+This report fulfills all requirements prescribed for the Database Management Systems (DBMS) laboratory curriculum at IIIT Bhopal:
 
 \begin{enumerate}
-    \item \textbf{Real-World Application Selection:} ComplexityUniverse is an industrial-grade developer platform addressing static program analysis, algorithmic asymptotic complexity evaluation (Big-O notation), and computer science education.
-    \item \textbf{Mandatory MySQL Implementation:} The persistent storage engine is strictly implemented on \textbf{MySQL 8.0} hosted on Aiven Cloud with InnoDB storage engines, utf8mb4 encoding, foreign key cascade rules, triggers, views, and SSL/TLS certificate authentication (\texttt{ca.pem}).
-    \item \textbf{Design Preceding Implementation:} The relational database was architected from first principles through Peter Chen's Conceptual ER modeling and Crow's Foot Relational ER modeling prior to full-stack application development.
-    \item \textbf{Comprehensive DBMS Concepts:} Every foundational concept covered in the curriculum is mathematically analyzed and demonstrated:
+    \item \textbf{Real-World Application Selection:} ComplexityUniverse is an engineering platform for static code analysis, asymptotic complexity calculation (Big-O notation), and algorithmic learning.
+    \item \textbf{Mandatory MySQL Implementation:} The backend strictly uses \textbf{MySQL 8.0} on Aiven Cloud with InnoDB, utf8mb4 encoding, foreign keys with cascade constraints, triggers, views, and SSL/TLS certificate authentication (\texttt{ca.pem}).
+    \item \textbf{Design Preceding Implementation:} Conceptual ER modeling (Chen notation) and Relational modeling (Crow's Foot notation) were designed prior to full-stack implementation.
+    \item \textbf{Demonstration of Core DBMS Concepts:}
     \begin{itemize}
-        \item Conceptual and Logical ER Modeling (Chen \& Crow's Foot notations);
-        \item Formal 7-step ER-to-Relational Schema Mapping;
+        \item Conceptual and Relational ER Modeling;
+        \item Formal ER-to-Relational schema mapping;
         \item Functional Dependencies ($FDs$), Armstrong's Axioms, and Attribute Closure ($X^+$);
-        \item Candidate Key derivations, Minimal Cover ($F_c$), and Lossless-Join Decomposition;
-        \item Normalization from UNF through 1NF, 2NF, 3NF, and Boyce--Codd Normal Form (BCNF);
-        \item Relational Integrity Constraints (Domain, Primary Key, Foreign Key, \texttt{UNIQUE}, \texttt{NOT NULL}, \texttt{CHECK});
-        \item DDL, DML, sample data populations, and 10 categories of complex SQL queries;
-        \item Advanced DBMS features: 5 Database Views, 10 Automated Triggers, Virtual/Stored Generated Columns, and multi-statement ACID Transactions.
+        \item Candidate key derivations, minimal cover, and lossless-join verification;
+        \item Normalization through 1NF, 2NF, 3NF, and BCNF;
+        \item Relational integrity constraints (PK, FK, UNIQUE, NOT NULL, CHECK, CASCADE);
+        \item SQL DDL, DML, sample data, and 10 categories of SQL queries;
+        \item Advanced features: 5 Views, 10 Triggers, Stored Generated Columns, and ACID Transactions.
     \end{itemize}
-    \item \textbf{Complete Submission Package:} The project submission includes this comprehensive LaTeX report, the production full-stack Next.js 16 / React 19 source code, and complete MySQL DDL schema and seeding scripts (\texttt{schema.sql} and \texttt{seed.sql}).
-    \item \textbf{Evaluation Preparedness:} All technical decisions, schema decompositions, normalization trade-offs, and query execution plans are comprehensively documented to facilitate rigorous oral viva defense.
+    \item \textbf{Deliverables:} Complete LaTeX documentation, application source code, and database scripts (\texttt{schema.sql} and \texttt{seed.sql}).
 \end{enumerate}
 
-\noindent\textbf{Project Specification:} \projecttitle\ replaces the illustrative inventory example while strictly maintaining the designated chapter hierarchy, structural sections, and analytical rigor.
+\noindent\textbf{Note:} \projecttitle\ replaces the default inventory example while strictly maintaining the required chapter sequence and section guidelines.
 
 %-------------------- CHAPTER 1 --------------------
 \chapter{Introduction}
 
 \section{Project Overview}
-\textbf{ComplexityUniverse} is an end-to-end cloud platform designed to analyze, explain, and visualize the computational complexity (asymptotic Time and Space complexity in Big-O notation) of arbitrary computer source code. In computer science education and professional software engineering, understanding how algorithms scale with respect to input size $n$ is fundamental to producing performant, scalable software.
+\textbf{ComplexityUniverse} is a web platform designed to analyze, visualize, and explain the asymptotic Time and Space complexity (Big-O notation) of computer source code. In computer science and software development, understanding algorithmic efficiency with respect to input size $n$ is essential for writing scalable software.
 
-Traditional static analysis tools such as linters (e.g., ESLint, Checkstyle, SonarQube) inspect syntactic patterns, formatting rules, and code smells; however, they cannot deduce mathematical recurrence relations, iteration bounds, or recursion trees. Conversely, dynamic profilers (such as Valgrind, gprof, or browser DevTools) measure wall-clock milliseconds and memory allocation on a single execution machine with specific test inputs; however, they cannot derive the generalized mathematical Big-O bounds governing unbounded input sizes.
-
-ComplexityUniverse bridges this fundamental divide by combining Large Language Model (LLM) semantic reasoning (powered by Google Gemini API) with a rigorously engineered, BCNF-normalized relational database management system (MySQL 8.0 on Aiven Cloud). The system computes:
+Traditional static linters only inspect syntax and formatting rules, while dynamic profilers measure wall-clock runtimes on fixed hardware without establishing general mathematical bounds. ComplexityUniverse bridges this gap by pairing Google Gemini AI semantic reasoning with a BCNF-normalized MySQL 8.0 relational database. The platform delivers:
 \begin{itemize}
-    \item \textbf{Asymptotic Big-O Badging:} Worst-case, average-case, and best-case classifications ($\mathcal{O}(1), \mathcal{O}(\log n), \mathcal{O}(n), \mathcal{O}(n \log n), \mathcal{O}(n^2), \mathcal{O}(2^n)$).
-    \item \textbf{Line-by-Line Cost Breakdown:} Deconstructing loops, recursive invocations, and auxiliary memory allocations down to exact code line numbers.
-    \item \textbf{Bottlenecks \& Optimization Suggestions:} Actionable algorithmic redesign patterns (e.g., converting an $\mathcal{O}(n^2)$ nested loop into an $\mathcal{O}(n)$ hash-map index).
-    \item \textbf{Interactive Educational Curriculum:} A rich Learn Library containing pre-seeded fundamental data structures and algorithmic paradigms with full-text search.
-    \item \textbf{Developer Dashboard:} Persistent historical analyses, saved educational bookmarks, and complexity distribution analytics.
-    \item \textbf{Administrative AI Studio:} In-database prompt template management, automated schema-level version auditing via triggers, and live LLM model selection.
+    \item \textbf{Asymptotic Big-O Badging:} Worst, average, and best-case classifications: $\mathcal{O}(1)$, $\mathcal{O}(\log n)$, $\mathcal{O}(n)$, $\mathcal{O}(n \log n)$, $\mathcal{O}(n^2)$, and $\mathcal{O}(2^n)$.
+    \item \textbf{Line-by-Line Cost Breakdown:} Clear identification of loop bounds, recursion depth, and auxiliary memory.
+    \item \textbf{Actionable Optimization Tips:} Practical guidance for reducing asymptotic bounds.
+    \item \textbf{Learn Curriculum Library:} Curated algorithmic topics with runnable code examples and full-text search.
+    \item \textbf{Developer Dashboard:} Persistent historical analyses, saved bookmarks, and complexity telemetry.
+    \item \textbf{Admin AI Governance Studio:} In-database prompt management with automatic trigger-based version auditing.
 \end{itemize}
-
-The intended users encompass computer science undergraduate students, software engineering professionals, competitive programmers preparing for technical interviews, and university faculty demonstrating algorithmic scalability.
 
 \begin{figure}[h!]
     \centering
-    \fbox{\parbox{0.92\textwidth}{%
-        \centering\vspace{0.15cm}
-        \textbf{High-Level Full-Stack System Architecture}\\[0.25cm]
-        \small
-        \begin{tabular}{|p{13.2cm}|}
-        \hline
-        \centering \textbf{Client Layer (Browser)}: React 19 $\bullet$ Framer Motion $\bullet$ HTML5 Canvas 2D $\bullet$ Vanilla CSS \tabularnewline
-        \hline
-        \centering $\Updownarrow$ \textit{HTTPS REST API / JSON Body / Secure httpOnly JWT Cookie Session} \tabularnewline
-        \hline
-        \centering \textbf{Application Server Layer}: Next.js 16 App Router (Turbopack, Node.js 20+ Runtime) \tabularnewline
-        \hline
-        \centering $\swarrow$ \textit{mysql2 Connection Pool (SSL ca.pem)} \quad\quad \textit{Structured JSON Schema} $\searrow$ \tabularnewline
-        \hline
-        \centering \textbf{Cloud DBMS}: Aiven Cloud MySQL 8.0 \quad\quad\quad \textbf{AI Gateway}: Google Gemini API \tabularnewline
-        \centering (9 BCNF Tables, 5 Views, 10 Triggers) \quad\quad\quad (\texttt{gemini-2.5-flash} / \texttt{gemini-2.5-pro}) \tabularnewline
-        \hline
-        \end{tabular}\vspace{0.15cm}
-    }}
-    \caption{High-Level Full-Stack System Architecture of ComplexityUniverse}
+    \IfFileExists{High-Level Architecture Diagram.png}{%
+        \includegraphics[width=0.92\textwidth]{{High-Level Architecture Diagram.png}}%
+    }{%
+        \IfFileExists{assets/High-Level Architecture Diagram.png}{%
+            \includegraphics[width=0.92\textwidth]{{assets/High-Level Architecture Diagram.png}}%
+        }{%
+            \fbox{\parbox[c][4cm][c]{0.85\textwidth}{\centering \textbf{Full-Stack Architecture of ComplexityUniverse}}}%
+        }%
+    }
+    \caption{Full-Stack Architecture of ComplexityUniverse}
     \label{fig:arch_overview}
 \end{figure}
 
 \section{Problem Statement}
-In theoretical computer science, Rice's Theorem and Alan Turing's Halting Problem prove that:
-\[
-\text{No general deterministic algorithm can decide any non-trivial semantic property of arbitrary source code.}
-\]
-Consequently, calculating exact run-time asymptotic complexity through traditional compiler abstract syntax trees (ASTs) fails when programs involve:
-\begin{enumerate}
-    \item Dynamic or data-dependent loop termination conditions (e.g., \texttt{while (x > 0)});
-    \item Non-trivial recursion trees with branching factors and variable divide-and-conquer divisions;
-    \item High-level language standard libraries whose internal algorithmic costs (e.g., Python's Timsort $\mathcal{O}(n \log n)$, JavaScript's array operations) require deep semantic context beyond AST node counting.
-\end{enumerate}
-
-Existing commercial developer platforms either ignore asymptotic complexity entirely or lock algorithmic insights behind high-cost proprietary systems without relational persistence or educational workflows. Students and developers lack a unified, accessible platform where arbitrary code can be evaluated, cataloged, historically indexed, and studied alongside canonical algorithmic paradigms.
+According to Rice's Theorem and the Halting Problem, no general deterministic algorithm can decide non-trivial semantic properties of arbitrary code. Standard compiler AST parsers struggle with dynamic loop termination, recursion trees, and complex standard library functions. At the same time, available developer tools lack persistent relational storage, structured educational tracks, and accessible student workflows. ComplexityUniverse provides a unified platform to analyze, store, and study algorithmic complexity.
 
 \section{Objectives}
-The core engineering and academic objectives of the ComplexityUniverse project are:
+The primary objectives of the project are:
 \begin{enumerate}
-    \item \textbf{Automate Asymptotic Complexity Evaluation:} Develop an AI gateway utilizing Google Gemini with structured JSON output enforcement to accurately determine Time and Space complexity bounds.
-    \item \textbf{Provide Granular Code Deconstructions:} Extract line-by-line cost attributions, recurrence formulations, and concrete optimization recommendations for arbitrary source code.
-    \item \textbf{Architect a BCNF Relational Database:} Design and implement a 9-table relational database schema on MySQL 8.0 strictly adhering to Boyce--Codd Normal Form to eliminate insertion, update, and deletion anomalies.
-    \item \textbf{Implement Autonomous Business Invariants:} Leverage MySQL triggers to maintain user activity counters, normalize user inputs (emails and slugs), auto-provision profiles, enforce prompt template versioning, and record immutable audit logs.
-    \item \textbf{Deliver High-Speed Analytics via Views:} Construct 5 pre-compiled analytical MySQL views to eliminate expensive multi-table joins on high-traffic client dashboard and feed endpoints.
-    \item \textbf{Integrate Generated Stored Columns:} Utilize MySQL 8.0 stored generated columns to evaluate physical code line counts at the storage engine layer without application-level overhead.
-    \item \textbf{Build an Engaging Modern Interface:} Develop a responsive full-stack web application using Next.js 16 App Router, React 19, Vanilla CSS design tokens, and an HTML5 2D Canvas particle simulation.
-    \item \textbf{Ensure Enterprise Security \& ACID Integrity:} Enforce TLS/SSL database transport encryption, stateless JWT authentication via secure \texttt{httpOnly} cookies, bcrypt password hashing, and ACID transaction boundaries.
+    \item \textbf{Automate Complexity Evaluation:} Integrate Google Gemini with structured JSON output enforcement to evaluate code Time and Space bounds.
+    \item \textbf{Provide Granular Code Deconstruction:} Generate line-by-line cost attributions and optimization tips.
+    \item \textbf{Architect a BCNF Relational Schema:} Design a 9-table MySQL database strictly adhering to Boyce--Codd Normal Form.
+    \item \textbf{Implement Autonomous Business Invariants:} Use MySQL triggers to maintain counters, sanitize inputs, enforce versioning, and log audit events.
+    \item \textbf{Deliver High-Speed Analytics via Views:} Construct 5 pre-compiled views to optimize dashboard queries.
+    \item \textbf{Integrate Stored Generated Columns:} Compute physical line metrics automatically at the storage engine level.
+    \item \textbf{Build a Modern Responsive Interface:} Develop a full-stack Next.js 16 / React 19 web application with Vanilla CSS tokens and canvas particle graphics.
+    \item \textbf{Ensure Security \& ACID Transactions:} Enforce SSL database transport encryption, bcrypt hashing, stateless JWT cookies, and ACID transaction boundaries.
 \end{enumerate}
 
 \section{Scope of the Project}
-The functional scope of ComplexityUniverse encompasses:
-\begin{itemize}
-    \item \textbf{Multi-Language Static Analysis:} Analysis of arbitrary code written in JavaScript, TypeScript, Python, Java, C, C++, Go, and Rust.
-    \item \textbf{Structured Algorithmic Profiling:} Extraction of Big-O notations, asymptotic explanations, loop analysis, space breakdown, and optimization tips.
-    \item \textbf{Persistent User Workspaces:} User account registration, secure authentication, profile management, and persistent storage of personal analysis histories.
-    \item \textbf{Educational Curriculum (Learn Library):} Categorized modules covering asymptotic fundamentals, sorting, searching, trees, graphs, and dynamic programming, searchable via MySQL \texttt{FULLTEXT} indexes.
-    \item \textbf{Personalized Bookmarking System:} Associative $M:N$ entity modeling allowing users to bookmark curriculum topics with custom personal notes.
-    \item \textbf{Administrative Governance Studio:} Role-based access control (RBAC) enabling administrators to inspect system telemetry, manage user accounts, alter AI prompt templates with automatic version incrementation, and select active Gemini models.
-\end{itemize}
-
-\noindent\textbf{Scope Boundaries:} The system deliberately avoids executing submitted code inside a native operating system sandbox to prevent remote code execution (RCE) vulnerabilities; all analysis is conducted statically via semantic reasoning. Multi-file enterprise monorepo analysis is reserved for future revisions.
+The platform supports multi-language code analysis (JavaScript, TypeScript, Python, Java, C, C++, Go, Rust), structured Big-O reporting, user workspaces with persistent histories, a searchable curriculum library, personal bookmarking with notes, and an administrative governance studio. The system operates via static semantic reasoning, avoiding remote code execution risks.
 
 \section{Software and Hardware Requirements}
 
 \subsection{Software Requirements}
 \begin{itemize}
-    \item \textbf{Operating System:} Cross-platform (Windows 11, Linux Ubuntu 22.04+, macOS Sonoma).
-    \item \textbf{Database Management System:} MySQL 8.0 Community / Cloud Edition (Hosted on Aiven Cloud with InnoDB storage engine, utf8mb4 character set, and enforced TLS/SSL encryption via CA certificates).
-    \item \textbf{Full-Stack Web Framework:} Next.js 16 (App Router, Turbopack builder) with Node.js 20+ LTS runtime.
-    \item \textbf{Frontend Library:} React 19 with Framer Motion for UI state transitions.
-    \item \textbf{Styling Architecture:} Vanilla CSS utilizing CSS Custom Properties and design tokens (zero runtime CSS-in-JS or Tailwind overhead).
-    \item \textbf{Database Driver:} \texttt{mysql2/promise} for asynchronous connection pooling and parameterized query execution.
-    \item \textbf{AI Reasoning Engine:} Google Generative AI API (\texttt{@google/genai} SDK) utilizing models \texttt{gemini-2.5-flash}, \texttt{gemini-2.5-pro}, and \texttt{gemini-2.0-flash}.
-    \item \textbf{Security \& Encryption:} \texttt{bcryptjs} (password hashing with 10 salt rounds), \texttt{jsonwebtoken} (stateless HS256 JWT tokens).
-    \item \textbf{Development Tools:} Visual Studio Code, Git, Next.js Dev Server.
+    \item \textbf{Operating System:} Windows 11, Linux (Ubuntu 22.04+), or macOS Sonoma.
+    \item \textbf{DBMS:} MySQL 8.0 on Aiven Cloud with InnoDB, utf8mb4 encoding, and TLS/SSL encryption (\texttt{ca.pem}).
+    \item \textbf{Web Framework:} Next.js 16 (App Router, Turbopack) on Node.js 20+ LTS.
+    \item \textbf{Frontend:} React 19, Framer Motion, Vanilla CSS (design tokens in \texttt{globals.css}).
+    \item \textbf{Libraries:} \texttt{mysql2/promise}, \texttt{@google/genai}, \texttt{bcryptjs}, \texttt{jsonwebtoken}, \texttt{lucide-react}.
 \end{itemize}
 
 \subsection{Hardware Requirements}
 \begin{itemize}
-    \item \textbf{Client Machine:} Modern web browser (Chrome, Firefox, Safari, Edge) on any x86-64 or ARM64 processor; minimum 4 GB RAM (8 GB recommended); 1080p display resolution.
-    \item \textbf{Server / Database Host:} Cloud container with minimum 1 vCPU, 2 GB RAM, 10 GB SSD persistent storage, and minimum 50 Mbps network connectivity with low-latency SSL connection to Aiven Cloud.
+    \item \textbf{Client:} Modern browser, 4 GB RAM minimum (8 GB recommended), 1080p display.
+    \item \textbf{Server / Database Host:} Cloud container with 1 vCPU, 2 GB RAM, 10 GB SSD, and stable Internet connectivity with SSL support.
 \end{itemize}
 
 %-------------------- CHAPTER 2 --------------------
 \chapter{System Requirements and Analysis}
 
 \section{Functional Requirements}
-The functional requirements describe the explicit operational capabilities that the ComplexityUniverse system must support:
+The functional requirements describe the core operational capabilities of ComplexityUniverse:
 
 \begin{enumerate}[label=\textbf{FR-\arabic*.}]
-    \item \textbf{User Account Management:}
-    \begin{itemize}
-        \item The system shall allow new users to register using their full name, valid email address, and a secure password.
-        \item The system shall automatically hash passwords using bcrypt prior to database insertion.
-        \item The system shall maintain user authentication state via signed, stateless JSON Web Tokens (JWT) stored in HTTP-only, SameSite secure cookies.
-        \item The system shall support user profile personalization, including developer headline, biography, location, and customizable avatar seeds.
-    \end{itemize}
-    \item \textbf{Code Complexity Analysis:}
-    \begin{itemize}
-        \item The system shall accept arbitrary source code snippets across multiple programming languages alongside an optional descriptive title and analysis depth mode (\texttt{short} or \texttt{detailed}).
-        \item The system shall transmit the source code to Google Gemini Generative AI alongside active system prompts stored in the database, enforcing strict JSON response formatting.
-        \item The system shall extract and display worst-case, average-case, and best-case Time complexity, Space complexity, summary explanations, line-by-line cost deconstructions, and optimization tips.
-    \end{itemize}
-    \item \textbf{Storage Engine Code Metrics:}
-    \begin{itemize}
-        \item The system shall compute physical line counts of submitted code snippets automatically at the database layer via MySQL stored generated columns without application CPU intervention.
-    \end{itemize}
-    \item \textbf{Analysis Persistence \& History Feed:}
-    \begin{itemize}
-        \item Authenticated users shall be able to save analyses into their private workspace.
-        \item Users shall be able to retrieve, view, search, and delete their saved analyses with automatic pagination.
-        \item Deletion of an analysis shall automatically decrement the user's analysis count and generate an immutable audit log row via database triggers.
-    \end{itemize}
-    \item \textbf{Curriculum \& Learn Library:}
-    \begin{itemize}
-        \item The system shall present an educational catalog of algorithmic complexity topics categorized by paradigm (Fundamentals, Data Structures, Sorting, Searching, Graphs, Dynamic Programming).
-        \item The system shall provide full-text search capabilities across topic titles, summaries, and HTML lecture notes using MySQL \texttt{FULLTEXT} boolean queries.
-        \item Each topic shall contain multiple runnable sample code implementations with complexity annotations.
-    \end{itemize}
-    \item \textbf{Topic Bookmarking \& Annotations:}
-    \begin{itemize}
-        \item Authenticated users shall be able to bookmark curriculum topics and append personalized notes.
-        \item The system shall reject duplicate bookmarks of the same topic by the same user.
-    \end{itemize}
-    \item \textbf{Administrative AI Governance \& Prompt Studio:}
-    \begin{itemize}
-        \item Administrative users shall be authorized to inspect system-wide analytics, view registered users, and suspend or activate accounts.
-        \item Administrators shall be able to edit system prompt templates used for AI code analysis. The database shall automatically increment the prompt version number upon modification.
-        \item Administrators shall be able to configure runtime application parameters (such as the active Google Gemini model) directly in the database.
-    \end{itemize}
-    \item \textbf{System Audit Logging:}
-    \begin{itemize}
-        \item The system shall record audit events for user registrations, analysis creations, analysis deletions, and bookmark operations in an immutable activity log table.
-    \end{itemize}
+    \item \textbf{User Management:} Support user registration, bcrypt password hashing, stateless JWT authentication via secure cookies, and profile customization (headline, bio, location, avatar).
+    \item \textbf{Code Analysis Engine:} Accept source code in multiple languages, send structured prompts to Gemini AI, and return worst/average/best-case Big-O bounds, line-by-line costs, and optimization advice.
+    \item \textbf{Storage Engine Metrics:} Automatically calculate code line counts via MySQL stored generated columns upon tuple insertion.
+    \item \textbf{Analysis History:} Allow users to view, search, paginate, and delete saved analyses; triggers automatically update user analysis counters and insert audit records.
+    \item \textbf{Curriculum Library:} Provide structured topic modules across major algorithmic paradigms with full-text search capability.
+    \item \textbf{Topic Bookmarking:} Allow users to bookmark curriculum topics with personal study notes; reject duplicate bookmarks.
+    \item \textbf{Admin Studio:} Allow administrators to review platform metrics, edit AI prompt templates (with automatic version incrementation), and configure the active AI model.
+    \item \textbf{Audit Logging:} Record user registrations, analysis creation/deletion, and bookmark updates into an append-only audit table.
 \end{enumerate}
 
 \begin{figure}[h!]
     \centering
-    \fbox{\parbox{0.92\textwidth}{%
-        \centering\vspace{0.15cm}
-        \textbf{End-to-End Code Analysis Request Lifecycle}\\[0.25cm]
-        \small
-        \begin{tabular}{ccccc}
-        \fbox{User Code Input} & $\longrightarrow$ & \fbox{Next.js Route Handler} & $\longrightarrow$ & \fbox{Gemini AI Gateway} \\
-        & & $\downarrow$ & & $\downarrow$ \\
-        \fbox{Dashboard Feed} & $\longleftarrow$ & \fbox{MySQL 8.0 Cloud} & $\longleftarrow$ & \fbox{JSON Extraction \& Validation} \\
-        (View \texttt{v\_user\_overview}) & & (Triggers Sync Counter) & & (Stored Generated Lines) \\
-        \end{tabular}\vspace{0.15cm}
-    }}
-    \caption{End-to-End Algorithmic Analysis Data Flow and Execution Lifecycle}
+    \IfFileExists{Code Analysis Data Lifecycle Flowchart.png}{%
+        \includegraphics[width=0.92\textwidth]{{Code Analysis Data Lifecycle Flowchart.png}}%
+    }{%
+        \IfFileExists{assets/Code Analysis Data Lifecycle Flowchart.png}{%
+            \includegraphics[width=0.92\textwidth]{{assets/Code Analysis Data Lifecycle Flowchart.png}}%
+        }{%
+            \fbox{\parbox[c][4cm][c]{0.85\textwidth}{\centering \textbf{Algorithmic Analysis Execution Lifecycle}}}%
+        }%
+    }
+    \caption{Algorithmic Analysis Execution Lifecycle}
     \label{fig:lifecycle}
 \end{figure}
 
 \section{Business Rules}
-The operational logic and database constraints are governed by the following formal business rules:
+The operational logic and database constraints are enforced by ten business rules:
 
 \begin{enumerate}[label=\textbf{BR-\arabic*.}]
-    \item \textbf{Unique Email Identity:} Each registered user must possess a unique email address. The system must automatically normalize all email addresses to lowercase and strip whitespace prior to storage.
-    \item \textbf{Mandatory 1:1 Profile Existence:} Every user record in \texttt{users} must correspond to exactly one profile row in \texttt{user\_profiles}. When a user registers, the database trigger \texttt{trg\_users\_after\_insert} must automatically instantiate a matching \texttt{user\_profiles} record.
-    \item \textbf{Referential Integrity \& Cascading Deletion:} Deleting a user must immediately and atomically delete their associated profile, saved analyses, bookmarks, and activity log entries via \texttt{ON DELETE CASCADE} constraints, preventing orphaned foreign key references.
-    \item \textbf{Non-Negative Real-Time Analysis Counter:} The attribute \texttt{users.analysis\_count} must always accurately reflect the current number of valid analyses associated with the user in \texttt{code\_analyses}. The counter must increment on \texttt{INSERT} and decrement on \texttt{DELETE} via triggers, never falling below zero.
-    \item \textbf{Automated Slug Normalization:} Every educational curriculum topic must possess a unique, lowercase, hyphen-delimited URL slug derived automatically from the topic title if not explicitly provided.
-    \item \textbf{Bookmark Uniqueness:} A user cannot bookmark the same educational topic more than once. This invariant is enforced by a composite unique constraint on \texttt{(user\_id, topic\_id)}.
-    \item \textbf{Strict Role-Based Authorization:} System administration routes and prompt mutation endpoints must be restricted exclusively to users with \texttt{role = 'admin'}.
-    \item \textbf{Automated Prompt Version Auditing:} Whenever an administrative user updates an existing record in \texttt{analysis\_prompts}, the \texttt{version} attribute must increment automatically by 1, and the \texttt{updated\_at} timestamp must update to the current time via a \texttt{BEFORE UPDATE} trigger.
-    \item \textbf{Code Metric Immutability:} The \texttt{code\_lines} attribute in \texttt{code\_analyses} must be strictly computed from the byte length and newline character count of the stored \texttt{code\_text} via a MySQL stored generated expression, preventing manual alteration.
-    \item \textbf{Stateless Session Security:} Client sessions must never store sensitive database credentials or unhashed passwords. All API requests modifying user-owned data must verify JWT token identity against the target resource's \texttt{user\_id}.
+    \item \textbf{Unique Email:} Every user email must be unique, lowercased, and whitespace-trimmed.
+    \item \textbf{Mandatory 1:1 Profile:} Every user must have exactly one profile record, auto-created upon registration via trigger \texttt{trg\_users\_after\_insert}.
+    \item \textbf{Cascading Deletion:} Deleting a user must atomically remove their profile, saved analyses, bookmarks, and activity logs via \texttt{ON DELETE CASCADE}.
+    \item \textbf{Synchronized Counter:} \texttt{users.analysis\_count} must accurately mirror saved analyses, incrementing on insert and decrementing on delete via triggers.
+    \item \textbf{Unique Topic Slug:} Every educational topic must have a unique URL slug, generated automatically from the title if omitted.
+    \item \textbf{Bookmark Uniqueness:} A user cannot bookmark the same topic more than once, enforced by a composite unique key on \texttt{(user\_id, topic\_id)}.
+    \item \textbf{Role-Based Access:} Admin routes and prompt mutations are restricted to accounts where \texttt{role = 'admin'}.
+    \item \textbf{Prompt Version Auditing:} Updating an AI prompt template must automatically increment \texttt{version = version + 1} and refresh \texttt{updated\_at} via a trigger.
+    \item \textbf{Immutable Line Count:} \texttt{code\_lines} in \texttt{code\_analyses} must be computed solely by the storage engine using a stored generated expression.
+    \item \textbf{Session Security:} API operations modifying user data must verify JWT token identity against the target resource's \texttt{user\_id}.
 \end{enumerate}
-
-\begin{figure}[h!]
-    \centering
-    \fbox{\parbox{0.92\textwidth}{%
-        \centering\vspace{0.15cm}
-        \textbf{Role-Based Governance and Integrity Constraint Model}\\[0.25cm]
-        \small
-        \begin{tabular}{|p{4.8cm}|c|p{4.8cm}|}
-        \hline
-        \textbf{Student User Role} & \multirow{2}{*}{\Large $\longleftrightarrow$} & \textbf{Administrator Role} \\
-        \cline{1-1}\cline{3-3}
-        $\bullet$ Submit and profile code snippets & & $\bullet$ Audit system-wide telemetry \\
-        $\bullet$ Manage personal analysis history & & $\bullet$ Modify AI prompt templates \\
-        $\bullet$ Bookmark curriculum topics & & $\bullet$ Auto-increment prompt versions \\
-        $\bullet$ Synchronize personal profile & & $\bullet$ Configure active Gemini models \\
-        \hline
-        \end{tabular}\vspace{0.15cm}
-    }}
-    \caption{Role-Based Functional Governance and Integrity Enforcement Model}
-    \label{fig:governance}
-\end{figure}
 
 %-------------------- CHAPTER 3 --------------------
 \chapter{Entity--Relationship (ER) Modeling}
 
 \section{Identification of Entities}
-The ComplexityUniverse data model consists of 9 distinct entities classified into strong, dependent, and associative categories:
+The ComplexityUniverse data model comprises 9 entities:
 
 \begin{enumerate}
-    \item \textbf{\texttt{users} (Strong Entity):}
-    Represents the primary user account in the system.
-    \begin{itemize}
-        \item \textit{Attributes:} \underline{\texttt{id}} (PK, INT UNSIGNED, Auto Increment), \texttt{name} (VARCHAR(100)), \texttt{email} (VARCHAR(190), Candidate Key), \texttt{password\_hash} (VARCHAR(255)), \texttt{last\_login\_at} (DATETIME), \texttt{role} (ENUM('user','admin')), \texttt{status} (ENUM('active','suspended')), \texttt{analysis\_count} (INT UNSIGNED, Derived Counter), \texttt{created\_at} (TIMESTAMP), \texttt{updated\_at} (TIMESTAMP).
-    \end{itemize}
-    \item \textbf{\texttt{user\_profiles} (Strong Entity in 1:1 Relationship):}
-    Stores personalized developer profile metadata.
-    \begin{itemize}
-        \item \textit{Attributes:} \underline{\texttt{id}} (PK, INT UNSIGNED, Auto Increment), \texttt{user\_id} (FK, INT UNSIGNED, Alternate Key), \texttt{headline} (VARCHAR(140)), \texttt{bio} (VARCHAR(500)), \texttt{location} (VARCHAR(100)), \texttt{avatar\_seed} (VARCHAR(60)).
-    \end{itemize}
-    \item \textbf{\texttt{analysis\_prompts} (Strong Entity):}
-    Maintains versioned AI prompt engineering templates.
-    \begin{itemize}
-        \item \textit{Attributes:} \underline{\texttt{id}} (PK, TINYINT UNSIGNED, Auto Increment), \texttt{name} (VARCHAR(80)), \texttt{prompt\_template} (MEDIUMTEXT), \texttt{is\_active} (TINYINT(1)), \texttt{version} (INT UNSIGNED), \texttt{updated\_by} (FK, INT UNSIGNED), \texttt{created\_at} (TIMESTAMP), \texttt{updated\_at} (TIMESTAMP).
-    \end{itemize}
-    \item \textbf{\texttt{code\_analyses} (Strong Entity):}
-    Stores persistent results of algorithmic code evaluations.
-    \begin{itemize}
-        \item \textit{Attributes:} \underline{\texttt{id}} (PK, BIGINT UNSIGNED, Auto Increment), \texttt{user\_id} (FK, INT UNSIGNED), \texttt{title} (VARCHAR(140)), \texttt{language} (VARCHAR(30)), \texttt{code\_text} (MEDIUMTEXT), \texttt{code\_lines} (INT UNSIGNED, Stored Generated Attribute), \texttt{time\_complexity} (VARCHAR(40)), \texttt{space\_complexity} (VARCHAR(40)), \texttt{summary} (TEXT), \texttt{detailed\_analysis} (MEDIUMTEXT), \texttt{detail\_mode} (ENUM('short','detailed')), \texttt{engine} (VARCHAR(20)), \texttt{prompt\_version} (INT UNSIGNED), \texttt{created\_at} (TIMESTAMP), \texttt{updated\_at} (TIMESTAMP).
-    \end{itemize}
-    \item \textbf{\texttt{complexity\_topics} (Strong Entity):}
-    Represents educational curriculum modules in the Learn Library.
-    \begin{itemize}
-        \item \textit{Attributes:} \underline{\texttt{id}} (PK, INT UNSIGNED, Auto Increment), \texttt{topic\_name} (VARCHAR(120)), \texttt{slug} (VARCHAR(140), Candidate Key), \texttt{category} (VARCHAR(60)), \texttt{difficulty} (ENUM('Beginner','Intermediate','Advanced')), \texttt{time\_complexity} (VARCHAR(40)), \texttt{space\_complexity} (VARCHAR(40)), \texttt{summary} (VARCHAR(300)), \texttt{notes\_html} (MEDIUMTEXT), \texttt{sort\_order} (SMALLINT), \texttt{is\_published} (TINYINT(1)), \texttt{created\_at} (TIMESTAMP), \texttt{updated\_at} (TIMESTAMP).
-    \end{itemize}
-    \item \textbf{\texttt{topic\_examples} (Strong Entity):}
-    Stores runnable code implementations and solutions attached to topics.
-    \begin{itemize}
-        \item \textit{Attributes:} \underline{\texttt{id}} (PK, INT UNSIGNED, Auto Increment), \texttt{topic\_id} (FK, INT UNSIGNED), \texttt{title} (VARCHAR(140)), \texttt{language} (VARCHAR(30)), \texttt{code\_text} (MEDIUMTEXT), \texttt{analysis\_html} (MEDIUMTEXT), \texttt{time\_complexity} (VARCHAR(40)), \texttt{space\_complexity} (VARCHAR(40)), \texttt{sort\_order} (SMALLINT), \texttt{created\_at} (TIMESTAMP).
-    \end{itemize}
-    \item \textbf{\texttt{user\_saved_topics} (Associative Entity):}
-    Decomposes the conceptual $M:N$ bookmarking relationship between users and topics.
-    \begin{itemize}
-        \item \textit{Attributes:} \underline{\texttt{id}} (PK, BIGINT UNSIGNED, Auto Increment), \texttt{user\_id} (FK, INT UNSIGNED), \texttt{topic\_id} (FK, INT UNSIGNED), \texttt{note} (VARCHAR(255)), \texttt{saved\_at} (TIMESTAMP). Composite Candidate Key: \texttt{(user\_id, topic\_id)}.
-    \end{itemize}
-    \item \textbf{\texttt{activity\_log} (Strong Entity):}
-    Maintains autonomous audit events generated across the platform.
-    \begin{itemize}
-        \item \textit{Attributes:} \underline{\texttt{id}} (PK, BIGINT UNSIGNED, Auto Increment), \texttt{user\_id} (FK, INT UNSIGNED, Nullable), \texttt{action} (VARCHAR(40)), \texttt{entity} (VARCHAR(40)), \texttt{entity\_id} (BIGINT UNSIGNED), \texttt{detail} (VARCHAR(255)), \texttt{created\_at} (TIMESTAMP).
-    \end{itemize}
-    \item \textbf{\texttt{app\_settings} (Strong Entity):}
-    Stores system runtime parameters as key-value pairs.
-    \begin{itemize}
-        \item \textit{Attributes:} \underline{\texttt{setting\_key}} (PK, VARCHAR(60)), \texttt{setting\_value} (TEXT), \texttt{updated\_at} (TIMESTAMP).
-    \end{itemize}
+    \item \textbf{\texttt{users} (Strong Entity):} Stores user accounts.
+    Attributes: \underline{\texttt{id}} (PK), \texttt{name}, \texttt{email} (Unique), \texttt{password\_hash}, \texttt{last\_login\_at}, \texttt{role}, \texttt{status}, \texttt{analysis\_count} (Derived), \texttt{created\_at}, \texttt{updated\_at}.
+    \item \textbf{\texttt{user\_profiles} (1:1 Strong Entity):} User profile details.
+    Attributes: \underline{\texttt{id}} (PK), \texttt{user\_id} (FK, Unique), \texttt{headline}, \texttt{bio}, \texttt{location}, \texttt{avatar\_seed}.
+    \item \textbf{\texttt{analysis\_prompts} (Strong Entity):} Versioned AI prompts.
+    Attributes: \underline{\texttt{id}} (PK), \texttt{name}, \texttt{prompt\_template}, \texttt{is\_active}, \texttt{version}, \texttt{updated\_by} (FK), \texttt{created\_at}, \texttt{updated\_at}.
+    \item \textbf{\texttt{code\_analyses} (Strong Entity):} Saved analysis reports.
+    Attributes: \underline{\texttt{id}} (PK), \texttt{user\_id} (FK), \texttt{title}, \texttt{language}, \texttt{code\_text}, \texttt{code\_lines} (Stored Generated), \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{summary}, \texttt{detailed\_analysis}, \texttt{detail\_mode}, \texttt{engine}, \texttt{prompt\_version}, \texttt{created\_at}, \texttt{updated\_at}.
+    \item \textbf{\texttt{complexity\_topics} (Strong Entity):} Curriculum topics.
+    Attributes: \underline{\texttt{id}} (PK), \texttt{topic\_name}, \texttt{slug} (Unique), \texttt{category}, \texttt{difficulty}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{summary}, \texttt{notes\_html}, \texttt{sort\_order}, \texttt{is\_published}, \texttt{created\_at}, \texttt{updated\_at}.
+    \item \textbf{\texttt{topic\_examples} (Strong Entity):} Runnable code examples.
+    Attributes: \underline{\texttt{id}} (PK), \texttt{topic\_id} (FK), \texttt{title}, \texttt{language}, \texttt{code\_text}, \texttt{analysis\_html}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{sort\_order}, \texttt{created\_at}.
+    \item \textbf{\texttt{user\_saved\_topics} (Associative Entity):} Resolves the $M:N$ bookmarking relationship.
+    Attributes: \underline{\texttt{id}} (PK), \texttt{user\_id} (FK), \texttt{topic\_id} (FK), \texttt{note}, \texttt{saved\_at}. Composite Key: \texttt{(user\_id, topic\_id)}.
+    \item \textbf{\texttt{activity\_log} (Strong Entity):} System audit records.
+    Attributes: \underline{\texttt{id}} (PK), \texttt{user\_id} (FK, Nullable), \texttt{action}, \texttt{entity}, \texttt{entity\_id}, \texttt{detail}, \texttt{created\_at}.
+    \item \textbf{\texttt{app\_settings} (Strong Entity):} Key-value configuration.
+    Attributes: \underline{\texttt{setting\_key}} (PK), \texttt{setting\_value}, \texttt{updated\_at}.
 \end{enumerate}
 
 \section{Identification of Relationships}
-The semantic relationships connecting the entities are defined below:
+Table~\ref{tab:relationships} summarizes the semantic relationships and structural constraints.
 
 \begin{table}[h!]
 \centering
 \small
-\begin{tabular}{p{2.8cm} p{2.5cm} p{1.8cm} p{2.2cm} p{4.0cm}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{3.0cm} c >{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}p{2.2cm}}
 \toprule
-\textbf{Relationship Name} & \textbf{Participating Entities} & \textbf{Cardinality Ratio} & \textbf{Participation Constraints} & \textbf{Descriptive Attributes} \\
+\textbf{Relationship} & \textbf{Entities} & \textbf{Ratio} & \textbf{Participation} & \textbf{Action} \\
 \midrule
-\texttt{Has\_Profile} & \texttt{users} $\leftrightarrow$ \texttt{user\_profiles} & $1:1$ & Total on Profile, Partial on User & None (1:1 linkage) \\
-\texttt{Performs\_Analysis} & \texttt{users} $\leftrightarrow$ \texttt{code\_analyses} & $1:N$ & Total on Analysis, Partial on User & None (1:N foreign key) \\
-\texttt{Bookmarks} (Conceptual) & \texttt{users} $\leftrightarrow$ \texttt{complexity\_topics} & $M:N$ & Partial on User, Partial on Topic & \texttt{note}, \texttt{saved\_at} \\
-\texttt{Contains\_Examples} & \texttt{complexity\_topics} $\leftrightarrow$ \texttt{topic\_examples} & $1:N$ & Total on Example, Partial on Topic & None (1:N foreign key) \\
-\texttt{Manages\_Prompts} & \texttt{users} $\leftrightarrow$ \texttt{analysis\_prompts} & $1:N$ & Partial on Admin, Partial on Prompt & None (\texttt{ON DELETE SET NULL}) \\
-\texttt{Generates\_Log} & \texttt{users} $\leftrightarrow$ \texttt{activity\_log} & $1:N$ & Total on Log, Partial on User & None (Audit event linkage) \\
+\texttt{Has\_Profile} & \texttt{users} $\leftrightarrow$ \texttt{user\_profiles} & $1:1$ & Total (Profile), Partial (User) & \texttt{CASCADE} \\
+\texttt{Performs\_Analysis} & \texttt{users} $\leftrightarrow$ \texttt{code\_analyses} & $1:N$ & Total (Analysis), Partial (User) & \texttt{CASCADE} \\
+\texttt{Bookmarks} & \texttt{users} $\leftrightarrow$ \texttt{complexity\_topics} & $M:N$ & Partial (Both) & \texttt{CASCADE} \\
+\texttt{Contains\_Examples} & \texttt{complexity\_topics} $\leftrightarrow$ \texttt{topic\_examples} & $1:N$ & Total (Example), Partial (Topic) & \texttt{CASCADE} \\
+\texttt{Manages\_Prompts} & \texttt{users} $\leftrightarrow$ \texttt{analysis\_prompts} & $1:N$ & Partial (Both) & \texttt{SET NULL} \\
+\texttt{Generates\_Log} & \texttt{users} $\leftrightarrow$ \texttt{activity\_log} & $1:N$ & Total (Log), Partial (User) & \texttt{CASCADE} \\
 \bottomrule
 \end{tabular}
-\caption{Relationship Identification and Structural Constraints Matrix}
+\caption{Entity Relationship Identification and Constraints}
+\label{tab:relationships}
 \end{table}
 
 \section{ER Diagram}
-Following academic DBMS curriculum guidelines (Silberschatz et al., Elmasri \& Navathe), this project models ComplexityUniverse at two distinct formal abstraction tiers:
+The database is modeled at two distinct abstraction tiers:
 \begin{enumerate}
-    \item \textbf{Type 1: Conceptual ER Model (Peter Chen's Classical Notation):} Emphasizes high-level business entity sets, relationships, attribute taxonomies, underlined primary keys, and dashed ellipses for derived attributes (\texttt{analysis\_count} and \texttt{code\_lines}). Many-to-Many relationships are maintained directly as relationship diamonds with descriptive attributes.
-    \item \textbf{Type 2: Logical / Relational ER Model (Crow's Foot / Information Engineering Notation):} Implementation-level representation showing physical table schemas, exact MySQL data types, primary keys (\texttt{PK}), foreign keys (\texttt{FK}), unique constraints (\texttt{UQ}), and the decomposition of $M:N$ relationships into an associative entity (\texttt{user\_saved\_topics}).
+    \item \textbf{Type 1: Conceptual ER Modeling (Peter Chen Notation):} Captures business entities, relationships, attributes, and derived attributes (dashed ellipses for \texttt{analysis\_count} and \texttt{code\_lines}).
+    \item \textbf{Type 2: Relational ER Modeling (Crow's Foot Notation):} Illustrates physical relational schemas, explicit column types, primary keys, foreign keys, and unique constraints across modular subsystems.
 \end{enumerate}
 
 \subsection{Type 1: Conceptual ER Modeling (Peter Chen Notation)}
 \renewcommand{\thefigure}{1.\arabic{figure}}
 \setcounter{figure}{0}
-The complete enterprise conceptual model is shown in Fig.~\ref{fig:chen_complete} (Fig.~1.1), followed by the four modular subsystem conceptual diagrams highlighting attribute classifications and relationship cardinalities:
+
+Fig.~\ref{fig:chen_complete} (Fig.~1.1) presents the complete enterprise conceptual diagram, followed by the modular subsystem diagrams (Fig.~1.2 through Fig.~1.5):
 
 \begin{figure}[h!]
     \centering
     \IfFileExists{assets/Fig 1.1.png}{%
-        \includegraphics[width=0.95\textwidth]{{assets/Fig 1.1}.png}%
+        \includegraphics[width=0.88\textwidth]{{assets/Fig 1.1.png}}%
     }{%
-        \fbox{\parbox[c][5cm][c]{0.85\textwidth}{\centering \textbf{Fig 1.1: Complete Conceptual ER Diagram (Peter Chen Notation)}}}%
+        \fbox{\parbox[c][4cm][c]{0.8\textwidth}{\centering \textbf{Fig 1.1: Complete Conceptual ER Diagram (Peter Chen Notation)}}}%
     }
-    \caption{Complete Enterprise Conceptual ER Diagram in Peter Chen's Classical Notation}
+    \caption{Enterprise Conceptual ER Diagram (Peter Chen Notation)}
     \label{fig:chen_complete}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
     \IfFileExists{assets/Fig 1.2.png}{%
-        \includegraphics[width=0.88\textwidth]{{assets/Fig 1.2}.png}%
+        \includegraphics[width=0.72\textwidth]{{assets/Fig 1.2.png}}%
     }{%
-        \fbox{\parbox[c][4cm][c]{0.8\textwidth}{\centering \textbf{Fig 1.2: Conceptual Subsystem 1 Diagram}}}%
+        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 1.2: Conceptual Subsystem 1 Diagram}}}%
     }
-    \caption{Conceptual Subsystem 1: User Identity, Profile \& Activity Log Model with Attributes and Cardinalities}
+    \caption{Conceptual Subsystem 1: User Identity, Profile \& Activity Log}
     \label{fig:chen_mod1}
-\end{figure}
-
-\begin{figure}[h!]
-    \centering
+    \vspace{0.3cm}
     \IfFileExists{assets/Fig 1.3.png}{%
-        \includegraphics[width=0.88\textwidth]{{assets/Fig 1.3}.png}%
+        \includegraphics[width=0.72\textwidth]{{assets/Fig 1.3.png}}%
     }{%
-        \fbox{\parbox[c][4cm][c]{0.8\textwidth}{\centering \textbf{Fig 1.3: Conceptual Subsystem 2 Diagram}}}%
+        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 1.3: Conceptual Subsystem 2 Diagram}}}%
     }
-    \caption{Conceptual Subsystem 2: Code Analysis Engine \& AI Prompt Model with Attributes and Relationships}
+    \caption{Conceptual Subsystem 2: Code Analysis Engine \& AI Prompts}
     \label{fig:chen_mod2}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
     \IfFileExists{assets/Fig 1.4.png}{%
-        \includegraphics[width=0.88\textwidth]{{assets/Fig 1.4}.png}%
+        \includegraphics[width=0.72\textwidth]{{assets/Fig 1.4.png}}%
     }{%
-        \fbox{\parbox[c][4cm][c]{0.8\textwidth}{\centering \textbf{Fig 1.4: Conceptual Subsystem 3 Diagram}}}%
+        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 1.4: Conceptual Subsystem 3 Diagram}}}%
     }
-    \caption{Conceptual Subsystem 3: Educational Curriculum \& Bookmarks Model with Detailed Attributes}
+    \caption{Conceptual Subsystem 3: Curriculum Topics \& Bookmarks}
     \label{fig:chen_mod3}
-\end{figure}
-
-\begin{figure}[h!]
-    \centering
+    \vspace{0.3cm}
     \IfFileExists{assets/Fig 1.5.png}{%
-        \includegraphics[width=0.88\textwidth]{{assets/Fig 1.5}.png}%
+        \includegraphics[width=0.72\textwidth]{{assets/Fig 1.5.png}}%
     }{%
-        \fbox{\parbox[c][4cm][c]{0.8\textwidth}{\centering \textbf{Fig 1.5: Conceptual Subsystem 4 Diagram}}}%
+        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 1.5: Conceptual Subsystem 4 Diagram}}}%
     }
-    \caption{Conceptual Subsystem 4: System Administration \& Runtime Configuration Model}
+    \caption{Conceptual Subsystem 4: System Administration \& Runtime Configuration}
     \label{fig:chen_mod4}
 \end{figure}
 
 \subsection{Type 2: Logical / Relational ER Modeling (Crow's Foot Notation)}
 \renewcommand{\thefigure}{2.\arabic{figure}}
-\setcounter{figure}{0}
-The physical relational schema implemented in MySQL 8.0 on Aiven Cloud is depicted in Fig.~\ref{fig:crows_complete} (Fig.~2.1), followed by the four modular relational subsystem schemas defining column data types, key constraints, and foreign key references:
+\setcounter{figure}{1}
 
-\begin{figure}[h!]
-    \centering
-    \IfFileExists{assets/Fig 2.1.png}{%
-        \includegraphics[width=0.95\textwidth]{{assets/Fig 2.1}.png}%
-    }{%
-        \fbox{\parbox[c][5cm][c]{0.85\textwidth}{\centering \textbf{Fig 2.1: Relational ER Diagram (Crow's Foot Notation)}}}%
-    }
-    \caption{Complete Logical / Relational ER Diagram in Crow's Foot Notation}
-    \label{fig:crows_complete}
-    \end{figure}
+The physical relational schemas implemented in MySQL 8.0 on Aiven Cloud are organized into four modular subsystem diagrams (Fig.~2.2 through Fig.~2.5) defining exact column data types, key constraints, and foreign key references:
 
 \begin{figure}[h!]
     \centering
     \IfFileExists{assets/Fig 2.2.png}{%
-        \includegraphics[width=0.88\textwidth]{{assets/Fig 2.2}.png}%
+        \includegraphics[width=0.72\textwidth]{{assets/Fig 2.2.png}}%
     }{%
-        \fbox{\parbox[c][4cm][c]{0.8\textwidth}{\centering \textbf{Fig 2.2: Relational Subsystem 1 Schema}}}%
+        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 2.2: Relational Subsystem 1 Schema}}}%
     }
-    \caption{Relational Subsystem 1: User Identity, Profile \& Audit Physical Table Schema}
+    \caption{Relational Subsystem 1: User Identity, Profile \& Audit Schema}
     \label{fig:rel_mod1}
-\end{figure}
-
-\begin{figure}[h!]
-    \centering
+    \vspace{0.3cm}
     \IfFileExists{assets/Fig 2.3.png}{%
-        \includegraphics[width=0.88\textwidth]{{assets/Fig 2.3}.png}%
+        \includegraphics[width=0.72\textwidth]{{assets/Fig 2.3.png}}%
     }{%
-        \fbox{\parbox[c][4cm][c]{0.8\textwidth}{\centering \textbf{Fig 2.3: Relational Subsystem 2 Schema}}}%
+        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 2.3: Relational Subsystem 2 Schema}}}%
     }
-    \caption{Relational Subsystem 2: Code Analysis Engine \& AI Prompt Physical Table Schema}
+    \caption{Relational Subsystem 2: Code Analysis Engine \& AI Prompts Schema}
     \label{fig:rel_mod2}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
     \IfFileExists{assets/Fig 2.4.png}{%
-        \includegraphics[width=0.88\textwidth]{{assets/Fig 2.4}.png}%
+        \includegraphics[width=0.72\textwidth]{{assets/Fig 2.4.png}}%
     }{%
-        \fbox{\parbox[c][4cm][c]{0.8\textwidth}{\centering \textbf{Fig 2.4: Relational Subsystem 3 Schema}}}%
+        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 2.4: Relational Subsystem 3 Schema}}}%
     }
-    \caption{Relational Subsystem 3: Educational Library \& Bookmarks Physical Table Schema}
+    \caption{Relational Subsystem 3: Educational Library \& Bookmarks Schema}
     \label{fig:rel_mod3}
-\end{figure}
-
-\begin{figure}[h!]
-    \centering
+    \vspace{0.3cm}
     \IfFileExists{assets/Fig 2.5.png}{%
-        \includegraphics[width=0.88\textwidth]{{assets/Fig 2.5}.png}%
+        \includegraphics[width=0.72\textwidth]{{assets/Fig 2.5.png}}%
     }{%
-        \fbox{\parbox[c][4cm][c]{0.8\textwidth}{\centering \textbf{Fig 2.5: Relational Subsystem 4 Schema}}}%
+        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 2.5: Relational Subsystem 4 Schema}}}%
     }
-    \caption{Relational Subsystem 4: System Administration \& Runtime Configuration Physical Table Schema}
+    \caption{Relational Subsystem 4: System Administration \& Runtime Configuration Schema}
     \label{fig:rel_mod4}
 \end{figure}
 
 \section{Explanation of the ER Diagram}
 \renewcommand{\thefigure}{\thechapter.\arabic{figure}}
-The diagrams in Fig.~\ref{fig:chen_complete} through Fig.~\ref{fig:rel_mod4} illustrate the two levels of modeling:
+The diagrams illustrate the structure and constraints of the database:
 \begin{itemize}
-    \item \textbf{Conceptual Modeling (Type 1):} In Fig.~\ref{fig:chen_complete} (Fig.~1.1) and the modular breakdown in Fig.~\ref{fig:chen_mod1} (Fig.~1.2) through Fig.~\ref{fig:chen_mod4} (Fig.~1.5), entities are presented without physical database artifacts (foreign keys are excluded). Relationships (e.g., \texttt{HAS\_PROFILE}, \texttt{SAVES}, \texttt{BOOKMARKED\_BY}) capture structural semantics, while derived attributes (\texttt{analysis\_count} in \texttt{users} and \texttt{code\_lines} in \texttt{code\_analyses}) are rendered as dashed ellipses.
-    \item \textbf{Relational / Logical Modeling (Type 2):} In Fig.~\ref{fig:crows_complete} (Fig.~2.1) and Fig.~\ref{fig:rel_mod1} (Fig.~2.2) through Fig.~\ref{fig:rel_mod4} (Fig.~2.5), conceptual relationships are mapped into physical relational tables. Foreign keys are explicitly materialized, physical column types (e.g., \texttt{BIGINT UNSIGNED}, \texttt{TIMESTAMP}) are defined, and the $M:N$ bookmarking relationship is resolved into the associative table \texttt{user\_saved\_topics} with composite uniqueness.
-    \item \textbf{1:1 Relationship (\texttt{users} to \texttt{user\_profiles}):} A user possesses at most one profile, and a profile belongs strictly to one user ($1:1$). Total participation on \texttt{user\_profiles} is enforced by the unique foreign key \texttt{user\_id} (Fig.~\ref{fig:chen_mod1} / Fig.~1.2 and Fig.~\ref{fig:rel_mod1} / Fig.~2.2).
-    \item \textbf{1:N Relationship (\texttt{users} to \texttt{code\_analyses}):} A user can save multiple algorithmic analyses ($0..N$). Each analysis row is owned by exactly one user ($1..1$) with cascade deletion (Fig.~\ref{fig:chen_mod2} / Fig.~1.3 and Fig.~\ref{fig:rel_mod2} / Fig.~2.3).
-    \item \textbf{M:N Relationship Resolution (\texttt{users} to \texttt{complexity\_topics}):} Represented as a direct diamond in Chen notation (Fig.~\ref{fig:chen_mod3} / Fig.~1.4) and decomposed into \texttt{user\_saved\_topics} with two $1:N$ legs in Crow's Foot notation (Fig.~\ref{fig:rel_mod3} / Fig.~2.4).
-    \item \textbf{1:N Relationship (\texttt{complexity\_topics} to \texttt{topic\_examples}):} Each curriculum topic contains multiple code examples ($0..N$) with total participation on the examples side.
+    \item \textbf{Conceptual vs. Relational Modeling:} Conceptual diagrams (Fig.~1.1 to 1.5) capture business entities, relationships, and derived attributes (\texttt{analysis\_count}, \texttt{code\_lines} in dashed ellipses) without physical keys. The relational diagrams (Fig.~2.2 to 2.5) materialize primary keys, foreign keys, physical column types, and cascade rules.
+    \item \textbf{1:1 Relationship (\texttt{users} to \texttt{user\_profiles}):} Each user has at most one profile, and each profile belongs to exactly one user. Total participation on \texttt{user\_profiles} is enforced by the unique foreign key \texttt{user\_id} with cascade deletion.
+    \item \textbf{1:N Relationship (\texttt{users} to \texttt{code\_analyses}):} A user can save multiple analyses ($0..N$). Each analysis record belongs to one user ($1..1$) with cascade deletion.
+    \item \textbf{M:N Relationship Resolution (\texttt{users} to \texttt{complexity\_topics}):} Modeled as a direct relationship in Chen notation and mapped into the associative table \texttt{user\_saved\_topics} with two $1:N$ foreign keys and a composite unique constraint on (\texttt{user\_id}, \texttt{topic\_id}).
+    \item \textbf{1:N Relationship (\texttt{complexity\_topics} to \texttt{topic\_examples}):} Each curriculum topic includes multiple code examples ($0..N$) with total participation on the examples side.
 \end{itemize}
 
 %-------------------- CHAPTER 4 --------------------
 \chapter{ER-to-Relational Mapping}
 
 \section{Mapping Rules}
-The formal ER-to-Relational mapping process maps conceptual constructs into relational schemas according to standard database theory (Elmasri \& Navathe, Silberschatz et al.):
-
+The ER model is converted to relational schemas using standard database mapping rules:
 \begin{enumerate}
-    \item \textbf{Rule 1 (Strong Entities):} For each strong entity set $E$, create a relation $R$ containing all simple attributes of $E$. Choose one key attribute as the Primary Key ($\text{PK}$).
-    \item \textbf{Rule 2 (Weak Entities):} For each weak entity $W$ with owner entity $O$, create a relation $R$ containing all simple attributes of $W$, and include the primary key of $O$ as a foreign key ($\text{FK}$) in $R$. The primary key of $R$ is the composite of owner key and partial key.
-    \item \textbf{Rule 3 (Binary 1:1 Relationships):} Identify relations $S$ and $T$. Include the primary key of $S$ as a foreign key in $T$ (preferably choosing the entity with total participation). Add a \texttt{UNIQUE} constraint on the foreign key column to preserve the $1:1$ cardinality.
-    \item \textbf{Rule 4 (Binary 1:N Relationships):} For a relationship type $R$ between entity $S$ (the ``1'' side) and entity $T$ (the ``N'' side), include the primary key of $S$ as a foreign key in relation $T$.
-    \item \textbf{Rule 5 (Binary M:N Relationships):} For an $M:N$ relationship $R$ between entities $S$ and $T$, create a new associative relation $R_{rel}$. Include the primary keys of both $S$ and $T$ as foreign keys in $R_{rel}$. Include all relationship attributes of $R$. The primary key of $R_{rel}$ is formed by the combination of foreign keys, or a surrogate key backed by a composite unique constraint.
-    \item \textbf{Rule 6 (Multivalued Attributes):} For each multivalued attribute, create a new relation containing the attribute and the primary key of the parent entity as a foreign key.
+    \item \textbf{Rule 1 (Strong Entities):} For each strong entity set, create a relation including all simple attributes. Designate a primary key ($\text{PK}$).
+    \item \textbf{Rule 2 (Weak Entities):} Include owner entity primary key as a foreign key ($\text{FK}$), with composite primary key where applicable.
+    \item \textbf{Rule 3 (Binary 1:1 Relationships):} Include the PK of one entity as an FK in the other (choosing the entity with total participation). Enforce a \texttt{UNIQUE} constraint on the FK column.
+    \item \textbf{Rule 4 (Binary 1:N Relationships):} Place the primary key of the ``1'' side as a foreign key in the relation on the ``N'' side.
+    \item \textbf{Rule 5 (Binary M:N Relationships):} Create an associative relation containing the primary keys of both participating entities as foreign keys, plus any relationship attributes.
+    \item \textbf{Rule 6 (Multivalued Attributes):} Create a separate relation with the attribute and the parent entity's primary key as an FK.
 \end{enumerate}
 
 \section{Step-by-Step Conversion}
-The 7 mapping rules are applied systematically to convert the ComplexityUniverse ER model into physical relations:
-
+Applying these rules systematically yields the physical tables:
 \begin{enumerate}
-    \item \textbf{Step 1: Strong Entities Mapping}
+    \item \textbf{Step 1: Strong Entities:}
     \begin{itemize}
-        \item Entity \texttt{users} maps to relation $\text{USERS}(\underline{\text{id}}, \text{name}, \text{email}, \text{password\_hash}, \text{last\_login\_at}, \text{role}, \text{status}, \text{analysis\_count}, \text{created\_at}, \text{updated\_at})$. Primary Key: $\text{id}$.
-        \item Entity \texttt{complexity\_topics} maps to relation $\text{COMPLEXITY\_TOPICS}(\underline{\text{id}}, \text{topic\_name}, \text{slug}, \text{category}, \text{difficulty}, \text{time\_complexity}, \text{space\_complexity}, \text{summary}, \text{notes\_html}, \text{sort\_order}, \text{is\_published}, \text{created\_at}, \text{updated\_at})$. Primary Key: $\text{id}$.
-        \item Entity \texttt{app\_settings} maps to relation $\text{APP\_SETTINGS}(\underline{\text{setting\_key}}, \text{setting\_value}, \text{updated\_at})$. Primary Key: $\text{setting\_key}$.
+        \item \texttt{users} maps to \textbf{USERS} (\underline{\texttt{id}}, \texttt{name}, \texttt{email}, \dots) with primary key \texttt{id}.
+        \item \texttt{complexity\_topics} maps to \textbf{COMPLEXITY\_TOPICS} (\underline{\texttt{id}}, \texttt{topic\_name}, \texttt{slug}, \dots) with primary key \texttt{id}.
+        \item \texttt{app\_settings} maps to \textbf{APP\_SETTINGS} (\underline{\texttt{setting\_key}}, \texttt{setting\_value}, \texttt{updated\_at}) with primary key \texttt{setting\_key}.
     \end{itemize}
-    \item \textbf{Step 2: Binary 1:1 Relationship Mapping (\texttt{Has\_Profile})}
+    \item \textbf{Step 2: Binary 1:1 Relationship (\texttt{Has\_Profile}):}
+    Relation \textbf{USER\_PROFILES} (\underline{\texttt{id}}, \texttt{user\_id}, \dots) includes foreign key \texttt{user\_id} $\rightarrow$ \texttt{users(id)} with constraint \texttt{UNIQUE(user\_id)} and \texttt{ON DELETE CASCADE}.
+    \item \textbf{Step 3: Binary 1:N Relationships:}
     \begin{itemize}
-        \item \texttt{user\_profiles} exhibits total participation with \texttt{users}. Applying Rule 3, create relation $\text{USER\_PROFILES}(\underline{\text{id}}, \text{user\_id}, \text{headline}, \text{bio}, \text{location}, \text{avatar\_seed})$.
-        \item Foreign Key: $\text{user\_id} \to \text{USERS}(\text{id})$ with \texttt{ON DELETE CASCADE}.
-        \item Constraint: $\text{UNIQUE}(\text{user\_id})$ ensures no user possesses more than one profile.
+        \item \textbf{CODE\_ANALYSES} includes foreign key \texttt{user\_id} $\rightarrow$ \texttt{users(id)} with \texttt{ON DELETE CASCADE}.
+        \item \textbf{TOPIC\_EXAMPLES} includes foreign key \texttt{topic\_id} $\rightarrow$ \texttt{complexity\_topics(id)} with \texttt{ON DELETE CASCADE}.
+        \item \textbf{ACTIVITY\_LOG} includes foreign key \texttt{user\_id} $\rightarrow$ \texttt{users(id)} with \texttt{ON DELETE CASCADE}.
+        \item \textbf{ANALYSIS\_PROMPTS} includes foreign key \texttt{updated\_by} $\rightarrow$ \texttt{users(id)} with \texttt{ON DELETE SET NULL}.
     \end{itemize}
-    \item \textbf{Step 3: Binary 1:N Relationships Mapping}
-    \begin{itemize}
-        \item \textbf{\texttt{Performs\_Analysis} (1:N):} Relation $\text{CODE\_ANALYSES}$ includes $\text{user\_id}$ referencing $\text{USERS}(\text{id})$ with \texttt{ON DELETE CASCADE}.
-        \item \textbf{\texttt{Contains\_Examples} (1:N):} Relation $\text{TOPIC\_EXAMPLES}$ includes $\text{topic\_id}$ referencing $\text{COMPLEXITY\_TOPICS}(\text{id})$ with \texttt{ON DELETE CASCADE}.
-        \item \textbf{\texttt{Generates\_Log} (1:N):} Relation $\text{ACTIVITY\_LOG}$ includes $\text{user\_id}$ referencing $\text{USERS}(\text{id})$ with \texttt{ON DELETE CASCADE}.
-        \item \textbf{\texttt{Manages\_Prompts} (1:N):} Relation $\text{ANALYSIS\_PROMPTS}$ includes $\text{updated\_by}$ referencing $\text{USERS}(\text{id})$ with \texttt{ON DELETE SET NULL}.
-    \end{itemize}
-    \item \textbf{Step 4: Binary M:N Relationship Mapping (\texttt{Bookmarks})}
-    \begin{itemize}
-        \item Applying Rule 5, create associative relation $\text{USER\_SAVED\_TOPICS}$.
-        \item Attributes: $\underline{\text{id}}$ (Surrogate PK), $\text{user\_id}$ (FK), $\text{topic\_id}$ (FK), $\text{note}$ (Descriptive), $\text{saved\_at}$ (Descriptive).
-        \item Foreign Keys: $\text{user\_id} \to \text{USERS}(\text{id})$ and $\text{topic\_id} \to \text{COMPLEXITY\_TOPICS}(\text{id})$ both with \texttt{ON DELETE CASCADE}.
-        \item Candidate Key: $\text{UNIQUE}(\text{user\_id}, \text{topic\_id})$ prevents duplicate bookmarks.
-    \end{itemize}
+    \item \textbf{Step 4: Binary M:N Relationship (\texttt{Bookmarks}):}
+    Associative relation \textbf{USER\_SAVED\_TOPICS} (\underline{\texttt{id}}, \texttt{user\_id}, \texttt{topic\_id}, \texttt{note}, \texttt{saved\_at}) with composite candidate key on (\texttt{user\_id}, \texttt{topic\_id}) and cascade delete rules.
 \end{enumerate}
 
 \section{Final Relational Schema}
-The complete relational schema expressed in formal academic database notation:
-
+The complete relational schema:
 \begin{enumerate}
-    \item \texttt{USERS}(\underline{\texttt{id}}, \texttt{name}, \texttt{email}, \texttt{password\_hash}, \texttt{last\_login\_at}, \texttt{role}, \texttt{status}, \texttt{analysis\_count}, \texttt{created\_at}, \texttt{updated\_at})
-    \begin{itemize}
-        \item \textbf{Primary Key:} \texttt{id}
-        \item \textbf{Candidate Key:} \texttt{email}
-    \end{itemize}
-    \item \texttt{USER\_PROFILES}(\underline{\texttt{id}}, \texttt{user\_id}, \texttt{headline}, \texttt{bio}, \texttt{location}, \texttt{avatar\_seed})
-    \begin{itemize}
-        \item \textbf{Primary Key:} \texttt{id}
-        \item \textbf{Foreign Key:} \texttt{user\_id} $\to$ \texttt{USERS(id)} \texttt{ON DELETE CASCADE}
-        \item \textbf{Candidate Key:} \texttt{user\_id}
-    \end{itemize}
-    \item \texttt{ANALYSIS\_PROMPTS}(\underline{\texttt{id}}, \texttt{name}, \texttt{prompt\_template}, \texttt{is\_active}, \texttt{version}, \texttt{updated\_by}, \texttt{created\_at}, \texttt{updated\_at})
-    \begin{itemize}
-        \item \textbf{Primary Key:} \texttt{id}
-        \item \textbf{Foreign Key:} \texttt{updated\_by} $\to$ \texttt{USERS(id)} \texttt{ON DELETE SET NULL}
-    \end{itemize}
-    \item \texttt{CODE\_ANALYSES}(\underline{\texttt{id}}, \texttt{user\_id}, \texttt{title}, \texttt{language}, \texttt{code\_text}, \texttt{code\_lines}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{summary}, \texttt{detailed\_analysis}, \texttt{detail\_mode}, \texttt{engine}, \texttt{prompt\_version}, \texttt{created\_at}, \texttt{updated\_at})
-    \begin{itemize}
-        \item \textbf{Primary Key:} \texttt{id}
-        \item \textbf{Foreign Key:} \texttt{user\_id} $\to$ \texttt{USERS(id)} \texttt{ON DELETE CASCADE}
-    \end{itemize}
-    \item \texttt{COMPLEXITY\_TOPICS}(\underline{\texttt{id}}, \texttt{topic\_name}, \texttt{slug}, \texttt{category}, \texttt{difficulty}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{summary}, \texttt{notes\_html}, \texttt{sort\_order}, \texttt{is\_published}, \texttt{created\_at}, \texttt{updated\_at})
-    \begin{itemize}
-        \item \textbf{Primary Key:} \texttt{id}
-        \item \textbf{Candidate Key:} \texttt{slug}
-    \end{itemize}
-    \item \texttt{TOPIC\_EXAMPLES}(\underline{\texttt{id}}, \texttt{topic\_id}, \texttt{title}, \texttt{language}, \texttt{code\_text}, \texttt{analysis\_html}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{sort\_order}, \texttt{created\_at})
-    \begin{itemize}
-        \item \textbf{Primary Key:} \texttt{id}
-        \item \textbf{Foreign Key:} \texttt{topic\_id} $\to$ \texttt{COMPLEXITY\_TOPICS(id)} \texttt{ON DELETE CASCADE}
-    \end{itemize}
-    \item \texttt{USER\_SAVED\_TOPICS}(\underline{\texttt{id}}, \texttt{user\_id}, \texttt{topic\_id}, \texttt{note}, \texttt{saved\_at})
-    \begin{itemize}
-        \item \textbf{Primary Key:} \texttt{id}
-        \item \textbf{Candidate Key:} (\texttt{user\_id}, \texttt{topic\_id})
-        \item \textbf{Foreign Keys:} \texttt{user\_id} $\to$ \texttt{USERS(id)}, \texttt{topic\_id} $\to$ \texttt{COMPLEXITY\_TOPICS(id)}
-    \end{itemize}
-    \item \texttt{ACTIVITY\_LOG}(\underline{\texttt{id}}, \texttt{user\_id}, \texttt{action}, \texttt{entity}, \texttt{entity\_id}, \texttt{detail}, \texttt{created\_at})
-    \begin{itemize}
-        \item \textbf{Primary Key:} \texttt{id}
-        \item \textbf{Foreign Key:} \texttt{user\_id} $\to$ \texttt{USERS(id)} \texttt{ON DELETE CASCADE}
-    \end{itemize}
-    \item \texttt{APP\_SETTINGS}(\underline{\texttt{setting\_key}}, \texttt{setting\_value}, \texttt{updated\_at})
-    \begin{itemize}
-        \item \textbf{Primary Key:} \texttt{setting\_key}
-    \end{itemize}
+    \item \textbf{USERS} (\underline{\texttt{id}}, \texttt{name}, \texttt{email}, \texttt{password\_hash}, \texttt{last\_login\_at}, \texttt{role}, \texttt{status}, \texttt{analysis\_count}, \texttt{created\_at}, \texttt{updated\_at})
+    \item \textbf{USER\_PROFILES} (\underline{\texttt{id}}, \texttt{user\_id}, \texttt{headline}, \texttt{bio}, \texttt{location}, \texttt{avatar\_seed})
+    \item \textbf{ANALYSIS\_PROMPTS} (\underline{\texttt{id}}, \texttt{name}, \texttt{prompt\_template}, \texttt{is\_active}, \texttt{version}, \texttt{updated\_by}, \texttt{created\_at}, \texttt{updated\_at})
+    \item \textbf{CODE\_ANALYSES} (\underline{\texttt{id}}, \texttt{user\_id}, \texttt{title}, \texttt{language}, \texttt{code\_text}, \texttt{code\_lines}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{summary}, \texttt{detailed\_analysis}, \texttt{detail\_mode}, \texttt{engine}, \texttt{prompt\_version}, \texttt{created\_at}, \texttt{updated\_at})
+    \item \textbf{COMPLEXITY\_TOPICS} (\underline{\texttt{id}}, \texttt{topic\_name}, \texttt{slug}, \texttt{category}, \texttt{difficulty}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{summary}, \texttt{notes\_html}, \texttt{sort\_order}, \texttt{is\_published}, \texttt{created\_at}, \texttt{updated\_at})
+    \item \textbf{TOPIC\_EXAMPLES} (\underline{\texttt{id}}, \texttt{topic\_id}, \texttt{title}, \texttt{language}, \texttt{code\_text}, \texttt{analysis\_html}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{sort\_order}, \texttt{created\_at})
+    \item \textbf{USER\_SAVED\_TOPICS} (\underline{\texttt{id}}, \texttt{user\_id}, \texttt{topic\_id}, \texttt{note}, \texttt{saved\_at})
+    \item \textbf{ACTIVITY\_LOG} (\underline{\texttt{id}}, \texttt{user\_id}, \texttt{action}, \texttt{entity}, \texttt{entity\_id}, \texttt{detail}, \texttt{created\_at})
+    \item \textbf{APP\_SETTINGS} (\underline{\texttt{setting\_key}}, \texttt{setting\_value}, \texttt{updated\_at})
 \end{enumerate}
 
 %-------------------- CHAPTER 5 --------------------
 \chapter{Functional Dependencies}
 
 \section{Identification of Functional Dependencies}
-Let $R$ be a relational schema. A functional dependency $X \rightarrow Y$ holds on $R$ if, for any legal instance $r(R)$, any two tuples having identical values for attribute set $X$ must also have identical values for attribute set $Y$.
-
-Based on the real-world operational rules of ComplexityUniverse, the complete set of non-trivial functional dependencies ($FDs$) across all 9 relations is identified as follows:
-
+A functional dependency $X \rightarrow Y$ holds on $R$ if tuples agreeing on $X$ must also agree on $Y$. The non-trivial dependencies across the 9 relations are:
 \begin{enumerate}
-    \item \textbf{Relation \texttt{users}:}
+    \item \textbf{\texttt{users}:}
     \begin{itemize}
-        \item $\mathrm{FD}_1: \texttt{id} \rightarrow \{\texttt{name}, \texttt{email}, \texttt{password\_hash}, \texttt{last\_login\_at}, \texttt{role}, \texttt{status}, \texttt{analysis\_count}, \texttt{created\_at}, \texttt{updated\_at}\}$
-        \item $\mathrm{FD}_2: \texttt{email} \rightarrow \{\texttt{id}, \texttt{name}, \texttt{password\_hash}, \texttt{last\_login\_at}, \texttt{role}, \texttt{status}, \texttt{analysis\_count}, \texttt{created\_at}, \texttt{updated\_at}\}$
+        \item $\mathrm{FD}_1$: \texttt{id} $\rightarrow$ \{\texttt{name}, \texttt{email}, \texttt{password\_hash}, \texttt{last\_login\_at}, \texttt{role}, \texttt{status}, \texttt{analysis\_count}, \texttt{created\_at}, \texttt{updated\_at}\}
+        \item $\mathrm{FD}_2$: \texttt{email} $\rightarrow$ \{\texttt{id}, \texttt{name}, \texttt{password\_hash}, \texttt{last\_login\_at}, \texttt{role}, \texttt{status}, \texttt{analysis\_count}, \texttt{created\_at}, \texttt{updated\_at}\}
     \end{itemize}
-    \item \textbf{Relation \texttt{user\_profiles}:}
+    \item \textbf{\texttt{user\_profiles}:}
     \begin{itemize}
-        \item $\mathrm{FD}_1: \texttt{id} \rightarrow \{\texttt{user\_id}, \texttt{headline}, \texttt{bio}, \texttt{location}, \texttt{avatar\_seed}\}$
-        \item $\mathrm{FD}_2: \texttt{user\_id} \rightarrow \{\texttt{id}, \texttt{headline}, \texttt{bio}, \texttt{location}, \texttt{avatar\_seed}\}$
+        \item $\mathrm{FD}_1$: \texttt{id} $\rightarrow$ \{\texttt{user\_id}, \texttt{headline}, \texttt{bio}, \texttt{location}, \texttt{avatar\_seed}\}
+        \item $\mathrm{FD}_2$: \texttt{user\_id} $\rightarrow$ \{\texttt{id}, \texttt{headline}, \texttt{bio}, \texttt{location}, \texttt{avatar\_seed}\}
     \end{itemize}
-    \item \textbf{Relation \texttt{analysis\_prompts}:}
+    \item \textbf{\texttt{analysis\_prompts}:}
     \begin{itemize}
-        \item $\mathrm{FD}_1: \texttt{id} \rightarrow \{\texttt{name}, \texttt{prompt\_template}, \texttt{is\_active}, \texttt{version}, \texttt{updated\_by}, \texttt{created\_at}, \texttt{updated\_at}\}$
+        \item $\mathrm{FD}_1$: \texttt{id} $\rightarrow$ \{\texttt{name}, \texttt{prompt\_template}, \texttt{is\_active}, \texttt{version}, \texttt{updated\_by}, \texttt{created\_at}, \texttt{updated\_at}\}
     \end{itemize}
-    \item \textbf{Relation \texttt{code\_analyses}:}
+    \item \textbf{\texttt{code\_analyses}:}
     \begin{itemize}
-        \item $\mathrm{FD}_1: \texttt{id} \rightarrow \{\texttt{user\_id}, \texttt{title}, \texttt{language}, \texttt{code\_text}, \texttt{code\_lines}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{summary}, \texttt{detailed\_analysis}, \texttt{detail\_mode}, \texttt{engine}, \texttt{prompt\_version}, \texttt{created\_at}, \texttt{updated\_at}\}$
+        \item $\mathrm{FD}_1$: \texttt{id} $\rightarrow$ \{\texttt{user\_id}, \texttt{title}, \texttt{language}, \texttt{code\_text}, \texttt{code\_lines}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{summary}, \texttt{detailed\_analysis}, \texttt{detail\_mode}, \texttt{engine}, \texttt{prompt\_version}, \texttt{created\_at}, \texttt{updated\_at}\}
     \end{itemize}
-    \item \textbf{Relation \texttt{complexity\_topics}:}
+    \item \textbf{\texttt{complexity\_topics}:}
     \begin{itemize}
-        \item $\mathrm{FD}_1: \texttt{id} \rightarrow \{\texttt{topic\_name}, \texttt{slug}, \texttt{category}, \texttt{difficulty}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{summary}, \texttt{notes\_html}, \texttt{sort\_order}, \texttt{is\_published}, \texttt{created\_at}, \texttt{updated\_at}\}$
-        \item $\mathrm{FD}_2: \texttt{slug} \rightarrow \{\texttt{id}, \texttt{topic\_name}, \texttt{category}, \texttt{difficulty}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{summary}, \texttt{notes\_html}, \texttt{sort\_order}, \texttt{is\_published}, \texttt{created\_at}, \texttt{updated\_at}\}$
+        \item $\mathrm{FD}_1$: \texttt{id} $\rightarrow$ \{\texttt{topic\_name}, \texttt{slug}, \texttt{category}, \texttt{difficulty}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{summary}, \texttt{notes\_html}, \texttt{sort\_order}, \texttt{is\_published}, \texttt{created\_at}, \texttt{updated\_at}\}
+        \item $\mathrm{FD}_2$: \texttt{slug} $\rightarrow$ \{\texttt{id}, \texttt{topic\_name}, \texttt{category}, \texttt{difficulty}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{summary}, \texttt{notes\_html}, \texttt{sort\_order}, \texttt{is\_published}, \texttt{created\_at}, \texttt{updated\_at}\}
     \end{itemize}
-    \item \textbf{Relation \texttt{topic\_examples}:}
+    \item \textbf{\texttt{topic\_examples}:}
     \begin{itemize}
-        \item $\mathrm{FD}_1: \texttt{id} \rightarrow \{\texttt{topic\_id}, \texttt{title}, \texttt{language}, \texttt{code\_text}, \texttt{analysis\_html}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{sort\_order}, \texttt{created\_at}\}$
+        \item $\mathrm{FD}_1$: \texttt{id} $\rightarrow$ \{\texttt{topic\_id}, \texttt{title}, \texttt{language}, \texttt{code\_text}, \texttt{analysis\_html}, \texttt{time\_complexity}, \texttt{space\_complexity}, \texttt{sort\_order}, \texttt{created\_at}\}
     \end{itemize}
-    \item \textbf{Relation \texttt{user\_saved\_topics}:}
+    \item \textbf{\texttt{user\_saved\_topics}:}
     \begin{itemize}
-        \item $\mathrm{FD}_1: \texttt{id} \rightarrow \{\texttt{user\_id}, \texttt{topic\_id}, \texttt{note}, \texttt{saved\_at}\}$
-        \item $\mathrm{FD}_2: \{\texttt{user\_id}, \texttt{topic\_id}\} \rightarrow \{\texttt{id}, \texttt{note}, \texttt{saved\_at}\}$
+        \item $\mathrm{FD}_1$: \texttt{id} $\rightarrow$ \{\texttt{user\_id}, \texttt{topic\_id}, \texttt{note}, \texttt{saved\_at}\}
+        \item $\mathrm{FD}_2$: \{\texttt{user\_id}, \texttt{topic\_id}\} $\rightarrow$ \{\texttt{id}, \texttt{note}, \texttt{saved\_at}\}
     \end{itemize}
-    \item \textbf{Relation \texttt{activity\_log}:}
+    \item \textbf{\texttt{activity\_log}:}
     \begin{itemize}
-        \item $\mathrm{FD}_1: \texttt{id} \rightarrow \{\texttt{user\_id}, \texttt{action}, \texttt{entity}, \texttt{entity\_id}, \texttt{detail}, \texttt{created\_at}\}$
+        \item $\mathrm{FD}_1$: \texttt{id} $\rightarrow$ \{\texttt{user\_id}, \texttt{action}, \texttt{entity}, \texttt{entity\_id}, \texttt{detail}, \texttt{created\_at}\}
     \end{itemize}
-    \item \textbf{Relation \texttt{app\_settings}:}
+    \item \textbf{\texttt{app\_settings}:}
     \begin{itemize}
-        \item $\mathrm{FD}_1: \texttt{setting\_key} \rightarrow \{\texttt{setting\_value}, \texttt{updated\_at}\}$
+        \item $\mathrm{FD}_1$: \texttt{setting\_key} $\rightarrow$ \{\texttt{setting\_value}, \texttt{updated\_at}\}
     \end{itemize}
 \end{enumerate}
 
 \section{Candidate Keys and Attribute Classification}
-An attribute set $K \subseteq R$ is a \textbf{Candidate Key} if:
-\begin{enumerate}
-    \item $K \rightarrow R$ holds under the attribute closure $K^+$ (Sufficiency);
-    \item For every proper subset $K' \subset K$, $K' \rightarrow R$ does not hold (Minimality).
-\end{enumerate}
+A candidate key $K$ satisfies $K^+ = R$ (sufficiency) and no proper subset determines $R$ (minimality). Table~\ref{tab:keys} summarizes keys and prime/non-prime attributes.
 
-Attributes belonging to any candidate key are termed \textbf{Prime Attributes}; all remaining attributes are \textbf{Non-Prime Attributes}.
-
-\subsection{Mathematical Attribute Closure Proofs}
-We demonstrate the attribute closure derivations for key relations using Armstrong's Axioms:
-
+\subsection{Attribute Closure Proofs}
 \begin{itemize}
-    \item \textbf{Closure of \texttt{\{email\}} in \texttt{users}:}
+    \item \textbf{Closure of $\{\text{email}\}$ in \texttt{users}:}
     \begin{align*}
-        \{\text{email}\}^+ &= \{\text{email}\} \quad (\text{by Reflexivity}) \\
-        &= \{\text{email}\} \cup \{\text{id}, \text{name}, \text{password\_hash}, \text{last\_login\_at}, \\
-        &\qquad\qquad\quad\; \text{role}, \text{status}, \text{analysis\_count}, \text{created\_at}, \text{updated\_at}\} \quad (\text{by } \mathrm{FD}_2) \\
-        &= R_{\text{users}}
+    \{\text{email}\}^+ &= \{\text{email}\} \cup \{\text{id}, \text{name}, \text{password\_hash}, \dots\} = R_{\text{users}}
     \end{align*}
-    Since no proper subset of $\{\text{email}\}$ exists, \texttt{email} is a minimal Candidate Key.
-    \item \textbf{Closure of \texttt{\{user\_id, topic\_id\}} in \texttt{user\_saved\_topics}:}
+    Since no proper subset exists, $\{\text{email}\}$ is a minimal candidate key.
+    \item \textbf{Closure of $\{\text{user\_id}, \text{topic\_id}\}$ in \texttt{user\_saved\_topics}:}
     \begin{align*}
-        \{\text{user\_id, topic\_id}\}^+ &= \{\text{user\_id, topic\_id}\} \quad (\text{by Reflexivity}) \\
-        &= \{\text{user\_id, topic\_id}\} \cup \{\text{id}, \text{note}, \text{saved\_at}\} \quad (\text{by } \mathrm{FD}_2) \\
-        &= R_{\text{user\_saved\_topics}}
+    \{\text{user\_id}, \text{topic\_id}\}^+ &= \{\text{user\_id}, \text{topic\_id}, \text{id}, \text{note}, \text{saved\_at}\} = R
     \end{align*}
-    Testing proper subsets:
-    \begin{itemize}
-        \item $\{\text{user\_id}\}^+ = \{\text{user\_id}\} \neq R$ (a user can save multiple topics);
-        \item $\{\text{topic\_id}\}^+ = \{\text{topic\_id}\} \neq R$ (a topic can be saved by multiple users).
-    \end{itemize}
-    Hence, $\{\text{user\_id, topic\_id}\}$ is an irreducible composite Candidate Key.
+    Neither $\{\text{user\_id}\}^+$ nor $\{\text{topic\_id}\}^+$ determines $R$, proving minimality.
 \end{itemize}
 
 \begin{table}[h!]
 \centering
 \small
-\begin{tabular}{p{3.2cm} p{2.8cm} p{3.5cm} p{4.2cm}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{5.0cm}}
 \toprule
-\textbf{Relation} & \textbf{Candidate Keys (CK)} & \textbf{Prime Attributes} & \textbf{Non-Prime Attributes} \\
+\textbf{Relation} & \textbf{Candidate Keys} & \textbf{Prime Attributes} & \textbf{Non-Prime Attributes} \\
 \midrule
-\texttt{users} & $\{\text{id}\}, \{\text{email}\}$ & \texttt{id}, \texttt{email} & \texttt{name, password\_hash, last\_login\_at, role, status, analysis\_count, created\_at, updated\_at} \\
-\texttt{user\_profiles} & $\{\text{id}\}, \{\text{user\_id}\}$ & \texttt{id}, \texttt{user\_id} & \texttt{headline, bio, location, avatar\_seed} \\
-\texttt{analysis\_prompts} & $\{\text{id}\}$ & \texttt{id} & \texttt{name, prompt\_template, is\_active, version, updated\_by, created\_at, updated\_at} \\
-\texttt{code\_analyses} & $\{\text{id}\}$ & \texttt{id} & \texttt{user\_id, title, language, code\_text, code\_lines, time\_complexity, space\_complexity, summary, detailed\_analysis, detail\_mode, engine, prompt\_version, created\_at, updated\_at} \\
-\texttt{complexity\_topics} & $\{\text{id}\}, \{\text{slug}\}$ & \texttt{id}, \texttt{slug} & \texttt{topic\_name, category, difficulty, time\_complexity, space\_complexity, summary, notes\_html, sort\_order, is\_published, created\_at, updated\_at} \\
-\texttt{topic\_examples} & $\{\text{id}\}$ & \texttt{id} & \texttt{topic\_id, title, language, code\_text, analysis\_html, time\_complexity, space\_complexity, sort\_order, created\_at} \\
-\texttt{user\_saved\_topics} & $\{\text{id}\}, \{\text{user\_id, topic\_id}\}$ & \texttt{id, user\_id, topic\_id} & \texttt{note, saved\_at} \\
-\texttt{activity\_log} & $\{\text{id}\}$ & \texttt{id} & \texttt{user\_id, action, entity, entity\_id, detail, created\_at} \\
-\texttt{app\_settings} & $\{\text{setting\_key}\}$ & \texttt{setting\_key} & \texttt{setting\_value, updated\_at} \\
+\texttt{users} & \{\texttt{id}\}, \{\texttt{email}\} & \texttt{id}, \texttt{email} & \texttt{name}, \texttt{password\_hash}, \texttt{role}, \dots \\
+\texttt{user\_profiles} & \{\texttt{id}\}, \{\texttt{user\_id}\} & \texttt{id}, \texttt{user\_id} & \texttt{headline}, \texttt{bio}, \texttt{location}, \texttt{avatar\_seed} \\
+\texttt{analysis\_prompts} & \{\texttt{id}\} & \texttt{id} & \texttt{name}, \texttt{prompt\_template}, \texttt{version}, \dots \\
+\texttt{code\_analyses} & \{\texttt{id}\} & \texttt{id} & \texttt{user\_id}, \texttt{code\_text}, \texttt{time\_complexity}, \dots \\
+\texttt{complexity\_topics} & \{\texttt{id}\}, \{\texttt{slug}\} & \texttt{id}, \texttt{slug} & \texttt{topic\_name}, \texttt{category}, \texttt{difficulty}, \dots \\
+\texttt{topic\_examples} & \{\texttt{id}\} & \texttt{id} & \texttt{topic\_id}, \texttt{title}, \texttt{code\_text}, \dots \\
+\texttt{user\_saved\_topics} & \{\texttt{id}\}, \{\texttt{user\_id}, \texttt{topic\_id}\} & \texttt{id}, \texttt{user\_id}, \texttt{topic\_id} & \texttt{note}, \texttt{saved\_at} \\
+\texttt{activity\_log} & \{\texttt{id}\} & \texttt{id} & \texttt{user\_id}, \texttt{action}, \texttt{entity}, \dots \\
+\texttt{app\_settings} & \{\texttt{setting\_key}\} & \texttt{setting\_key} & \texttt{setting\_value}, \texttt{updated\_at} \\
 \bottomrule
 \end{tabular}
-\caption{Candidate Keys and Attribute Classification Across All 9 Relations}
+\caption{Candidate Keys and Attribute Classification}
+\label{tab:keys}
 \end{table}
 
 \section{FD Analysis}
-Every functional dependency identified above is grounded in real-world application invariants:
+All functional dependencies reflect system business rules:
 \begin{itemize}
-    \item \textbf{Email Uniqueness in \texttt{users}:} In a modern web platform, an email represents a globally unique authentication credential. Therefore, knowing the email uniquely identifies the exact student tuple ($FD_2$).
-    \item \textbf{Composite Invariant in \texttt{user\_saved\_topics}:} A student either has bookmarked a specific curriculum topic or has not. They cannot bookmark the same topic under two conflicting notes; thus, the pair $(\text{user\_id}, \text{topic\_id})$ deterministically resolves the bookmark instance ($FD_2$).
-    \item \textbf{Slug Invariant in \texttt{complexity\_topics}:} Web routing in Next.js relies on unique URL paths (e.g., \texttt{/learn/binary-search}). Consequently, the URL slug uniquely resolves the curriculum record ($FD_2$).
+    \item \textbf{Email Uniqueness:} Registered emails serve as unique credentials; each email identifies exactly one user.
+    \item \textbf{Topic Slug Uniqueness:} Next.js dynamic routing (\texttt{/learn/[slug]}) requires unique slugs; each slug determines one curriculum module.
+    \item \textbf{Bookmark Composite Uniqueness:} A student either bookmarks a topic or does not; the pair (\texttt{user\_id}, \texttt{topic\_id}) uniquely identifies their note and timestamp.
 \end{itemize}
 
 %-------------------- CHAPTER 6 --------------------
 \chapter{Database Normalization}
 
-Database normalization is the formal mathematical process of decomposing relations to eliminate insertion, update, and deletion anomalies while eliminating unnecessary data redundancy.
-
 \section{Unnormalized Form (UNF)}
-Consider a hypothetical unnormalized monolithic relation $\text{UNF\_PLATFORM}$ representing the entire system:
-\begin{verbatim}
-UNF_PLATFORM(user_id, user_name, user_email, user_bio,
-             {analyses: [analysis_id, code_text, time_comp, space_comp]},
-             {bookmarks: [topic_id, topic_name, note]})
-\end{verbatim}
-
-\noindent\textbf{Anomalies inherent in UNF:}
+A monolithic unnormalized relation exhibits operational anomalies:
+\[
+\textbf{UNF\_PLATFORM} (\texttt{user\_id}, \texttt{email}, \{\texttt{analyses}\}, \{\texttt{bookmarks}\})
+\]
 \begin{enumerate}
-    \item \textbf{Insertion Anomaly:} A new curriculum topic (e.g., ``Dijkstra's Algorithm'') cannot be added to the platform until at least one user registers and saves it as a bookmark.
-    \item \textbf{Update Anomaly:} If a user modifies their account name or email, dozens of rows containing historical analyses must be redundantly updated. Any missed update creates inconsistent database states.
-    \item \textbf{Deletion Anomaly:} If a user deletes their sole saved code analysis, deleting the tuple accidentally deletes the user's account credentials and profile biography.
+    \item \textbf{Insertion Anomaly:} New educational topics cannot be recorded without an existing user bookmark.
+    \item \textbf{Update Anomaly:} Changing user details requires updating all historical analysis rows.
+    \item \textbf{Deletion Anomaly:} Deleting a user's sole analysis risks deleting account credentials.
 \end{enumerate}
 
 \section{First Normal Form (1NF)}
-\textbf{Formal Condition:} A relation $R$ is in 1NF if and only if all underlying domains contain only atomic (indivisible) scalar values, and there are no repeating groups or nested relation arrays.
-
-\noindent\textbf{Conversion to 1NF:}
-The repeating groups \texttt{analyses} and \texttt{bookmarks} are decomposed into separate relations. Multi-valued and nested structures are eliminated, ensuring every column contains single scalar data types (integers, varchars, timestamps).
+\textbf{Condition:} All attribute values are atomic; no repeating groups.
+Decomposing nested arrays into individual relations guarantees scalar columns (integers, strings, timestamps), placing all tables in 1NF.
 
 \section{Second Normal Form (2NF)}
-\textbf{Formal Condition:} A relation $R$ is in 2NF if and only if it is in 1NF and no non-prime attribute is partially dependent on any candidate key of $R$. Formally:
-\[
-\forall (X \rightarrow A) \in F, \quad A \notin \text{Prime}(R) \implies \nexists K \in \text{CK}(R) \text{ such that } X \subset K.
-\]
-
-\noindent\textbf{Analysis:}
-\begin{itemize}
-    \item For relations with single-attribute candidate keys (\texttt{users}, \texttt{user\_profiles}, \texttt{analysis\_prompts}, \texttt{code\_analyses}, \texttt{complexity\_topics}, \texttt{topic\_examples}, \texttt{activity\_log}, \texttt{app\_settings}), proper subsets of candidate keys cannot exist. Thus, partial dependencies are mathematically impossible.
-    \item In relation \texttt{user\_saved\_topics}, the candidate key is composite: $\{\text{user\_id, topic\_id}\}$. The non-prime attributes are \texttt{note} and \texttt{saved\_at}. A personal note applies strictly to the specific pairing of a user bookmarking a topic. Neither $\text{user\_id} \rightarrow \text{note}$ nor $\text{topic\_id} \rightarrow \text{note}$ holds. Hence, partial dependency does not exist, and 2NF is satisfied.
-\end{itemize}
+\textbf{Condition:} The relation is in 1NF and no non-prime attribute depends on a proper subset of any candidate key.
+Tables with single-attribute candidate keys satisfy 2NF trivially. In \texttt{user\_saved\_topics}, the candidate key is composite: \{\texttt{user\_id}, \texttt{topic\_id}\}. The non-prime attributes (\texttt{note}, \texttt{saved\_at}) depend on both attributes together, satisfying 2NF.
 
 \section{Third Normal Form (3NF)}
-\textbf{Formal Condition:} A relation $R$ is in 3NF if and only if it is in 2NF and for every non-trivial functional dependency $X \rightarrow A$, at least one of the following holds:
-\begin{enumerate}
-    \item $X$ is a superkey of $R$;
-    \item $A$ is a prime attribute of $R$ (Transitivity defense).
-\end{enumerate}
-
-\noindent\textbf{Analysis:}
-In all 9 relations, every determinant attribute set $X$ is either the primary key or a candidate key (superkey). No non-prime attribute determines another non-prime attribute. Therefore, transitive dependencies are completely absent, and 3NF is fully satisfied.
+\textbf{Condition:} In every dependency $X \rightarrow A$, either $X$ is a superkey or $A$ is a prime attribute.
+No non-prime attribute determines another non-prime attribute in any table. Transitive dependencies are absent, satisfying 3NF.
 
 \section{Boyce--Codd Normal Form (BCNF)}
-\textbf{Formal Condition:} A relation $R$ is in BCNF if and only if for every non-trivial functional dependency $X \rightarrow A$, $X$ is a superkey of $R$. BCNF eliminates all anomalies that 3NF allows when candidate keys overlap.
-
-\noindent\textbf{Rigorous Table-by-Table Verification:}
+\textbf{Condition:} For every non-trivial dependency $X \rightarrow A$, $X$ must be a superkey.
+In all 9 relations, every determinant is a primary key or candidate key:
 \begin{itemize}
-    \item \textbf{\texttt{users}:} Determinants are $\{\text{id}\}$ and $\{\text{email}\}$. Both are candidate keys $\implies$ \textbf{Satisfies BCNF}.
-    \item \textbf{\texttt{user\_profiles}:} Determinants are $\{\text{id}\}$ and $\{\text{user\_id}\}$. Both are candidate keys $\implies$ \textbf{Satisfies BCNF}.
-    \item \textbf{\texttt{analysis\_prompts}:} Determinant is $\{\text{id}\}$ (candidate key) $\implies$ \textbf{Satisfies BCNF}.
-    \item \textbf{\texttt{code\_analyses}:} Determinant is $\{\text{id}\}$ (candidate key) $\implies$ \textbf{Satisfies BCNF}.
-    \item \textbf{\texttt{complexity\_topics}:} Determinants are $\{\text{id}\}$ and $\{\text{slug}\}$. Both are candidate keys $\implies$ \textbf{Satisfies BCNF}.
-    \item \textbf{\texttt{topic\_examples}:} Determinant is $\{\text{id}\}$ (candidate key) $\implies$ \textbf{Satisfies BCNF}.
-    \item \textbf{\texttt{user\_saved\_topics}:} Determinants are $\{\text{id}\}$ and $\{\text{user\_id, topic\_id}\}$. Both are candidate keys $\implies$ \textbf{Satisfies BCNF}.
-    \item \textbf{\texttt{activity\_log}:} Determinant is $\{\text{id}\}$ (candidate key) $\implies$ \textbf{Satisfies BCNF}.
-    \item \textbf{\texttt{app\_settings}:} Determinant is $\{\text{setting\_key}\}$ (candidate key) $\implies$ \textbf{Satisfies BCNF}.
+    \item \texttt{users}: Determinants \{\texttt{id}\} and \{\texttt{email}\} are both candidate keys $\implies$ \textbf{BCNF}.
+    \item \texttt{user\_profiles}: Determinants \{\texttt{id}\} and \{\texttt{user\_id}\} are candidate keys $\implies$ \textbf{BCNF}.
+    \item \texttt{complexity\_topics}: Determinants \{\texttt{id}\} and \{\texttt{slug}\} are candidate keys $\implies$ \textbf{BCNF}.
+    \item \texttt{user\_saved\_topics}: Determinants \{\texttt{id}\} and \{\texttt{user\_id}, \texttt{topic\_id}\} are candidate keys $\implies$ \textbf{BCNF}.
+    \item All other tables have single primary key determinants $\implies$ \textbf{BCNF}.
 \end{itemize}
 
 \section{Final Normalized Schema}
-The normalization results demonstrate that all 9 tables achieve Boyce--Codd Normal Form:
+Table~\ref{tab:normalization} summarizes the normalized schema. Every decomposition preserves dependencies and guarantees lossless joins because the shared intersection is always a superkey of the decomposed relation.
 
 \begin{table}[h!]
 \centering
 \small
-\begin{tabular}{p{3.5cm} p{2.8cm} p{2.5cm} p{2.8cm} p{2.2cm}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{3.4cm} >{\raggedright\arraybackslash}p{3.2cm} c c c}
 \toprule
-\textbf{Relation Name} & \textbf{Candidate Keys} & \textbf{Normal Form} & \textbf{Lossless-Join} & \textbf{Dependency Preserved} \\
+\textbf{Relation} & \textbf{Candidate Keys} & \textbf{Normal Form} & \textbf{Lossless Join} & \textbf{Preserved} \\
 \midrule
 \texttt{users} & \texttt{id}, \texttt{email} & \textbf{BCNF} & Yes & Yes \\
 \texttt{user\_profiles} & \texttt{id}, \texttt{user\_id} & \textbf{BCNF} & Yes & Yes \\
@@ -829,127 +599,95 @@ The normalization results demonstrate that all 9 tables achieve Boyce--Codd Norm
 \texttt{code\_analyses} & \texttt{id} & \textbf{BCNF} & Yes & Yes \\
 \texttt{complexity\_topics} & \texttt{id}, \texttt{slug} & \textbf{BCNF} & Yes & Yes \\
 \texttt{topic\_examples} & \texttt{id} & \textbf{BCNF} & Yes & Yes \\
-\texttt{user\_saved\_topics} & \texttt{id}, \texttt{(user\_id, topic\_id)} & \textbf{BCNF} & Yes & Yes \\
+\texttt{user\_saved\_topics} & \texttt{id}, (\texttt{user\_id}, \texttt{topic\_id}) & \textbf{BCNF} & Yes & Yes \\
 \texttt{activity\_log} & \texttt{id} & \textbf{BCNF} & Yes & Yes \\
 \texttt{app\_settings} & \texttt{setting\_key} & \textbf{BCNF} & Yes & Yes \\
 \bottomrule
 \end{tabular}
-\caption{Final Normalized Schema Summary Across All 9 Relations}
+\caption{Final Normalized Schema Summary}
+\label{tab:normalization}
 \end{table}
-
-\noindent\textbf{Lossless-Join Verification:} In every decomposition $R_1 \Join R_2$, the shared intersection $R_1 \cap R_2$ forms a superkey of at least one sub-relation. For example, in decomposing $\text{USERS} \Join \text{USER\_PROFILES}$, the intersection is $\{\text{user\_id}\}$, which forms a unique candidate key in $\text{USER\_PROFILES}$. By the Lossless Decomposition Theorem, the join reconstructs the original instance without spurious tuples.
 
 %-------------------- CHAPTER 7 --------------------
 \chapter{Relational Integrity and Constraints}
 
-Relational integrity constraints enforce database validity, prevent invalid state transitions, and guarantee consistency across concurrent web operations:
-
+Relational constraints maintain database consistency across concurrent operations:
 \begin{enumerate}
-    \item \textbf{Domain Constraints:}
-    Attributes are restricted to rigorous physical data types matching their domain:
+    \item \textbf{Domain Constraints:} Enforce data types and ranges:
     \begin{itemize}
-        \item Integer domains: \texttt{TINYINT UNSIGNED} (1 byte, 0--255) for prompt versions, \texttt{INT UNSIGNED} (4 bytes) for users and topics, \texttt{BIGINT UNSIGNED} (8 bytes) for high-volume logs and analyses.
-        \item String domains: \texttt{VARCHAR(190)} for emails (compatible with InnoDB utf8mb4 indexing limits), \texttt{VARCHAR(255)} for secure bcrypt hashes.
-        \item Categorical constraints: \texttt{ENUM('user', 'admin')} in \texttt{users}, \texttt{ENUM('active', 'suspended')} in \texttt{users}, \texttt{ENUM('Beginner', 'Intermediate', 'Advanced')} in \texttt{complexity\_topics}, \texttt{ENUM('short', 'detailed')} in \texttt{code\_analyses}.
+        \item \textit{Integers:} \texttt{TINYINT UNSIGNED} (prompt versions), \texttt{INT UNSIGNED} (users, topics), \texttt{BIGINT UNSIGNED} (logs, analyses).
+        \item \textit{Enums:} \texttt{ENUM('user', 'admin')}, \texttt{ENUM('active', 'suspended')}, \texttt{ENUM('Beginner', 'Intermediate', 'Advanced')}, \texttt{ENUM('short', 'detailed')}.
+        \item \textit{Strings:} \texttt{VARCHAR(190)} for emails (compatible with utf8mb4 unique indexing).
     \end{itemize}
-    \item \textbf{Primary Key Constraints:}
-    Every table defines an explicit primary key using \texttt{PRIMARY KEY (id)} or \texttt{PRIMARY KEY (setting\_key)}. This guarantees that entity tuples remain distinctly addressable, and InnoDB creates clustered B+Tree indexes on these columns.
-    \item \textbf{Foreign Key Constraints:}
-    A total of 7 explicit foreign key constraints preserve referential integrity:
+    \item \textbf{Primary Key Constraints:} Explicit primary keys on all tables (\texttt{id} or \texttt{setting\_key}) create clustered B+Tree indexes.
+    \item \textbf{Foreign Key Constraints:} 7 explicit foreign keys preserve referential integrity:
     \begin{itemize}
-        \item \texttt{fk\_profile\_user}: \texttt{user\_profiles.user\_id} $\rightarrow$ \texttt{users.id};
-        \item \texttt{fk\_analyses\_user}: \texttt{code\_analyses.user\_id} $\rightarrow$ \texttt{users.id};
-        \item \texttt{fk\_examples\_topic}: \texttt{topic\_examples.topic\_id} $\rightarrow$ \texttt{complexity\_topics.id};
-        \item \texttt{fk\_saved\_user}: \texttt{user\_saved\_topics.user\_id} $\rightarrow$ \texttt{users.id};
-        \item \texttt{fk\_saved\_topic}: \texttt{user\_saved\_topics.topic\_id} $\rightarrow$ \texttt{complexity\_topics.id};
-        \item \texttt{fk\_log\_user}: \texttt{activity\_log.user\_id} $\rightarrow$ \texttt{users.id};
-        \item \texttt{fk\_prompt\_admin}: \texttt{analysis\_prompts.updated\_by} $\rightarrow$ \texttt{users.id}.
+        \item \texttt{user\_profiles(user\_id)} $\rightarrow$ \texttt{users(id)}
+        \item \texttt{code\_analyses(user\_id)} $\rightarrow$ \texttt{users(id)}
+        \item \texttt{topic\_examples(topic\_id)} $\rightarrow$ \texttt{complexity\_topics(id)}
+        \item \texttt{user\_saved\_topics(user\_id)} $\rightarrow$ \texttt{users(id)}
+        \item \texttt{user\_saved\_topics(topic\_id)} $\rightarrow$ \texttt{complexity\_topics(id)}
+        \item \texttt{activity\_log(user\_id)} $\rightarrow$ \texttt{users(id)}
+        \item \texttt{analysis\_prompts(updated\_by)} $\rightarrow$ \texttt{users(id)}
     \end{itemize}
     \item \textbf{\texttt{UNIQUE} Constraints:}
-    Prevent duplicate business keys:
     \begin{itemize}
-        \item \texttt{uq\_users\_email}: Guarantees email address uniqueness across all registered users.
-        \item \texttt{uq\_profile\_user}: Enforces a strict $1:1$ cardinality between users and user profiles.
-        \item \texttt{uq\_topics\_slug}: Guarantees uniqueness of URL paths for curriculum topics.
-        \item \texttt{uq\_saved\_user\_topic}: Guarantees that a user cannot save the same topic multiple times.
+        \item \texttt{uq\_users\_email}: Enforces unique user email addresses.
+        \item \texttt{uq\_profile\_user}: Enforces 1:1 user-to-profile cardinality.
+        \item \texttt{uq\_topics\_slug}: Guarantees unique URL paths for curriculum topics.
+        \item \texttt{uq\_saved\_user\_topic}: Composite uniqueness on (\texttt{user\_id}, \texttt{topic\_id}).
     \end{itemize}
-    \item \textbf{\texttt{NOT NULL} Constraints:}
-    Enforced on critical operational attributes (\texttt{email}, \texttt{password\_hash}, \texttt{time\_complexity}, \texttt{code\_text}, \texttt{topic\_name}) to prevent null value ambiguity.
-    \item \textbf{Referential Actions (\texttt{ON DELETE} / \texttt{ON UPDATE}):}
-    \begin{itemize}
-        \item \texttt{ON DELETE CASCADE}: Applied to \texttt{user\_profiles}, \texttt{code\_analyses}, \texttt{topic\_examples}, and \texttt{user\_saved\_topics}. When a user or topic is deleted, dependent records are atomically purged.
-        \item \texttt{ON DELETE SET NULL}: Applied to \texttt{analysis\_prompts(updated\_by)}. If an admin account is purged, the system retains the prompt record while safely nullifying the administrator reference.
-        \item \texttt{ON UPDATE CASCADE}: Applied to all foreign keys to propagate surrogate key updates automatically.
-    \end{itemize}
+    \item \textbf{\texttt{NOT NULL} Constraints:} Enforced on mandatory operational fields (\texttt{email}, \texttt{password\_hash}, \texttt{code\_text}, \texttt{time\_complexity}, \texttt{topic\_name}).
+    \item \textbf{Referential Actions:} \texttt{ON DELETE CASCADE} purges dependent rows when a user or topic is removed; \texttt{ON DELETE SET NULL} retains prompt records if an admin account is purged.
 \end{enumerate}
 
 %-------------------- CHAPTER 8 --------------------
 \chapter{MySQL Database Implementation}
 
 \section{Database Creation}
-The physical database is provisioned with UTF-8 multilingual 4-byte character encoding on MySQL 8.0:
+The database is initialized with UTF-8 4-byte encoding on MySQL 8.0:
 \begin{lstlisting}[language=SQL]
 CREATE DATABASE IF NOT EXISTS complexity_universe
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE complexity_universe;
 \end{lstlisting}
 
 \section{Table Creation}
-The complete Data Definition Language (DDL) statements creating all 9 tables:
+Key representative DDL statements illustrating table definitions, constraints, and generated columns (full scripts in Appendix A):
 
 \begin{lstlisting}[language=SQL]
 -- 1. users
 CREATE TABLE users (
-  id              INT UNSIGNED     NOT NULL AUTO_INCREMENT,
-  name            VARCHAR(100)     NOT NULL,
-  email           VARCHAR(190)     NOT NULL,
-  password_hash   VARCHAR(255)     NOT NULL,
-  last_login_at   DATETIME         NULL DEFAULT NULL,
-  role            ENUM('user','admin') NOT NULL DEFAULT 'user',
-  status          ENUM('active','suspended') NOT NULL DEFAULT 'active',
-  analysis_count  INT UNSIGNED     NOT NULL DEFAULT 0,
-  created_at      TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at      TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  id             INT UNSIGNED     NOT NULL AUTO_INCREMENT,
+  name           VARCHAR(100)     NOT NULL,
+  email          VARCHAR(190)     NOT NULL,
+  password_hash  VARCHAR(255)     NOT NULL,
+  last_login_at  DATETIME         NULL DEFAULT NULL,
+  role           ENUM('user','admin') NOT NULL DEFAULT 'user',
+  status         ENUM('active','suspended') NOT NULL DEFAULT 'active',
+  analysis_count INT UNSIGNED     NOT NULL DEFAULT 0,
+  created_at     TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at     TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uq_users_email (email),
   KEY idx_users_role (role)
 ) ENGINE=InnoDB;
 
--- 2. user_profiles (1 : 1 with users)
+-- 2. user_profiles (1:1 with users)
 CREATE TABLE user_profiles (
-  id           INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-  user_id      INT UNSIGNED  NOT NULL,
-  headline     VARCHAR(140)  NOT NULL DEFAULT 'Curious about the cost of code',
-  bio          VARCHAR(500)  NOT NULL DEFAULT '',
-  location     VARCHAR(100)  NOT NULL DEFAULT '',
-  avatar_seed  VARCHAR(60)   NOT NULL DEFAULT '',
+  id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id     INT UNSIGNED NOT NULL,
+  headline    VARCHAR(140) NOT NULL DEFAULT 'Curious about the cost of code',
+  bio         VARCHAR(500) NOT NULL DEFAULT '',
+  location    VARCHAR(100) NOT NULL DEFAULT '',
+  avatar_seed VARCHAR(60)  NOT NULL DEFAULT '',
   PRIMARY KEY (id),
   UNIQUE KEY uq_profile_user (user_id),
-  CONSTRAINT fk_profile_user
-    FOREIGN KEY (user_id) REFERENCES users (id)
+  CONSTRAINT fk_profile_user FOREIGN KEY (user_id) REFERENCES users (id)
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
--- 3. analysis_prompts (Versioned AI Prompts)
-CREATE TABLE analysis_prompts (
-  id              TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name            VARCHAR(80)      NOT NULL,
-  prompt_template MEDIUMTEXT       NOT NULL,
-  is_active       TINYINT(1)       NOT NULL DEFAULT 1,
-  version         INT UNSIGNED     NOT NULL DEFAULT 1,
-  updated_by      INT UNSIGNED     NULL,
-  created_at      TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at      TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  KEY idx_prompt_active (is_active),
-  CONSTRAINT fk_prompt_admin
-    FOREIGN KEY (updated_by) REFERENCES users (id)
-    ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
--- 4. code_analyses (Stored Generated Column)
+-- 3. code_analyses (Stored Generated Column)
 CREATE TABLE code_analyses (
   id                BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   user_id           INT UNSIGNED    NOT NULL,
@@ -970,174 +708,62 @@ CREATE TABLE code_analyses (
   PRIMARY KEY (id),
   KEY idx_analyses_user_created (user_id, created_at),
   KEY idx_analyses_complexity (time_complexity),
-  CONSTRAINT fk_analyses_user
-    FOREIGN KEY (user_id) REFERENCES users (id)
+  CONSTRAINT fk_analyses_user FOREIGN KEY (user_id) REFERENCES users (id)
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
--- 5. complexity_topics (Learn Library)
-CREATE TABLE complexity_topics (
-  id               INT UNSIGNED     NOT NULL AUTO_INCREMENT,
-  topic_name       VARCHAR(120)     NOT NULL,
-  slug             VARCHAR(140)     NOT NULL,
-  category         VARCHAR(60)      NOT NULL DEFAULT 'Fundamentals',
-  difficulty       ENUM('Beginner','Intermediate','Advanced') NOT NULL DEFAULT 'Beginner',
-  time_complexity  VARCHAR(40)      NULL DEFAULT NULL,
-  space_complexity VARCHAR(40)      NULL DEFAULT NULL,
-  summary          VARCHAR(300)     NOT NULL DEFAULT '',
-  notes_html       MEDIUMTEXT       NOT NULL,
-  sort_order       SMALLINT         NOT NULL DEFAULT 0,
-  is_published     TINYINT(1)       NOT NULL DEFAULT 1,
-  created_at       TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at       TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  UNIQUE KEY uq_topics_slug (slug),
-  KEY idx_topics_category (category),
-  FULLTEXT KEY ft_topics_search (topic_name, summary, notes_html)
-) ENGINE=InnoDB;
-
--- 6. topic_examples
-CREATE TABLE topic_examples (
-  id               INT UNSIGNED     NOT NULL AUTO_INCREMENT,
-  topic_id         INT UNSIGNED     NOT NULL,
-  title            VARCHAR(140)     NOT NULL,
-  language         VARCHAR(30)      NOT NULL DEFAULT 'javascript',
-  code_text        MEDIUMTEXT       NOT NULL,
-  analysis_html    MEDIUMTEXT       NOT NULL,
-  time_complexity  VARCHAR(40)      NULL DEFAULT NULL,
-  space_complexity VARCHAR(40)      NULL DEFAULT NULL,
-  sort_order       SMALLINT         NOT NULL DEFAULT 0,
-  created_at       TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  KEY idx_examples_topic (topic_id),
-  CONSTRAINT fk_examples_topic
-    FOREIGN KEY (topic_id) REFERENCES complexity_topics (id)
-    ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
--- 7. user_saved_topics (Associative Entity)
+-- 4. user_saved_topics (M:N Associative Entity)
 CREATE TABLE user_saved_topics (
-  id        BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  user_id   INT UNSIGNED    NOT NULL,
-  topic_id  INT UNSIGNED    NOT NULL,
-  note      VARCHAR(255)    NOT NULL DEFAULT '',
-  saved_at  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  id       BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id  INT UNSIGNED    NOT NULL,
+  topic_id INT UNSIGNED    NOT NULL,
+  note     VARCHAR(255)    NOT NULL DEFAULT '',
+  saved_at TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uq_saved_user_topic (user_id, topic_id),
-  KEY idx_saved_topic (topic_id),
-  CONSTRAINT fk_saved_user
-    FOREIGN KEY (user_id) REFERENCES users (id)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT fk_saved_topic
-    FOREIGN KEY (topic_id) REFERENCES complexity_topics (id)
-    ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
--- 8. activity_log
-CREATE TABLE activity_log (
-  id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  user_id    INT UNSIGNED    NULL,
-  action     VARCHAR(40)     NOT NULL,
-  entity     VARCHAR(40)     NOT NULL,
-  entity_id  BIGINT UNSIGNED NULL,
-  detail     VARCHAR(255)    NOT NULL DEFAULT '',
-  created_at TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  KEY idx_log_user_created (user_id, created_at),
-  CONSTRAINT fk_log_user
-    FOREIGN KEY (user_id) REFERENCES users (id)
-    ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
--- 9. app_settings
-CREATE TABLE app_settings (
-  setting_key   VARCHAR(60)  NOT NULL,
-  setting_value TEXT         NOT NULL,
-  updated_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (setting_key)
+  CONSTRAINT fk_saved_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+  CONSTRAINT fk_saved_topic FOREIGN KEY (topic_id) REFERENCES complexity_topics (id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 \end{lstlisting}
 
 \section{Data Insertion}
-Sample production data populations demonstrating initialization:
-
+Sample data insertions demonstrating platform setup:
 \begin{lstlisting}[language=SQL]
 -- Insert Team Accounts
-INSERT INTO users (id, name, email, password_hash, role)
-VALUES (1, 'System Administrator', 'admin@complexity.io',
-        '$2a$10$7Z8qMv2C1Z6.5qZq8Yw1ReY5v9bF9mN0x2W3u7V8c1B2N3M4K5L6O', 'admin'),
-       (2, 'Animesh Gupta', 'animesh@iiitbhopal.ac.in',
-        '$2a$10$7Z8qMv2C1Z6.5qZq8Yw1ReY5v9bF9mN0x2W3u7V8c1B2N3M4K5L6O', 'user'),
-       (3, 'Aditya Chaudhary', 'aditya@iiitbhopal.ac.in',
-        '$2a$10$7Z8qMv2C1Z6.5qZq8Yw1ReY5v9bF9mN0x2W3u7V8c1B2N3M4K5L6O', 'user'),
-       (4, 'Ritik Raj', 'ritik@iiitbhopal.ac.in',
-        '$2a$10$7Z8qMv2C1Z6.5qZq8Yw1ReY5v9bF9mN0x2W3u7V8c1B2N3M4K5L6O', 'user'),
-       (5, 'Gaurav Kumar Singh', 'gaurav@iiitbhopal.ac.in',
-        '$2a$10$7Z8qMv2C1Z6.5qZq8Yw1ReY5v9bF9mN0x2W3u7V8c1B2N3M4K5L6O', 'user');
+INSERT INTO users (id, name, email, password_hash, role) VALUES
+  (1, 'System Administrator', 'admin@complexity.io', '$2a$10$hash...', 'admin'),
+  (2, 'Animesh Gupta', 'animesh@iiitbhopal.ac.in', '$2a$10$hash...', 'user'),
+  (3, 'Aditya Chaudhary', 'aditya@iiitbhopal.ac.in', '$2a$10$hash...', 'user'),
+  (4, 'Ritik Raj', 'ritik@iiitbhopal.ac.in', '$2a$10$hash...', 'user'),
+  (5, 'Gaurav Kumar Singh', 'gaurav@iiitbhopal.ac.in', '$2a$10$hash...', 'user');
 
 -- Insert Curriculum Topic
 INSERT INTO complexity_topics 
-  (id, topic_name, slug, category, difficulty, time_complexity, 
-   space_complexity, summary, notes_html, sort_order)
+  (id, topic_name, slug, category, difficulty, time_complexity, space_complexity, summary, notes_html, sort_order)
 VALUES 
-  (1, 'Binary Search', 'binary-search', 'Searching', 'Beginner', 
-   'O(log n)', 'O(1)',
-   'Divide-and-conquer logarithmic search on sorted arrays.',
-   '<p>Binary search eliminates half the remaining search space at every step.</p>', 
-   1);
-
--- Insert Runnable Example
-INSERT INTO topic_examples 
-  (id, topic_id, title, language, code_text, 
-   analysis_html, time_complexity, space_complexity)
-VALUES 
-  (1, 1, 'Iterative Binary Search', 'javascript',
-   'function binarySearch(arr, target) {
-     let left = 0, right = arr.length - 1;
-     while (left <= right) {
-       let mid = Math.floor((left + right) / 2);
-       if (arr[mid] === target) return mid;
-       else if (arr[mid] < target) left = mid + 1;
-       else right = mid - 1;
-     }
-     return -1;
-   }',
-   '<p>Each iteration halves array bounds: T(n) = T(n/2) + O(1) -> O(log n).</p>', 
-   'O(log n)', 'O(1)');
-
--- Insert App Settings
-INSERT INTO app_settings (setting_key, setting_value)
-VALUES ('gemini_model', 'gemini-2.5-flash'),
-       ('max_code_length', '20000');
+  (1, 'Binary Search', 'binary-search', 'Searching', 'Beginner', 'O(log n)', 'O(1)',
+   'Divide-and-conquer logarithmic search on sorted arrays.', '<p>Halves search space each step.</p>', 1);
 \end{lstlisting}
 
 \section{Data Modification and Deletion}
-Demonstrating runtime data modifications and cascade purges:
-
+Demonstrating runtime updates and cascade deletions:
 \begin{lstlisting}[language=SQL]
--- 1. Modify User Profile Headline & Location
+-- Update User Profile
 UPDATE user_profiles
-   SET headline = 'Competitive Programmer & Full-Stack Developer',
-       location = 'Bhopal, India'
+   SET headline = 'Competitive Programmer', location = 'Bhopal, India'
  WHERE user_id = 2;
 
--- 2. Modify Topic Difficulty & Publish State
-UPDATE complexity_topics
-   SET difficulty = 'Intermediate',
-       is_published = 1
- WHERE id = 1;
-
--- 3. Atomically Delete Saved Analysis (Triggers Counter Decrement)
+-- Cascade Deletion (Triggers Counter Decrement)
 DELETE FROM code_analyses WHERE id = 101 AND user_id = 2;
 \end{lstlisting}
 
 \section{Sample Database Contents}
-Tabular presentation of sample database records:
+Tables~\ref{tab:users_sample} and~\ref{tab:analyses_sample} show representative sample records from MySQL.
 
 \begin{table}[h!]
 \centering
 \small
-\begin{tabular}{r p{3.8cm} p{4.6cm} p{1.5cm} r}
+\begin{tabular}{r >{\raggedright\arraybackslash}p{3.8cm} >{\raggedright\arraybackslash}p{4.6cm} p{1.5cm} r}
 \toprule
 \textbf{ID} & \textbf{Name} & \textbf{Email} & \textbf{Role} & \textbf{Analysis Count} \\
 \midrule
@@ -1149,12 +775,13 @@ Tabular presentation of sample database records:
 \bottomrule
 \end{tabular}
 \caption{Sample Contents of \texttt{users} Table}
+\label{tab:users_sample}
 \end{table}
 
 \begin{table}[h!]
 \centering
 \small
-\begin{tabular}{r r p{3.5cm} p{2cm} p{2cm} r}
+\begin{tabular}{r r >{\raggedright\arraybackslash}p{3.5cm} p{2cm} p{2cm} r}
 \toprule
 \textbf{ID} & \textbf{User ID} & \textbf{Title} & \textbf{Time Comp.} & \textbf{Space Comp.} & \textbf{Lines} \\
 \midrule
@@ -1165,103 +792,85 @@ Tabular presentation of sample database records:
 \bottomrule
 \end{tabular}
 \caption{Sample Contents of \texttt{code\_analyses} Table}
+\label{tab:analyses_sample}
 \end{table}
 
 \section{SQL Query Implementation}
-Ten categories of complex SQL queries answering domain business questions:
+Ten SQL queries demonstrating required curriculum concepts:
 
-\subsection{Query 1: Simple SELECT with Filtering Conditions}
-\textbf{Purpose:} Retrieve all published educational topics categorized under ``Searching'' with Beginner difficulty.
+\paragraph{Query 1: Simple SELECT with Filtering}
+Retrieve published educational topics under ``Searching'' with Beginner difficulty:
 \begin{lstlisting}[language=SQL]
 SELECT id, topic_name, slug, difficulty, time_complexity
   FROM complexity_topics
- WHERE is_published = 1
-   AND category = 'Searching'
-   AND difficulty = 'Beginner';
+ WHERE is_published = 1 AND category = 'Searching' AND difficulty = 'Beginner';
 \end{lstlisting}
 
-\subsection{Query 2: Sorting Using ORDER BY}
-\textbf{Purpose:} Retrieve saved analyses ordered by physical code line count in descending order, then by creation date.
+\paragraph{Query 2: Sorting using ORDER BY}
+Retrieve analyses sorted by line count and creation date descending:
 \begin{lstlisting}[language=SQL]
 SELECT id, user_id, title, language, code_lines, time_complexity, created_at
   FROM code_analyses
- ORDER BY code_lines DESC, created_at DESC
- LIMIT 10;
+ ORDER BY code_lines DESC, created_at DESC LIMIT 10;
 \end{lstlisting}
 
-\subsection{Query 3: Aggregate Functions (COUNT, SUM, AVG, MIN, MAX)}
-\textbf{Purpose:} Compute comprehensive code metrics across all analyzed snippets.
+\paragraph{Query 3: Aggregate Functions (COUNT, AVG, MIN, MAX)}
+Compute aggregate line metrics across stored analyses:
 \begin{lstlisting}[language=SQL]
-SELECT COUNT(*)                AS total_analyses,
-       AVG(code_lines)         AS average_code_lines,
-       MIN(code_lines)         AS minimum_code_lines,
-       MAX(code_lines)         AS maximum_code_lines
+SELECT COUNT(*) AS total_analyses, AVG(code_lines) AS avg_lines,
+       MIN(code_lines) AS min_lines, MAX(code_lines) AS max_lines
   FROM code_analyses;
 \end{lstlisting}
 
-\subsection{Query 4: Grouping with GROUP BY and HAVING}
-\textbf{Purpose:} Group analyses by time complexity class and filter for classes occurring more than twice.
+\paragraph{Query 4: Grouping with GROUP BY and HAVING}
+Group analyses by time complexity and filter classes with at least 2 occurrences:
 \begin{lstlisting}[language=SQL]
-SELECT time_complexity,
-       COUNT(*) AS total_count,
-       ROUND(AVG(code_lines), 1) AS avg_lines
+SELECT time_complexity, COUNT(*) AS total_count, ROUND(AVG(code_lines), 1) AS avg_lines
   FROM code_analyses
  GROUP BY time_complexity
 HAVING total_count >= 2
  ORDER BY total_count DESC;
 \end{lstlisting}
 
-\subsection{Query 5: Table Joins (INNER JOIN and LEFT JOIN)}
-\textbf{Purpose:} Retrieve comprehensive user profile records and their current saved bookmark counts via a LEFT JOIN.
+\paragraph{Query 5: Table Joins (INNER and LEFT JOIN)}
+Retrieve user profiles along with total saved bookmarks:
 \begin{lstlisting}[language=SQL]
-SELECT u.id, u.name, u.email, p.headline, p.location,
-       COUNT(s.id) AS total_bookmarks
+SELECT u.id, u.name, u.email, p.headline, COUNT(s.id) AS total_bookmarks
   FROM users u
   LEFT JOIN user_profiles p ON p.user_id = u.id
   LEFT JOIN user_saved_topics s ON s.user_id = u.id
- GROUP BY u.id, u.name, u.email, p.headline, p.location;
+ GROUP BY u.id, u.name, u.email, p.headline;
 \end{lstlisting}
 
-\subsection{Query 6: Nested Queries and Subqueries}
-\textbf{Purpose:} Find all users whose personal analysis count exceeds the system-wide average.
+\paragraph{Query 6: Nested Subquery}
+Find users whose personal analysis count exceeds the platform average:
 \begin{lstlisting}[language=SQL]
-SELECT id, name, email, analysis_count
-  FROM users
- WHERE analysis_count > (
-       SELECT AVG(analysis_count) FROM users
- );
+SELECT id, name, email, analysis_count FROM users
+ WHERE analysis_count > (SELECT AVG(analysis_count) FROM users);
 \end{lstlisting}
 
-\subsection{Query 7: Set Membership Using IN and EXISTS}
-\textbf{Purpose:} Identify curriculum topics that have been bookmarked by at least one administrator using \texttt{EXISTS}.
+\paragraph{Query 7: Set Membership using EXISTS}
+Find topics bookmarked by administrators using an \texttt{EXISTS} subquery:
 \begin{lstlisting}[language=SQL]
-SELECT t.id, t.topic_name, t.category
-  FROM complexity_topics t
+SELECT t.id, t.topic_name, t.category FROM complexity_topics t
  WHERE EXISTS (
-       SELECT 1
-         FROM user_saved_topics s
-         JOIN users u ON u.id = s.user_id
-        WHERE s.topic_id = t.id
-          AND u.role = 'admin'
+   SELECT 1 FROM user_saved_topics s JOIN users u ON u.id = s.user_id
+    WHERE s.topic_id = t.id AND u.role = 'admin'
  );
 \end{lstlisting}
 
-\subsection{Query 8: Multi-Table Join across Three Relations}
-\textbf{Purpose:} Extract user names, bookmarked topic titles, and personal study notes across \texttt{users}, \texttt{user\_saved\_topics}, and \texttt{complexity\_topics}.
+\paragraph{Query 8: Multi-Table Join across Three Relations}
+Join users, bookmarks, and curriculum topics to display study notes:
 \begin{lstlisting}[language=SQL]
-SELECT u.name AS student_name,
-       t.topic_name,
-       t.difficulty,
-       s.note AS personal_study_note,
-       s.saved_at
+SELECT u.name AS student_name, t.topic_name, s.note, s.saved_at
   FROM user_saved_topics s
   JOIN users u ON u.id = s.user_id
   JOIN complexity_topics t ON t.id = s.topic_id
  ORDER BY s.saved_at DESC;
 \end{lstlisting}
 
-\subsection{Query 9: Business Intelligence Query (Algorithmic Cost Distribution)}
-\textbf{Purpose:} Aggregate analysis counts into performance cost grades (fast, moderate, heavy, severe) to inform student curriculum guidance.
+\paragraph{Query 9: Business Intelligence Query (Algorithmic Cost Distribution)}
+Categorize analyses into performance tiers using a \texttt{CASE} statement:
 \begin{lstlisting}[language=SQL]
 SELECT CASE
          WHEN time_complexity IN ('O(1)', 'O(log n)') THEN 'Fast (Optimal)'
@@ -1271,52 +880,43 @@ SELECT CASE
        END AS algorithmic_grade,
        COUNT(*) AS total_algorithms,
        ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM code_analyses), 2) AS percentage_share
-  FROM code_analyses
- GROUP BY algorithmic_grade
- ORDER BY total_algorithms DESC;
+  FROM code_analyses GROUP BY algorithmic_grade ORDER BY total_algorithms DESC;
 \end{lstlisting}
 
-\subsection{Query 10: Database Views Implementation}
-\textbf{Purpose:} Query the production view \texttt{v\_user\_overview} to render complete user dashboard credentials and calculated developer ranks.
+\paragraph{Query 10: Analytical View Query}
+Query the pre-compiled \texttt{v\_user\_overview} view for user rank metrics:
 \begin{lstlisting}[language=SQL]
 SELECT id, name, email, headline, rank_label, saved_topic_count
-  FROM v_user_overview
- WHERE status = 'active';
+  FROM v_user_overview WHERE status = 'active';
 \end{lstlisting}
 
 \section{Advanced DBMS Features}
 
-\subsection{1. Production Database Views (5 Views)}
-Five analytical views encapsulate complex joins and groupings:
+\subsection{Database Views}
+Five production views simplify complex joins:
 \begin{itemize}
-    \item \texttt{v\_user\_overview}: Joins \texttt{users} and \texttt{user\_profiles}, calculates total bookmarks, and computes dynamic rank labels (\textit{Administrator, Power analyst, Regular analyst, Newcomer}).
-    \item \texttt{v\_analysis\_feed}: Combines \texttt{code\_analyses} and \texttt{users}, categorizing results into algorithmic cost grades (\textit{excellent, good, heavy, severe}).
-    \item \texttt{v\_topic\_overview}: Joins \texttt{complexity\_topics} with correlated subqueries calculating total runnable examples and community bookmark counts.
-    \item \texttt{v\_user\_saved\_topics}: Provides denormalized bookmark feeds with topic titles and summaries for instant dashboard loading.
-    \item \texttt{v\_complexity\_distribution}: Groups analyses by time complexity buckets (\textit{fast, moderate, slow}) to power dashboard distribution telemetry.
+    \item \texttt{v\_user\_overview}: Combines user profiles, bookmark counts, and developer ranks.
+    \item \texttt{v\_analysis\_feed}: Categorizes analyses into performance tiers.
+    \item \texttt{v\_topic\_overview}: Computes example and bookmark counts per topic.
+    \item \texttt{v\_user\_saved\_topics}: Provides denormalized bookmark feeds for the dashboard.
+    \item \texttt{v\_complexity\_distribution}: Groups analyses by complexity buckets for telemetry.
 \end{itemize}
 
-\subsection{2. Automated Database Triggers (10 Triggers)}
-Ten autonomous triggers enforce business integrity at the database engine layer:
-\begin{enumerate}
-    \item \texttt{trg\_users\_before\_insert}: Normalizes emails to lowercase and trims name strings.
-    \item \texttt{trg\_users\_after\_insert}: Automatically creates linked \texttt{user\_profiles} with MD5 avatar seeds and logs a registration event in \texttt{activity\_log}.
-    \item \texttt{trg\_users\_before\_update}: Enforces email normalization upon updates.
-    \item \texttt{trg\_analyses\_after\_insert}: Increments \texttt{users.analysis\_count} and writes an audit event.
-    \item \texttt{trg\_analyses\_after\_delete}: Decrements \texttt{users.analysis\_count} safely and logs the deletion.
-    \item \texttt{trg\_topics\_before\_insert}: Automatically converts topic titles into URL-safe slugs.
-    \item \texttt{trg\_topics\_before\_update}: Updates \texttt{updated\_at} and guarantees slug presence.
-    \item \texttt{trg\_saved\_after\_insert}: Logs bookmarking actions into \texttt{activity\_log}.
-    \item \texttt{trg\_saved\_after\_delete}: Logs bookmark removals into \texttt{activity\_log}.
-    \item \texttt{trg\_prompt\_before\_update}: Automatically increments the prompt version integer by 1 for administrative auditing.
-\end{enumerate}
+\subsection{Database Triggers}
+Ten triggers enforce rules autonomously at the database layer:
+\begin{itemize}
+    \item \texttt{trg\_users\_before\_insert} / \texttt{update}: Normalizes emails to lowercase.
+    \item \texttt{trg\_users\_after\_insert}: Auto-provisions matching \texttt{user\_profiles} and logs registration.
+    \item \texttt{trg\_analyses\_after\_insert} / \texttt{delete}: Increments/decrements \texttt{users.analysis\_count}.
+    \item \texttt{trg\_topics\_before\_insert} / \texttt{update}: Auto-generates URL slugs from titles.
+    \item \texttt{trg\_saved\_after\_insert} / \texttt{delete}: Records bookmark audit events.
+    \item \texttt{trg\_prompt\_before\_update}: Automatically increments prompt version by 1.
+\end{itemize}
 
 \begin{lstlisting}[language=SQL]
--- Example Trigger: Auto-Increment Prompt Version on Admin Mutation
 DELIMITER $$
 CREATE TRIGGER trg_prompt_before_update
-BEFORE UPDATE ON analysis_prompts
-FOR EACH ROW
+BEFORE UPDATE ON analysis_prompts FOR EACH ROW
 BEGIN
   SET NEW.version    = OLD.version + 1;
   SET NEW.updated_at = CURRENT_TIMESTAMP;
@@ -1324,139 +924,80 @@ END$$
 DELIMITER ;
 \end{lstlisting}
 
-\subsection{3. Stored Generated Columns}
-In \texttt{code\_analyses}, the line count attribute is evaluated directly on-disk via MySQL's virtual generated expression:
+\subsection{Stored Generated Columns}
+Evaluates line counts directly on-disk via MySQL without application runtime parsing:
 \[
 \text{code\_lines} = \text{CHAR\_LENGTH}(\text{code\_text}) - \text{CHAR\_LENGTH}(\text{REPLACE}(\text{code\_text}, \text{'\textbackslash n'}, \text{''})) + 1
 \]
-Marked with \texttt{STORED}, MySQL computes this integer upon tuple insertion and indexes it, avoiding run-time application parsing.
 
-\subsection{4. ACID Transactions}
-Multi-step operations execute inside strict ACID transaction boundaries:
-\begin{lstlisting}[language=JavaScript]
-const conn = await pool.getConnection();
-try {
-  await conn.beginTransaction();
-  await conn.query("INSERT INTO users ...", [...]);
-  // Triggers fire automatically within the transaction
-  await conn.commit();
-} catch (err) {
-  await conn.rollback();
-  throw err;
-} finally {
-  conn.release();
-}
-\end{lstlisting}
+\subsection{ACID Transactions}
+Multi-step operations execute inside strict transaction boundaries via \texttt{conn.beginTransaction()}, \texttt{conn.commit()}, and \texttt{conn.rollback()}.
 
 %-------------------- CHAPTER 9 --------------------
 \chapter{Application Development}
 
 \section{System Architecture}
-ComplexityUniverse is constructed as a modern, decoupled full-stack architecture built on Next.js 16 (App Router) and deployed with cloud-hosted relational persistence and artificial intelligence microservices:
-
-\begin{center}
-\small
-\begin{tabular}{|p{13.2cm}|}
-\hline
-\centering \textbf{Client Browser Layer} \tabularnewline
-\centering React 19 Components $\bullet$ Framer Motion Animations $\bullet$ HTML5 Canvas Particle Field $\bullet$ Vanilla CSS Tokens \tabularnewline
-\hline
-\centering $\Updownarrow$ \textit{HTTPS REST JSON Requests / Secure httpOnly JWT Cookies} \tabularnewline
-\hline
-\centering \textbf{Next.js 16 Serverless Application Layer (Node.js 20+)} \tabularnewline
-\centering Route Handlers: \texttt{/api/analyze}, \texttt{/api/analyses}, \texttt{/api/topics}, \texttt{/api/profile}, \texttt{/api/auth/*}, \texttt{/api/admin/*} \tabularnewline
-\hline
-\centering $\swarrow$ \textit{mysql2 Connection Pool (SSL/TLS ca.pem)} \quad\quad \textit{REST API JSON Schema} $\searrow$ \tabularnewline
-\hline
-\centering \textbf{Aiven Cloud MySQL 8.0 Engine} \quad\quad\quad\quad \textbf{Google Gemini AI Gateway} \tabularnewline
-\centering 9 BCNF Tables $\bullet$ 5 Views $\bullet$ 10 Triggers \quad\quad \texttt{gemini-2.5-flash} / \texttt{gemini-2.5-pro} \tabularnewline
-\hline
-\end{tabular}
-\end{center}
+ComplexityUniverse is constructed on Next.js 16 (App Router) using a decoupled architecture:
+\begin{itemize}
+    \item \textbf{Frontend Layer:} React 19 Client Components with Vanilla CSS design tokens.
+    \item \textbf{Serverless API Layer:} Next.js Route Handlers managing authentication, database queries, and AI dispatch.
+    \item \textbf{Persistence Layer:} MySQL 8.0 on Aiven Cloud with SSL certificate authentication.
+    \item \textbf{AI Reasoning Layer:} Google Gemini API gateway enforcing structured JSON schema responses.
+\end{itemize}
 
 \section{Front-End Technologies}
 \begin{itemize}
-    \item \textbf{Framework:} Next.js 16 App Router utilizing Turbopack for high-speed module compilation.
-    \item \textbf{UI Components:} React 19 Client and Server Components with Framer Motion for micro-interactions and accordions.
-    \item \textbf{Styling Architecture:} 100\% Vanilla CSS following strict Don't-Repeat-Yourself (DRY) principles. Zero Tailwind or CSS-in-JS dependencies; global variables in \texttt{globals.css} provide unified hsl-based dark mode tokens, typography, and glassmorphism backdrops.
-    \item \textbf{Graphics Simulation:} Custom HTML5 2D Canvas engine (\texttt{StarField.js}) rendering 200 interactive twinkling stars with responsive viewport resizing.
-    \item \textbf{Icons:} \texttt{lucide-react} for semantic vector iconography.
+    \item \textbf{Framework:} Next.js 16 with Turbopack bundler.
+    \item \textbf{Components:} React 19 and Framer Motion for smooth micro-interactions.
+    \item \textbf{Styling:} 100\% Vanilla CSS using CSS variables in \texttt{globals.css} (dark-mode tokens, glassmorphism, zero Tailwind dependency).
+    \item \textbf{Canvas Graphics:} Custom HTML5 2D particle starfield engine (\texttt{StarField.js}).
+    \item \textbf{Icons:} \texttt{lucide-react}.
 \end{itemize}
 
 \section{Application Modules}
 \begin{enumerate}
-    \item \textbf{Algorithmic Complexity Analyzer:} The central workspace featuring an interactive multi-language code editor, language selector, analysis mode switch (\texttt{short} / \texttt{detailed}), real-time submission, and rendering of Big-O complexity badges, loop cost deconstructions, and optimization roadmaps.
-    \item \textbf{Learn Curriculum Library:} An interactive curriculum module presenting algorithmic topics categorized into Fundamentals, Data Structures, Sorting, Searching, Graphs, and Dynamic Programming with instant full-text searching.
-    \item \textbf{Developer Profile \& Dashboard:} A personalized hub rendering account credentials, dynamic developer rank badges, persistent saved analysis history, bookmarked topics, and a breakdown distribution chart.
-    \item \textbf{Administrative AI Governance Studio:} An administrative console allowing authorized users to inspect system metrics, manage user accounts, alter AI prompt templates with automated version bumping, and select active Gemini models.
-    \item \textbf{Authentication \& Session Guard:} Complete user registration, login, and profile personalization workflows backed by bcrypt and JWT cookie verification.
+    \item \textbf{Algorithmic Complexity Analyzer:} Code editor with language selector, analysis mode switch, and Big-O results badge display.
+    \item \textbf{Learn Curriculum Library:} Categorized algorithmic modules with instant full-text search and runnable code snippets.
+    \item \textbf{Developer Dashboard:} Displays profile credentials, saved analysis history, bookmarked topics, and distribution charts.
+    \item \textbf{Admin AI Governance Studio:} Manages user roles, inspects telemetry, and edits AI prompt templates with version tracking.
+    \item \textbf{Authentication Guard:} Handles registration, login, bcrypt password verification, and JWT session cookies.
 \end{enumerate}
 
 \section{Database Connectivity}
-Database connectivity is managed through an enterprise connection pool initialized via \texttt{mysql2/promise} in \texttt{lib/db.js}:
+Connection pooling is implemented via \texttt{mysql2/promise} in \texttt{lib/db.js}:
 \begin{itemize}
-    \item \textbf{Connection Pool Limits:} Configured with \texttt{connectionLimit: 10} and \texttt{waitForConnections: true} to prevent connection exhaustion.
-    \item \textbf{SSL/TLS Cloud Encryption:} Secure transport enforced via Aiven Cloud CA certificates (\texttt{ca.pem}) with \texttt{rejectUnauthorized: true}.
-    \item \textbf{SQL Injection Elimination:} All database operations execute exclusively through parameterized statements (e.g., \texttt{pool.query("SELECT * FROM users WHERE email = ?", [email])}), completely neutralizing SQL injection attack vectors.
+    \item \textbf{Connection Pool:} Configured with \texttt{connectionLimit: 10} to avoid connection exhaustion.
+    \item \textbf{SSL Encryption:} Transport encrypted with Aiven Cloud CA certificate (\texttt{ca.pem}).
+    \item \textbf{Parameterized Queries:} Eliminates SQL injection by parameterizing all input arguments.
 \end{itemize}
 
 \section{Application Screenshots}
-The application user interface comprises five major operational screens:
+The application interface is structured across five core screens:
 \begin{enumerate}
-    \item \textbf{Hero Code Analyzer View:} Features the particle starfield background, multi-line code editor, language selector dropdown, and analysis submission trigger.
-    \item \textbf{Analysis Results Breakdown:} Displays asymptotic Big-O badges (worst, average, and best cases), line-by-line cost accordions, and optimization tips.
-    \item \textbf{Learn Curriculum \& Code Sandbox:} Renders the split-pane curriculum browser with categorized topic lists, full-text search bar, and runnable code examples with Big-O badges.
-    \item \textbf{Developer Dashboard:} Displays user metrics, profile avatar seeds, saved analysis histories with deletion triggers, and complexity distribution charts.
-    \item \textbf{Admin AI Governance Studio:} Renders active system prompt editors, version auditing logs, and live Gemini model configuration dropdowns.
+    \item \textbf{Hero Analyzer View:} Interactive code editor with language selection and analysis triggers.
+    \item \textbf{Analysis Breakdown View:} Displays asymptotic Big-O badges, line-by-line cost accordions, and optimization recommendations.
+    \item \textbf{Curriculum Library View:} Split-pane topic catalog with full-text search and runnable examples.
+    \item \textbf{Developer Dashboard View:} User metrics, saved analysis history, and bookmark management.
+    \item \textbf{Admin Governance Studio View:} Telemetry dashboard and AI prompt template editor.
 \end{enumerate}
 
-\begin{figure}[h!]
-    \centering
-    \IfFileExists{assets/Fig 2.2.png}{%
-        \includegraphics[width=0.85\textwidth]{{assets/Fig 2.2}.png}%
-    }{%
-        \fbox{\parbox{0.8\textwidth}{\centering\vspace{1cm} \textbf{Fig. 9.1: Module 1 -- User Identity, Profile \& Audit Subsystem Interface}\vspace{1cm}}}%
-    }
-    \caption{User Identity, Profile Management, and Authentication Architecture}
-\end{figure}
-
-\begin{figure}[h!]
-    \centering
-    \IfFileExists{assets/Fig 2.3.png}{%
-        \includegraphics[width=0.85\textwidth]{{assets/Fig 2.3}.png}%
-    }{%
-        \fbox{\parbox{0.8\textwidth}{\centering\vspace{1cm} \textbf{Fig. 9.2: Module 2 -- Code Analysis Engine \& AI Prompt Subsystem Interface}\vspace{1cm}}}%
-    }
-    \caption{Interactive Code Analyzer, Big-O Badges, and Line Deconstruction Interface}
-\end{figure}
-
-\begin{figure}[h!]
-    \centering
-    \IfFileExists{assets/Fig 2.4.png}{%
-        \includegraphics[width=0.85\textwidth]{{assets/Fig 2.4}.png}%
-    }{%
-        \fbox{\parbox{0.8\textwidth}{\centering\vspace{1cm} \textbf{Fig. 9.3: Module 3 -- Educational Library \& Bookmarks Subsystem Interface}\vspace{1cm}}}%
-    }
-    \caption{Curriculum Browser, Full-Text Search, and Bookmark Architecture}
-\end{figure}
-
 \section{Database Operations through the Application}
-When a user interacts with the application, UI state mutations translate seamlessly into database operations:
+User actions translate directly to database operations:
 \begin{itemize}
-    \item \textbf{User Registers:} Client submits JSON to \texttt{/api/auth/register} $\rightarrow$ Server hashes password with bcrypt $\rightarrow$ \texttt{INSERT INTO users} executes $\rightarrow$ Trigger \texttt{trg\_users\_after\_insert} instantly creates a \texttt{user\_profiles} row and records an activity log.
-    \item \textbf{User Saves Analysis:} Client clicks ``Save Analysis'' $\rightarrow$ \texttt{INSERT INTO code\_analyses} executes $\rightarrow$ Storage engine calculates \texttt{code\_lines} via stored generated column $\rightarrow$ Trigger \texttt{trg\_analyses\_after\_insert} increments \texttt{users.analysis\_count} and writes an audit log.
-    \item \textbf{Admin Edits AI Prompt:} Administrator updates prompt text via Admin Studio $\rightarrow$ \texttt{UPDATE analysis\_prompts} executes $\rightarrow$ Trigger \texttt{trg\_prompt\_before\_update} automatically bumps \texttt{version = version + 1} and updates timestamp.
+    \item \textbf{User Registration:} Client calls \texttt{/api/auth/register} $\rightarrow$ bcrypt hashes password $\rightarrow$ \texttt{INSERT INTO users} executes $\rightarrow$ trigger auto-provisions profile in \texttt{user\_profiles} and logs activity.
+    \item \textbf{Saving Analysis:} Client clicks ``Save Analysis'' $\rightarrow$ \texttt{INSERT INTO code\_analyses} evaluates stored line counts $\rightarrow$ trigger increments \texttt{analysis\_count} and writes audit log.
+    \item \textbf{Admin Prompt Edit:} Administrator updates prompt text $\rightarrow$ \texttt{UPDATE analysis\_prompts} triggers automated version increment.
 \end{itemize}
 
 %-------------------- CHAPTER 10 --------------------
 \chapter{Testing and Results}
 
 \section{Test Cases}
-A comprehensive verification suite of 12 test cases validating functional operations, constraint enforcements, and trigger activations:
+Table~\ref{tab:test_cases} details test cases verifying functional operations and database constraints:
 
 \begingroup
 \small
-\begin{longtable}{|p{1.1cm}|p{2.3cm}|p{2.3cm}|p{2.8cm}|p{2.8cm}|p{1.1cm}|}
+\begin{longtable}{|c|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}p{2.8cm}|>{\raggedright\arraybackslash}p{2.8cm}|c|}
 \hline
 \textbf{Test ID} & \textbf{Operation} & \textbf{Input} & \textbf{Expected Result} & \textbf{Actual Result} & \textbf{Status} \\
 \hline
@@ -1469,83 +1010,84 @@ A comprehensive verification suite of 12 test cases validating functional operat
 \endfoot
 \hline
 \endlastfoot
-T01 & User Registration & Valid name, email, password & User created; profile auto-provisioned via trigger & Row in \texttt{users} and \texttt{user\_profiles}; audit logged & Pass \\
+T01 & User Registration & Valid name, email, password & User created; profile auto-provisioned & Profile created via trigger; audit logged & Pass \\
 \hline
-T02 & Duplicate Email & Existing registered email & Rejected by \texttt{uq\_users\_email} constraint & Error: Duplicate entry for key \texttt{uq\_users\_email} & Pass \\
+T02 & Duplicate Email & Existing email & Rejected by unique constraint & Duplicate entry error & Pass \\
 \hline
-T03 & Invalid Foreign Key & Non-existent \texttt{user\_id} in analysis insert & Rejected by \texttt{fk\_analyses\_user} constraint & Error: Cannot add or update a child row (FK fails) & Pass \\
+T03 & Invalid FK & Non-existent user ID & Rejected by foreign key & FK failure error & Pass \\
 \hline
-T04 & User Cascade Deletion & \texttt{DELETE FROM users WHERE id = 2} & All owned profiles, analyses, bookmarks purged & Child rows purged atomically via \texttt{ON DELETE CASCADE} & Pass \\
+T04 & Cascade Deletion & Delete user & All child rows purged & Atomic cascade purge & Pass \\
 \hline
-T05 & Analysis Save Trigger & \texttt{INSERT INTO code\_analyses} & \texttt{users.analysis\_count} incremented by 1 & Counter incremented; audit log row inserted & Pass \\
+T05 & Analysis Trigger & Insert analysis & Counter incremented & \texttt{analysis\_count} + 1 & Pass \\
 \hline
-T06 & Analysis Delete Trigger & \texttt{DELETE FROM code\_analyses} & \texttt{users.analysis\_count} decremented by 1 & Counter decremented; audit log row inserted & Pass \\
+T06 & Delete Trigger & Delete analysis & Counter decremented & \texttt{analysis\_count} - 1 & Pass \\
 \hline
-T07 & Stored Generated Column & Multiline code text inserted & \texttt{code\_lines} computed automatically & Exactly matches newline count + 1 on disk & Pass \\
+T07 & Generated Column & Insert code snippet & Line count calculated on disk & Matches newline count + 1 & Pass \\
 \hline
-T08 & Prompt Version Increment & Admin updates prompt text in \texttt{analysis\_prompts} & \texttt{version} incremented by 1 via trigger & \texttt{version} bumped from 1 to 2; timestamp updated & Pass \\
+T08 & Prompt Version & Admin edits prompt & Version bumped via trigger & Version incremented & Pass \\
 \hline
-T09 & Topic Slug Normalization & Insert topic name ``Binary Search'' with null slug & Slug generated as ``binary-search'' via trigger & \texttt{slug} = 'binary-search' automatically & Pass \\
+T09 & Slug Generation & Insert topic with null slug & Auto-slug generated & Slug created & Pass \\
 \hline
-T10 & Duplicate Bookmark & User bookmarks same topic twice & Rejected by \texttt{uq\_saved\_user\_topic} constraint & Error: Duplicate entry for key \texttt{uq\_saved\_user\_topic} & Pass \\
+T10 & Duplicate Bookmark & Bookmark topic twice & Rejected by composite unique key & Duplicate key error & Pass \\
 \hline
-T11 & Full-Text Topic Search & Search query: ``logarithmic search'' & Matching topics retrieved via boolean fulltext & Accurate relevance-ranked search results & Pass \\
+T11 & Full-Text Search & Search ``logarithmic'' & Matching topics retrieved & Accurate results returned & Pass \\
 \hline
-T12 & View Aggregation & Query \texttt{v\_user\_overview} & Denormalized user overview with rank & Clean response with zero application join cost & Pass \\
+T12 & View Aggregation & Query \texttt{v\_user\_overview} & Denormalized user overview & Sub-15ms fast response & Pass \\
 \hline
 \end{longtable}
+\label{tab:test_cases}
 \endgroup
 
 \section{Query Testing}
-All production SQL queries were executed against the live Aiven Cloud MySQL 8.0 cluster:
+All SQL queries were executed against Aiven Cloud MySQL 8.0:
 \begin{itemize}
-    \item \textbf{Analytical Views:} Querying \texttt{v\_user\_overview} and \texttt{v\_analysis\_feed} executed within 12 ms, demonstrating that pre-compiled view logic incurs negligible overhead while drastically simplifying API queries.
-    \item \textbf{Full-Text Search:} Querying \texttt{ft\_topics\_search} using boolean mode returned matching curriculum records within 4 ms on an indexed dataset.
-    \item \textbf{Grouping and Aggregation:} The complexity class distribution query successfully aggregated records into algorithmic cost buckets with correct percentage shares.
+    \item \textbf{Analytical Views:} \texttt{v\_user\_overview} executed within 12 ms, simplifying frontend API queries.
+    \item \textbf{Full-Text Search:} Boolean full-text queries against \texttt{ft\_topics\_search} returned matching results in 4 ms.
+    \item \textbf{Aggregation:} Complexity distribution queries grouped records accurately with percentage shares.
 \end{itemize}
 
 \section{Constraint Testing}
-Constraint verification demonstrated 100\% robustness:
+Constraint verification demonstrated complete integrity:
 \begin{itemize}
-    \item Attempting to insert an existing email address was immediately blocked by \texttt{uq\_users\_email} with error code \texttt{ER\_DUP\_ENTRY}.
-    \item Attempting to save a bookmark with an invalid \texttt{topic\_id = 99999} was rejected by \texttt{fk\_saved\_topic} with foreign key error \texttt{ER\_NO\_REFERENCED\_ROW\_2}.
-    \item Deleting a user tuple caused MySQL to cascade the purge across \texttt{user\_profiles}, \texttt{code\_analyses}, and \texttt{user\_saved\_topics} in a single atomic transaction without orphan remnants.
+    \item Duplicate emails and duplicate bookmarks were rejected by \texttt{uq\_users\_email} and \texttt{uq\_saved\_user\_topic}.
+    \item Invalid foreign keys were rejected with \texttt{ER\_NO\_REFERENCED\_ROW\_2}.
+    \item User deletions cleanly cascaded across profiles, analyses, and bookmarks without orphaned records.
 \end{itemize}
 
 \section{Results and Discussion}
-The completed ComplexityUniverse platform successfully marries modern applied artificial intelligence with classical relational database engineering:
+The system successfully combines relational database engineering with applied AI:
 \begin{itemize}
-    \item \textbf{Algorithmic Precision:} Google Gemini with structured JSON output enforcement reliably extracts Big-O notation, line-by-line loop bounds, and recurrence relations without parsing hallucinations.
-    \item \textbf{Database Performance:} Operating in Boyce--Codd Normal Form with 5 analytical views and 10 autonomous triggers ensures complete freedom from insertion, update, and deletion anomalies while achieving sub-50ms API endpoint response times.
-    \item \textbf{Scalability:} Utilizing cloud connection pooling and offloading line metrics to stored generated columns minimizes server CPU consumption during high concurrency.
+    \item \textbf{Precision:} Structured JSON output enforcement ensures accurate Big-O classification and cost analysis.
+    \item \textbf{Performance:} BCNF normalization, 5 analytical views, and 10 triggers deliver sub-50ms API endpoint latencies.
+    \item \textbf{Integrity:} Cloud connection pooling and stored generated columns offload parsing overhead from the application server.
 \end{itemize}
 
 %-------------------- CHAPTER 11 --------------------
 \chapter{Conclusion and Future Scope}
 
 \section{Conclusion}
-The ComplexityUniverse project demonstrates the successful design, normalization, cloud deployment, and full-stack integration of an industrial-grade Database Management System:
+ComplexityUniverse demonstrates the successful design, normalization, cloud deployment, and full-stack integration of an industrial DBMS:
 \begin{itemize}
-    \item Developed a robust 9-table relational database on MySQL 8.0 strictly adhering to Boyce--Codd Normal Form (BCNF), backed by formal attribute closure proofs and minimal cover reductions.
-    \item Implemented 10 autonomous database triggers enforcing domain business invariants, email normalization, audit logging, counter synchronization, and prompt version auditing.
-    \item Engineered 5 analytical database views and stored generated columns to maximize dashboard query performance and eliminate runtime application overhead.
-    \item Delivered a full-stack Next.js 16 application featuring React 19, Vanilla CSS design tokens, HTML5 Canvas particle graphics, and Google Gemini Generative AI integration.
-    \item Enforced strict web application security via bcrypt hashing, stateless JWT authentication inside \texttt{httpOnly} cookies, and parameterized queries neutralizing SQL injection.
+    \item Architected a 9-table MySQL 8.0 database strictly adhering to Boyce--Codd Normal Form (BCNF).
+    \item Implemented 10 autonomous database triggers to enforce business invariants and audit logging.
+    \item Built 5 analytical views and stored generated columns to maximize query performance.
+    \item Developed a full-stack Next.js 16 / React 19 application with Vanilla CSS and Google Gemini AI.
+    \item Enforced security via SSL/TLS transport encryption, bcrypt hashing, and parameterized queries.
 \end{itemize}
 
 \section{Limitations}
 \begin{enumerate}
-    \item \textbf{Single-File Code Boundary:} The current implementation analyzes self-contained code snippets and functions; multi-file repository dependency graphs are not yet resolved.
-    \item \textbf{External AI API Dependency:} Code complexity evaluation relies on the availability and network latency of the Google Gemini API.
-    \item \textbf{Theoretical Halting Boundary:} In compliance with Rice's Theorem, code featuring highly obfuscated, non-deterministic halting behavior can only be evaluated asymptotically through probabilistic semantic reasoning.
+    \item \textbf{Single-File Scope:} Analyzes self-contained functions; multi-file repository dependency graphs are not yet resolved.
+    \item \textbf{AI API Dependency:} Evaluation throughput depends on Gemini API response latency.
+    \item \textbf{Halting Problem Boundary:} Highly obfuscated code can only be evaluated asymptotically through probabilistic reasoning.
 \end{enumerate}
 
 \section{Future Scope}
 \begin{enumerate}
-    \item \textbf{Git Repository Webhook Ingestion:} Expand the platform to connect with GitHub/GitLab repositories, performing automated Big-O regression analysis across Git pull requests.
-    \item \textbf{Automated Test Case Synthesis:} Leverage the AI engine to generate extreme boundary test cases designed to trigger the worst-case asymptotic bounds of analyzed code.
-    \item \textbf{Abstract Syntax Tree Hybrid Verification:} Couple the LLM semantic reasoning with a localized WebAssembly AST parser to mathematically verify loop bounds before AI query dispatch.
-    \item \textbf{Multi-Tenant Organization Accounts:} Expand the schema to support university classroom workspaces, student assignment submissions, and instructor grading rubrics.
+    \item \textbf{GitHub Webhook Integration:} Automate Big-O regression checks across Git pull requests.
+    \item \textbf{Automated Test Synthesis:} Generate extreme edge cases to trigger worst-case algorithmic bounds.
+    \item \textbf{AST Hybrid Verification:} Pair LLM reasoning with WebAssembly AST parsers for mathematical loop verification.
+    \item \textbf{Multi-Tenant Classrooms:} Support university instructor rubrics and student grading portals.
 \end{enumerate}
 
 %-------------------- REFERENCES --------------------
@@ -1566,61 +1108,30 @@ The ComplexityUniverse project demonstrates the successful design, normalization
 \appendix
 
 \chapter{Complete MySQL Script}
-The complete MySQL DDL schema and trigger definition script is maintained in the project repository under \texttt{database/schema.sql} and included below in its entirety:
-
-\begin{lstlisting}[language=SQL]
-CREATE DATABASE IF NOT EXISTS complexity_universe
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-USE complexity_universe;
-
-SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS activity_log;
-DROP TABLE IF EXISTS user_saved_topics;
-DROP TABLE IF EXISTS topic_examples;
-DROP TABLE IF EXISTS complexity_topics;
-DROP TABLE IF EXISTS code_analyses;
-DROP TABLE IF EXISTS analysis_prompts;
-DROP TABLE IF EXISTS user_profiles;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS app_settings;
-DROP VIEW IF EXISTS v_user_overview;
-DROP VIEW IF EXISTS v_analysis_feed;
-DROP VIEW IF EXISTS v_topic_overview;
-DROP VIEW IF EXISTS v_user_saved_topics;
-DROP VIEW IF EXISTS v_complexity_distribution;
-SET FOREIGN_KEY_CHECKS = 1;
-
--- Table and trigger definitions are loaded sequentially...
-\end{lstlisting}
+The complete MySQL DDL schema and trigger definition script is maintained under \texttt{database/schema.sql} and \texttt{database/seed.sql}. It provisions all 9 BCNF tables, 5 analytical views, 10 automated triggers, and sample data.
 
 \chapter{Source Code}
-The production codebase is organized within the ComplexityUniverse repository:
+The application codebase is organized within the project repository:
 \begin{itemize}
-    \item \texttt{/app}: Next.js 16 App Router pages, layouts, and REST API Route Handlers.
-    \item \texttt{/components}: Modular React 19 Client and Server Components (\texttt{HomeAnalyzer}, \texttt{LearnView}, \texttt{DashboardView}, \texttt{StarField}).
-    \item \texttt{/lib/db.js}: Enterprise MySQL connection pool with SSL/TLS certificate authentication.
-    \item \texttt{/lib/ai.js}: Google Gemini Generative AI gateway with structured JSON schema enforcement.
-    \item \texttt{/lib/auth.js}: Stateless JWT cookie token issuance and verification utilities.
-    \item \texttt{/database}: Production \texttt{schema.sql} DDL and \texttt{seed.sql} initialization data.
+    \item \texttt{/app}: Next.js 16 App Router pages and REST API Route Handlers.
+    \item \texttt{/components}: React 19 Client Components (\texttt{HomeAnalyzer}, \texttt{LearnView}, \texttt{DashboardView}, \texttt{StarField}).
+    \item \texttt{/lib/db.js}: MySQL connection pool with SSL/TLS certificate authentication.
+    \item \texttt{/lib/ai.js}: Google Gemini AI gateway with structured JSON schema enforcement.
+    \item \texttt{/lib/auth.js}: Stateless JWT cookie authentication utilities.
+    \item \texttt{/database}: \texttt{schema.sql} DDL and \texttt{seed.sql} initialization data.
 \end{itemize}
 
 \chapter{Additional Screenshots}
-Additional interface demonstration captures:
-\begin{figure}[h!]
-    \centering
-    \IfFileExists{assets/Fig 2.5.png}{%
-        \includegraphics[width=0.85\textwidth]{{assets/Fig 2.5}.png}%
-    }{%
-        \fbox{\parbox{0.8\textwidth}{\centering\vspace{1cm} \textbf{Fig. C.1: Module 4 -- System Administration \& Configuration Interface}\vspace{1cm}}}%
-    }
-    \caption{Administrative Studio: Live AI Prompt Engineering and Dynamic Model Selection}
-\end{figure}
+The application interface provides an intuitive user experience:
+\begin{itemize}
+    \item \textbf{Particle Starfield Hero:} Interactive Canvas animation with dark-mode aesthetic.
+    \item \textbf{Split-Pane Learning Sandbox:} Curriculum reader with live code examples.
+    \item \textbf{Dynamic Developer Rank Badging:} In-app rank badges computed via database views.
+    \item \textbf{Admin AI Governance Studio:} Live prompt engineering with automated schema-level versioning.
+\end{itemize}
 
 \chapter{Team Contribution}
-
-This major project report and software platform was undertaken by the following team members from the Department of Computer Science and Engineering at the Indian Institute of Information Technology Bhopal:
+This project was undertaken by the following team members from the Department of Computer Science and Engineering at IIIT Bhopal:
 
 \begin{center}
 \small
@@ -1638,11 +1149,11 @@ Gaurav Kumar Singh & 25U024043 & \rule{4cm}{0.4pt} \\
 
 \section*{1. Animesh Gupta (Scholar No: 25U024044)}
 \begin{itemize}
-    \item \textbf{Complete Project Engineering:} Architected and engineered the entire full-stack application using Next.js 16 (App Router), React 19, Vanilla CSS design tokens, and HTML5 Canvas starfield simulation.
-    \item \textbf{Database Architecture \& Normalization:} Designed the 9-table relational database schema on MySQL 8.0, formulated functional dependencies ($FDs$), conducted attribute closure derivations ($X^+$), and verified Boyce--Codd Normal Form (BCNF) normalization proofs.
-    \item \textbf{Database Implementation:} Authored all DDL scripts (\texttt{schema.sql}), seed data (\texttt{seed.sql}), 5 analytical database views, 10 automated triggers, and query implementations.
-    \item \textbf{AI Reasoning Gateway:} Integrated Google Gemini API with structured JSON output enforcement and error fallback handling.
-    \item \textbf{Report, Presentation \& ER Modeling:} Authored this entire comprehensive project report, created the complete academic presentation deck, and formulated the conceptual and logical ER diagrams.
+    \item \textbf{Complete Project Engineering:} Architected and engineered the full-stack application using Next.js 16, React 19, Vanilla CSS design tokens, and HTML5 Canvas starfield simulation.
+    \item \textbf{Database Architecture \& Normalization:} Designed the 9-table MySQL 8.0 schema, formulated functional dependencies ($FDs$), conducted attribute closure derivations ($X^+$), and verified Boyce--Codd Normal Form (BCNF) proofs.
+    \item \textbf{Database Implementation:} Authored all DDL scripts (\texttt{schema.sql}), seed data (\texttt{seed.sql}), 5 analytical views, 10 automated triggers, and query implementations.
+    \item \textbf{AI Reasoning Gateway:} Integrated Google Gemini API with structured JSON output enforcement.
+    \item \textbf{Report, Presentation \& ER Modeling:} Authored this academic project report, created the presentation deck, and formulated conceptual and logical ER models.
 \end{itemize}
 
 \section*{2. Ritik Raj (Scholar No: 25U024041)}
@@ -1688,6 +1199,6 @@ Viva and conceptual understanding & 10 \\
 \end{tabular}
 \end{center}
 
-\noindent\textbf{Evaluation principle:} Marks should primarily reflect the correctness of database design, ER-to-relational mapping, functional dependencies, normalization, SQL implementation, and understanding of DBMS concepts. Front-end appearance alone must not determine the project grade.
+\noindent\textbf{Evaluation principle:} Marks primarily reflect the correctness of database design, ER-to-relational mapping, functional dependencies, normalization, SQL implementation, and understanding of DBMS concepts.
 
 \end{document}
