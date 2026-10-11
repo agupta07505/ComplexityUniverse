@@ -248,6 +248,11 @@ async function main() {
 
   console.log('Seeding users ...');
   const users = [
+    { name: 'System Administrator', email: 'admin@complexity.io', password: 'admin123', role: 'admin' },
+    { name: 'Animesh Gupta', email: 'animesh@iiitbhopal.ac.in', password: 'user123', role: 'user' },
+    { name: 'Aditya Chaudhary', email: 'aditya@iiitbhopal.ac.in', password: 'user123', role: 'user' },
+    { name: 'Ritik Raj', email: 'ritik@iiitbhopal.ac.in', password: 'user123', role: 'user' },
+    { name: 'Gaurav Kumar Singh', email: 'gaurav@iiitbhopal.ac.in', password: 'user123', role: 'user' },
     { name: 'Site Admin', email: 'admin@complexityuniverse.dev', password: 'admin123', role: 'admin' },
     { name: 'Demo Analyst', email: 'demo@complexityuniverse.dev', password: 'demo1234', role: 'user' },
     { name: 'Priya Sharma', email: 'priya@example.com', password: 'priya1234', role: 'user' },
