@@ -400,7 +400,7 @@ npm run dev
 4. Paste your **Gemini API Key**, select model `gemini-3.8-flash` (or `gemini-2.5-pro` / `gemini-2.0-flash`), and click **Save API Settings**.
 5. Return to the Home page and analyze any code snippet.
 
-*(A standard user demo account is also seeded: `demo@complexityuniverse.dev` / `demo1234`)*.
+*(Pre-seeded accounts from `database/seed.sql`: Admins `admin@complexityuniverse.dev` / `admin@complexity.io` with password `admin123`; Demo User `demo@complexityuniverse.dev` with password `demo1234`; Team Student Accounts `@iiitbhopal.ac.in` with password `user123`)*.
 
 ---
 

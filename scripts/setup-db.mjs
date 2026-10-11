@@ -255,8 +255,6 @@ async function main() {
     { name: 'Gaurav Kumar Singh', email: 'gaurav@iiitbhopal.ac.in', password: 'user123', role: 'user' },
     { name: 'Site Admin', email: 'admin@complexityuniverse.dev', password: 'admin123', role: 'admin' },
     { name: 'Demo Analyst', email: 'demo@complexityuniverse.dev', password: 'demo1234', role: 'user' },
-    { name: 'Priya Sharma', email: 'priya@example.com', password: 'priya1234', role: 'user' },
-    { name: 'Arjun Mehta', email: 'arjun@example.com', password: 'arjun1234', role: 'user' },
   ];
   for (const u of users) {
     const hash = await bcrypt.hash(u.password, 10);

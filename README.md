@@ -27,7 +27,7 @@ Built with **Next.js 16 (App Router · Turbopack · JavaScript)**, **React 19**,
 - [Components](#components)
 - [Authentication & Authorization](#authentication--authorization)
 - [Design & Styling Architecture](#design--styling-architecture)
-- [Demo Accounts](#demo-accounts)
+- [Demo & Seed Accounts](#demo--seed-accounts)
 - [Documentation — DBMS Concepts Demonstrated](#documentation--dbms-concepts-demonstrated)
 - [License](#license)
 
@@ -538,16 +538,28 @@ The styling architecture follows a **DRY, component-scoped** pattern with zero C
 
 ---
 
-## Demo Accounts
+## Demo & Seed Accounts
 
-The seed data includes two pre-configured accounts:
+The database seed (`database/seed.sql`) provisions pre-configured platform administrators, student team accounts, and a demo user:
 
-| Role | Email | Password |
-|---|---|---|
-| Admin | `admin@complexityuniverse.dev` | `admin123` |
-| User | `demo@complexityuniverse.dev` | `demo1234` |
+### Platform & Demo Accounts
 
-The admin account provides access to the Admin console at `/admin`, where you can manage topics, examples, AI settings, the analysis prompt, and users.
+| Role | Name | Email | Password | Notes |
+|---|---|---|---|---|
+| Admin | Site Admin | `admin@complexityuniverse.dev` | `admin123` | Administrator console operator |
+| Admin | System Administrator | `admin@complexity.io` | `admin123` | Platform governance & AI prompts |
+| User | Demo Analyst | `demo@complexityuniverse.dev` | `demo1234` | Seeded with bookmarks & sample analyses |
+
+### Student / Team Accounts
+
+| Role | Name | Email | Password |
+|---|---|---|---|
+| User | Animesh Gupta | `animesh@iiitbhopal.ac.in` | `user123` |
+| User | Aditya Chaudhary | `aditya@iiitbhopal.ac.in` | `user123` |
+| User | Ritik Raj | `ritik@iiitbhopal.ac.in` | `user123` |
+| User | Gaurav Kumar Singh | `gaurav@iiitbhopal.ac.in` | `user123` |
+
+The admin accounts provide access to the Admin console at `/admin`, where you can manage topics, examples, AI settings, the analysis prompt, and users.
 
 ---
 

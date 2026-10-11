@@ -43,6 +43,17 @@ Project-Report/
 
 ---
 
+## Seeded Database Accounts
+
+The database seed (`database/seed.sql`) provisions credentials for testing and academic evaluation:
+
+- **Site Admin:** `admin@complexityuniverse.dev` (`admin123`)
+- **System Admin:** `admin@complexity.io` (`admin123`)
+- **Demo User:** `demo@complexityuniverse.dev` (`demo1234`)
+- **Student Accounts:** `animesh@iiitbhopal.ac.in`, `ritik@iiitbhopal.ac.in`, `aditya@iiitbhopal.ac.in`, `gaurav@iiitbhopal.ac.in` (`user123`)
+
+---
+
 ## How to Compile `Project-report.tex`
 
 ### Option 1: Overleaf

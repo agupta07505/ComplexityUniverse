@@ -419,9 +419,7 @@ INSERT INTO users (id, name, email, password_hash, role, status, analysis_count)
 (4, 'Ritik Raj', 'ritik@iiitbhopal.ac.in', '$2a$10$327b15N5pf7xdPMsjRHPY.eqPsU4O56.Zg2uVZ8JG0xPgovgV133C', 'user', 'active', 15),
 (5, 'Gaurav Kumar Singh', 'gaurav@iiitbhopal.ac.in', '$2a$10$327b15N5pf7xdPMsjRHPY.eqPsU4O56.Zg2uVZ8JG0xPgovgV133C', 'user', 'active', 22),
 (6, 'Site Admin', 'admin@complexityuniverse.dev', '$2a$10$qRYyzlERsAxYh1.p7vEINO8Vt163nFb2UPjLaHc8o9TouO4kINhf6', 'admin', 'active', 8),
-(7, 'Demo Analyst', 'demo@complexityuniverse.dev', '$2a$10$4p9iYYZeXfZ1mKS4k22TauMAOJl0IQcJzZJj3Kh8PDu.XKUozSBlu', 'user', 'active', 5),
-(8, 'Priya Sharma', 'priya@example.com', '$2a$10$7doM7NPZhEHGxxYNTHpTVuC/OS3oJCEBXcb2Q5tMPK.HrnmCK4.HS', 'user', 'active', 4),
-(9, 'Arjun Mehta', 'arjun@example.com', '$2a$10$yoUy/i4Gr0955u4lRz7hkOa6.08olIvFKljlkBwrj/2WHMYs//hAq', 'user', 'active', 3)
+(7, 'Demo Analyst', 'demo@complexityuniverse.dev', '$2a$10$4p9iYYZeXfZ1mKS4k22TauMAOJl0IQcJzZJj3Kh8PDu.XKUozSBlu', 'user', 'active', 5)
 ON DUPLICATE KEY UPDATE
   name = VALUES(name),
   role = VALUES(role),
@@ -438,9 +436,7 @@ INSERT INTO user_profiles (user_id, headline, bio, location, avatar_seed) VALUES
 (4, 'Database Architecture Specialist', 'Designing BCNF relational schemas, SQL triggers, and indexing strategies.', 'Bhopal, India', 'ritik_raj'),
 (5, 'Performance & Systems Engineer', 'Profiling time-space trade-offs in distributed and high-concurrency systems.', 'Bhopal, India', 'gaurav_singh'),
 (6, 'Site Administrator', 'Administrator console operator.', 'Remote', 'site_admin'),
-(7, 'Curious about the cost of code', 'Exploring algorithmic efficiency and Big-O badging.', 'Bengaluru, India', 'demo_analyst'),
-(8, 'Backend Developer', 'Learning asymptotic bounds and data structures.', 'Mumbai, India', 'priya_sharma'),
-(9, 'Frontend Engineer', 'Optimizing web performance and algorithm visualizers.', 'Delhi, India', 'arjun_mehta')
+(7, 'Curious about the cost of code', 'Exploring algorithmic efficiency and Big-O badging.', 'Bengaluru, India', 'demo_analyst')
 ON DUPLICATE KEY UPDATE
   headline = VALUES(headline),
   bio = VALUES(bio),
