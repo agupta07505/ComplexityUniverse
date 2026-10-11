@@ -1,0 +1,401 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+\setstretch{1.15}
+\setlist[itemize]{leftmargin=1.5em}
+\setlist[enumerate]{leftmargin=1.8em}
+
+\newcommand{\projecttitle}{Inventory Management System}
+\newcommand{\coursename}{Database Management Systems (DBMS)}
+
+\begin{document}
+
+%-------------------- TITLE PAGE --------------------
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+    {\Large \textbf{\coursename}\par}
+    \vspace{1.5cm}
+    {\Huge \bfseries Project Report Format\par}
+    \vspace{0.7cm}
+    {\LARGE \projecttitle\par}
+    \vspace{1.8cm}
+
+    \begin{tabular}{>{\bfseries}p{5cm} p{7cm}}
+        Student Name(s): & write here \\[0.7cm]
+        Roll Number(s): & write here \\[0.7cm]
+        Branch \&  Section: & write here \\[0.7cm]
+        Course Instructor: & Priyankar \\[0.7cm]
+        Academic Session: & 2026-2027 (Monsoon Semester)
+    \end{tabular}
+
+    \vfill
+    {\large Department of Computer Science}
+    \vspace{0.3cm}
+    {\large Indian Institute of Information Technology Bhopal}
+    \vspace{1cm}
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+%-------------------- GENERAL INSTRUCTIONS --------------------
+\chapter*{General Instructions}
+\addcontentsline{toc}{chapter}{General Instructions}
+
+\begin{enumerate}
+    % \item Choose a real-world application, such as Inventory Management, Library Management, Hospital Management, Student Management, or Online Shopping.
+    \item The front end may be developed using any suitable programming language or framework.
+    \item \textbf{MySQL is mandatory} for database creation, storage, and query execution. A different DBMS must not be used in place of MySQL.
+    \item Design the database before implementing the application.
+    \item Demonstrate the DBMS concepts covered in the course through the report and implementation.
+    \item Include all diagrams, functional dependencies, normalization steps, SQL statements, and execution results.
+    \item Submit the report, application source code, and a complete MySQL script or database export.
+    \item Every team member must understand the database design and be prepared to explain it during evaluation.
+\end{enumerate}
+
+\noindent\textbf{Important:} The project title used throughout this document is an example. Students must replace it with their own approved project topic and adapt the entities, business rules, relations, and queries accordingly.
+
+%-------------------- CHAPTER 1 --------------------
+\chapter{Introduction}
+
+\section{Project Overview}
+Introduce the project and explain its purpose and intended users.
+
+\section{Problem Statement}
+Describe the problem the project aims to solve and the limitations of the existing approach.
+
+\section{Objectives}
+List the main objectives of the project.
+
+\section{Scope of the Project}
+Explain the functionalities covered by the project and its intended users.
+
+\section{Software and Hardware Requirements}
+Mention the programming language, front-end framework, MySQL version, development tools, and minimum hardware requirements.
+
+%-------------------- CHAPTER 2 --------------------
+\chapter{System Requirements and Analysis}
+
+\section{Functional Requirements}
+List the operations the system must support. For an Inventory Management System, examples include:
+\begin{itemize}
+    \item Adding, updating, searching, and deleting product records.
+    \item Managing suppliers and product categories.
+    \item Recording purchases and sales.
+    \item Updating stock quantities.
+    \item Generating low-stock alerts and inventory reports.
+\end{itemize}
+
+
+\section{Business Rules}
+State the rules governing the application. Examples include:
+\begin{itemize}
+    \item Each product must have a unique product ID.
+    \item Each supplier must have a unique supplier ID.
+    \item Each sale must contain at least one product.
+    \item Stock quantity must not become negative.
+    \item Each purchase or sale must be associated with a valid transaction record.
+\end{itemize}
+
+%-------------------- CHAPTER 3 --------------------
+\chapter{Entity--Relationship (ER) Modeling}
+
+\section{Identification of Entities}
+Identify the entities required for the project and list their attributes.
+
+\noindent\textit{Example entities:} Product, Supplier, Category, Purchase, Sale, and Sale\_Details.
+
+\section{Identification of Relationships}
+Identify the relationships among entities and specify their cardinalities.
+
+\noindent\textit{Examples:} A category contains multiple products; a supplier can supply multiple products; a sale can contain multiple products.
+
+\section{ER Diagram}
+Insert the complete ER diagram. It must clearly show:
+\begin{itemize}
+    \item Entities and their attributes.
+    \item Primary keys.
+    \item Relationships and relationship attributes, where applicable.
+    \item Cardinality ratios (1:1, 1:N, or M:N).
+    \item Total or partial participation constraints, wherever applicable.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \fbox{\parbox[c][4cm][c]{0.85\textwidth}{\centering Insert ER diagrams here}}
+    \caption{ER diagram(s) of the proposed system}
+\end{figure}
+
+\section{Explanation of the ER Diagram}
+Explain the entities, relationships, cardinalities, and participation constraints used in the diagram.
+
+%-------------------- CHAPTER 4 --------------------
+\chapter{ER-to-Relational Mapping}
+
+\section{Mapping Rules}
+Briefly state the mapping rules used to convert the ER diagram into relational tables.
+
+\section{Step-by-Step Conversion}
+Show how each entity and relationship is converted into a relation. Include the conversion of:
+\begin{itemize}
+    \item Strong entities.
+    \item Weak entities, if applicable.
+    \item 1:1 relationships.
+    \item 1:N relationships.
+    \item M:N relationships.
+    \item Multivalued attributes, if applicable.
+    \item Relationships with their own attributes, if applicable.
+\end{itemize}
+
+\section{Final Relational Schema}
+Write the complete relational schema. For example:
+\begin{verbatim}
+PRODUCT(Product_ID, Product_Name, Price, Quantity, Category_ID)
+\end{verbatim}
+
+Underline primary keys and clearly identify foreign keys. Also identify candidate keys and composite keys, wherever applicable.
+
+%-------------------- CHAPTER 5 --------------------
+\chapter{Functional Dependencies}
+
+\section{Identification of Functional Dependencies}
+Identify the functional dependencies for each relation based on the business rules.
+
+\noindent\textit{Example:}
+\[
+\text{Product\_ID} \rightarrow
+\text{Product\_Name, Price, Quantity, Category\_ID}
+\]
+
+\section{Candidate Keys and Attribute Classification}
+Determine the candidate keys, prime attributes, and non-prime attributes of each relation.
+
+\section{FD Analysis}
+Explain the reasoning behind the identified functional dependencies. Each dependency must be justified by the application requirements; do not list dependencies arbitrarily.
+
+%-------------------- CHAPTER 6 --------------------
+\chapter{Database Normalization}
+
+Normalization must be demonstrated step by step, not merely stated.
+
+\section{Unnormalized Form (UNF)}
+Present an unnormalized relation, if applicable, and identify repeating groups or other problems.
+
+\section{First Normal Form (1NF)}
+Convert the relation into 1NF by ensuring that attribute values are atomic and repeating groups are eliminated.
+
+\section{Second Normal Form (2NF)}
+Identify partial functional dependencies and remove them where applicable.
+
+\section{Third Normal Form (3NF)}
+Identify transitive dependencies and decompose relations where required.
+
+\section{Boyce--Codd Normal Form (BCNF)}
+Check whether each resulting relation satisfies BCNF. If a relation violates BCNF, demonstrate the decomposition. If no violation exists, explain why the relation satisfies BCNF.
+
+\section{Final Normalized Schema}
+Present the final set of relations after normalization. Show intermediate relations and explain each decomposition. Merely stating that the database is in 3NF or BCNF is insufficient.
+
+%-------------------- CHAPTER 7 --------------------
+\chapter{Relational Integrity and Constraints}
+
+Explain the integrity constraints applied to the database, including:
+\begin{itemize}
+    \item Domain constraints.
+    \item Primary key constraints.
+    \item Foreign key constraints.
+    \item \texttt{UNIQUE} constraints.
+    \item \texttt{NOT NULL} constraints.
+    \item \texttt{CHECK} constraints, wherever applicable.
+    \item Referential actions such as \texttt{ON DELETE} or \texttt{ON UPDATE}, wherever appropriate.
+\end{itemize}
+
+Explain how these constraints maintain data consistency and prevent invalid data.
+
+%-------------------- CHAPTER 8 --------------------
+\chapter{MySQL Database Implementation}
+
+\section{Database Creation}
+Provide the SQL commands used to create the database.
+
+\section{Table Creation}
+Provide the complete \texttt{CREATE TABLE} statements for all relations, including primary keys, foreign keys, and other constraints.
+
+\section{Data Insertion}
+Provide sample \texttt{INSERT} statements and insert sufficient meaningful data to demonstrate the system.
+
+\section{Data Modification and Deletion}
+Demonstrate appropriate \texttt{UPDATE} and \texttt{DELETE} operations.
+
+\section{Sample Database Contents}
+Show table contents using \texttt{SELECT} queries or screenshots from MySQL.
+
+\section{SQL Query Implementation}
+Write and execute queries demonstrating the following concepts:
+\begin{enumerate}
+    \item Simple \texttt{SELECT} queries with conditions.
+    \item Sorting using \texttt{ORDER BY}.
+    \item Aggregate functions: \texttt{COUNT}, \texttt{SUM}, \texttt{AVG}, \texttt{MIN}, and \texttt{MAX}.
+    \item Grouping using \texttt{GROUP BY} and filtering groups using \texttt{HAVING}.
+    \item Joins, including \texttt{INNER JOIN} and \texttt{LEFT JOIN}, along with other relevant joins where appropriate.
+    \item Nested queries and subqueries.
+    \item Queries using \texttt{IN}, \texttt{EXISTS}, \texttt{ANY}, or \texttt{ALL}, wherever relevant.
+    \item Queries involving multiple tables.
+    \item Queries that answer meaningful business questions.
+    \item At least one view, where appropriate.
+\end{enumerate}
+
+For every query, provide the SQL statement, its purpose, and the output or a screenshot of its execution.
+
+\section{Advanced DBMS Features}
+Demonstrate at least two relevant features from the following list, preferably those covered in the course:
+\begin{itemize}
+    % \item Indexes and their purpose.
+    \item Views.
+    \item Triggers.
+    % \item Stored procedures or functions.
+    % \item Transactions using \texttt{START TRANSACTION}, \texttt{COMMIT}, and \texttt{ROLLBACK}.
+\end{itemize}
+
+Explain the purpose and working of each implemented feature.
+
+%-------------------- CHAPTER 9 --------------------
+\chapter{Application Development}
+
+\section{System Architecture}
+Show the interaction among the front end, application logic, and MySQL database using a simple architecture diagram.
+
+\section{Front-End Technologies}
+Mention the programming language, libraries, and frameworks used.
+
+\section{Application Modules}
+Explain the modules implemented in the project. For an Inventory Management System, examples include:
+\begin{itemize}
+    \item Product Management.
+    \item Supplier Management.
+    \item Purchase Management.
+    \item Sales Management.
+    \item Stock Management.
+    \item Reports and Alerts.
+\end{itemize}
+
+\section{Database Connectivity}
+Explain how the application connects to MySQL and executes database operations.
+
+\section{Application Screenshots}
+Include screenshots of the major application screens and their corresponding operations.
+
+\section{Database Operations through the Application}
+Demonstrate that records can be inserted, retrieved, updated, and deleted through the application wherever appropriate. Show that changes are reflected in the MySQL database.
+
+%-------------------- CHAPTER 10 --------------------
+\chapter{Testing and Results}
+
+\section{Test Cases}
+Prepare a table containing the test case ID, operation, input, expected result, actual result, and status.
+
+\begin{center}
+\small
+\begin{longtable}{|p{1.1cm}|p{2.2cm}|p{2.2cm}|p{2.5cm}|p{2.5cm}|p{1.2cm}|}
+\hline
+\textbf{Test ID} & \textbf{Operation} & \textbf{Input} & \textbf{Expected Result} & \textbf{Actual Result} & \textbf{Status} \\
+\hline
+T1 & Add product & Valid product data & Product added & Fill in result & Pass/Fail \\
+\hline
+T2 & Duplicate ID & Existing product ID & Rejected by constraint & Fill in result & Pass/Fail \\
+\hline
+T3 & Invalid foreign key & Non-existent category ID & Rejected by constraint & Fill in result & Pass/Fail \\
+\hline
+T4 & Negative stock & Negative quantity & Rejected, if constrained & Fill in result & Pass/Fail \\
+\hline
+\end{longtable}
+\end{center}
+
+\section{Query Testing}
+Show that the SQL queries produce the expected results.
+
+\section{Constraint Testing}
+Demonstrate that the database rejects invalid operations wherever the relevant constraints apply.
+
+\section{Results and Discussion}
+Summarize the functionality implemented and discuss the results obtained.
+
+%-------------------- CHAPTER 11 --------------------
+\chapter{Conclusion and Future Scope}
+
+\section{Conclusion}
+Summarize the project, the database concepts applied, and the main outcomes.
+
+\section{Limitations}
+Mention the limitations of the current implementation.
+
+\section{Future Scope}
+Suggest possible improvements and additional functionalities.
+
+%-------------------- REFERENCES --------------------
+\chapter*{References}
+\addcontentsline{toc}{chapter}{References}
+List the books, official documentation, websites, and other resources consulted during the project. Use one consistent referencing style.
+
+%-------------------- APPENDICES --------------------
+\appendix
+
+\chapter{Complete MySQL Script}
+Include the database creation commands, table definitions, constraints, sample data, SQL queries, and any views, triggers, procedures, or transactions implemented. Alternatively, provide a clearly identified supplementary SQL file with the report.
+
+\chapter{Source Code}
+Provide the source code or a repository link for the application. Ensure that the submitted code is accessible to the evaluator.
+
+\chapter{Additional Screenshots}
+Include any additional screenshots needed to demonstrate the project.
+
+\chapter{Team Contribution}
+For group projects, clearly mention the contribution of each team member.
+
+%-------------------- MARKING SCHEME --------------------
+\chapter*{Suggested Evaluation Scheme}
+\addcontentsline{toc}{chapter}{Suggested Evaluation Scheme}
+
+\begin{center}
+\begin{tabular}{p{10cm}r}
+\toprule
+\textbf{Component} & \textbf{Marks} \\
+\midrule
+Problem analysis and requirements & 5 \\
+ER diagram and constraints & 10 \\
+ER-to-relational mapping & 10 \\
+Functional dependencies and keys & 10 \\
+Normalization & 15 \\
+MySQL schema, constraints, and sample data & 10 \\
+SQL queries and advanced DBMS features & 15 \\
+Front-end integration and functionality & 10 \\
+Testing and report quality & 5 \\
+Viva and conceptual understanding & 10 \\
+\midrule
+\textbf{Total} & \textbf{100} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Evaluation principle:} Marks should primarily reflect the correctness of database design, ER-to-relational mapping, functional dependencies, normalization, SQL implementation, and understanding of DBMS concepts. Front-end appearance alone must not determine the project grade.
+
+\end{document}
