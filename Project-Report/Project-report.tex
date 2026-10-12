@@ -3,23 +3,30 @@
 \usepackage[a4paper,left=1in,right=1in,top=1in,bottom=1in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage{microtype}
 \usepackage{setspace}
 \usepackage{enumitem}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
 \usepackage{multirow}
-\usepackage{hyperref}
+\usepackage{morefloats}
 \usepackage{xcolor}
 \usepackage{graphicx}
-\usepackage[space]{grffile}
-\graphicspath{{assets/}{./assets/}{../UI Screenshots/}{./}}
+\graphicspath{{assets/}{./assets/}{./}}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{listings}
-\usepackage[htt]{hyphenat}
 \usepackage{xurl}
+\usepackage{hyperref}
+
+% Relax float constraints to eliminate float queue buildup, jammed queues, and timeouts
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.10}
+\renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{5}
+\setcounter{bottomnumber}{5}
+\setcounter{totalnumber}{8}
 
 % Enforce strict margin compliance: text wraps to next line instead of overflowing
 \sloppy
@@ -27,8 +34,9 @@
 \hfuzz=1pt
 \vfuzz=1pt
 
-% Allow line breaking at underscores in table/column identifiers
-\renewcommand{\_}{\textunderscore\allowbreak}
+% Allow line breaking at underscores in identifiers safely for hyperref
+\pdfstringdefDisableCommands{\def\allowbreak{}}
+\DeclareRobustCommand{\_}{\textunderscore\allowbreak}
 
 \hypersetup{
     colorlinks=true,
@@ -137,10 +145,10 @@ Traditional static linters only inspect syntax and formatting rules, while dynam
     \item \textbf{Admin AI Governance Studio:} In-database prompt management with automatic trigger-based version auditing.
 \end{itemize}
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
     \centering
-    \IfFileExists{High-Level Architecture Diagram.png}{%
-        \includegraphics[width=0.92\textwidth]{{High-Level Architecture Diagram.png}}%
+    \IfFileExists{assets/arch-overview.png}{%
+        \includegraphics[width=0.92\textwidth]{assets/arch-overview.png}%
     }{%
         \IfFileExists{assets/High-Level Architecture Diagram.png}{%
             \includegraphics[width=0.92\textwidth]{{assets/High-Level Architecture Diagram.png}}%
@@ -205,10 +213,10 @@ The functional requirements describe the core operational capabilities of Comple
     \item \textbf{Audit Logging:} Record user registrations, analysis creation/deletion, and bookmark updates into an append-only audit table (streamed in the audit panels of Fig.~\ref{fig:ui_dashboard_profile} and Fig.~\ref{fig:ui_admin_overview}).
 \end{enumerate}
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
     \centering
-    \IfFileExists{Code Analysis Data Lifecycle Flowchart.png}{%
-        \includegraphics[width=0.92\textwidth]{{Code Analysis Data Lifecycle Flowchart.png}}%
+    \IfFileExists{assets/lifecycle-flowchart.png}{%
+        \includegraphics[width=0.92\textwidth]{assets/lifecycle-flowchart.png}%
     }{%
         \IfFileExists{assets/Code Analysis Data Lifecycle Flowchart.png}{%
             \includegraphics[width=0.92\textwidth]{{assets/Code Analysis Data Lifecycle Flowchart.png}}%
@@ -266,7 +274,7 @@ The ComplexityUniverse data model comprises 9 entities:
 \section{Identification of Relationships}
 Table~\ref{tab:relationships} summarizes the semantic relationships and structural constraints.
 
-\begin{table}[h!]
+\begin{table}[!htbp]
 \centering
 \small
 \begin{tabular}{>{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{3.0cm} c >{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}p{2.2cm}}
@@ -298,54 +306,84 @@ The database is modeled at two distinct abstraction tiers:
 
 Fig.~\ref{fig:chen_complete} (Fig.~1.1) presents the complete enterprise conceptual diagram, followed by the modular subsystem diagrams (Fig.~1.2 through Fig.~1.5):
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
     \centering
-    \IfFileExists{assets/Fig 1.1.png}{%
-        \includegraphics[width=0.88\textwidth]{{assets/Fig 1.1.png}}%
+    \IfFileExists{assets/chen-complete.png}{%
+        \includegraphics[width=0.88\textwidth]{assets/chen-complete.png}%
     }{%
-        \fbox{\parbox[c][4cm][c]{0.8\textwidth}{\centering \textbf{Fig 1.1: Complete Conceptual ER Diagram (Peter Chen Notation)}}}%
+        \IfFileExists{assets/Fig 1.1.png}{%
+            \includegraphics[width=0.88\textwidth]{assets/Fig 1.1.png}%
+        }{%
+            \fbox{\parbox[c][4cm][c]{0.8\textwidth}{\centering \textbf{Fig 1.1: Complete Conceptual ER Diagram (Peter Chen Notation)}}}%
+        }%
     }
     \caption{Enterprise Conceptual ER Diagram (Peter Chen Notation)}
     \label{fig:chen_complete}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
     \centering
-    \IfFileExists{assets/Fig 1.2.png}{%
-        \includegraphics[width=0.72\textwidth]{{assets/Fig 1.2.png}}%
+    \IfFileExists{assets/chen-mod1.png}{%
+        \includegraphics[width=0.78\textwidth]{assets/chen-mod1.png}%
     }{%
-        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 1.2: Conceptual Subsystem 1 Diagram}}}%
+        \IfFileExists{assets/Fig 1.2.png}{%
+            \includegraphics[width=0.78\textwidth]{assets/Fig 1.2.png}%
+        }{%
+            \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 1.2: Conceptual Subsystem 1 Diagram}}}%
+        }%
     }
     \caption{Conceptual Subsystem 1: User Identity, Profile \& Activity Log}
     \label{fig:chen_mod1}
-    \vspace{0.3cm}
-    \IfFileExists{assets/Fig 1.3.png}{%
-        \includegraphics[width=0.72\textwidth]{{assets/Fig 1.3.png}}%
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \IfFileExists{assets/chen-mod2.png}{%
+        \includegraphics[width=0.78\textwidth]{assets/chen-mod2.png}%
     }{%
-        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 1.3: Conceptual Subsystem 2 Diagram}}}%
+        \IfFileExists{assets/Fig 1.3.png}{%
+            \includegraphics[width=0.78\textwidth]{assets/Fig 1.3.png}%
+        }{%
+            \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 1.3: Conceptual Subsystem 2 Diagram}}}%
+        }%
     }
     \caption{Conceptual Subsystem 2: Code Analysis Engine \& AI Prompts}
     \label{fig:chen_mod2}
 \end{figure}
 
-\begin{figure}[h!]
+\clearpage
+
+\begin{figure}[!htbp]
     \centering
-    \IfFileExists{assets/Fig 1.4.png}{%
-        \includegraphics[width=0.72\textwidth]{{assets/Fig 1.4.png}}%
+    \IfFileExists{assets/chen-mod3.png}{%
+        \includegraphics[width=0.78\textwidth]{assets/chen-mod3.png}%
     }{%
-        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 1.4: Conceptual Subsystem 3 Diagram}}}%
+        \IfFileExists{assets/Fig 1.4.png}{%
+            \includegraphics[width=0.78\textwidth]{assets/Fig 1.4.png}%
+        }{%
+            \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 1.4: Conceptual Subsystem 3 Diagram}}}%
+        }%
     }
     \caption{Conceptual Subsystem 3: Curriculum Topics \& Bookmarks}
     \label{fig:chen_mod3}
-    \vspace{0.3cm}
-    \IfFileExists{assets/Fig 1.5.png}{%
-        \includegraphics[width=0.72\textwidth]{{assets/Fig 1.5.png}}%
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \IfFileExists{assets/chen-mod4.png}{%
+        \includegraphics[width=0.78\textwidth]{assets/chen-mod4.png}%
     }{%
-        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 1.5: Conceptual Subsystem 4 Diagram}}}%
+        \IfFileExists{assets/Fig 1.5.png}{%
+            \includegraphics[width=0.78\textwidth]{assets/Fig 1.5.png}%
+        }{%
+            \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 1.5: Conceptual Subsystem 4 Diagram}}}%
+        }%
     }
     \caption{Conceptual Subsystem 4: System Administration \& Runtime Configuration}
     \label{fig:chen_mod4}
 \end{figure}
+
+\clearpage
 
 \subsection{Type 2: Logical / Relational ER Modeling (Crow's Foot Notation)}
 \renewcommand{\thefigure}{2.\arabic{figure}}
@@ -353,43 +391,69 @@ Fig.~\ref{fig:chen_complete} (Fig.~1.1) presents the complete enterprise concept
 
 The physical relational schemas implemented in MySQL 8.0 on Aiven Cloud are organized into four modular subsystem diagrams (Fig.~2.2 through Fig.~2.5) defining exact column data types, key constraints, and foreign key references:
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
     \centering
-    \IfFileExists{assets/Fig 2.2.png}{%
-        \includegraphics[width=0.72\textwidth]{{assets/Fig 2.2.png}}%
+    \IfFileExists{assets/rel-mod1.png}{%
+        \includegraphics[width=0.78\textwidth]{assets/rel-mod1.png}%
     }{%
-        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 2.2: Relational Subsystem 1 Schema}}}%
+        \IfFileExists{assets/Fig 2.2.png}{%
+            \includegraphics[width=0.78\textwidth]{assets/Fig 2.2.png}%
+        }{%
+            \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 2.2: Relational Subsystem 1 Schema}}}%
+        }%
     }
     \caption{Relational Subsystem 1: User Identity, Profile \& Audit Schema}
     \label{fig:rel_mod1}
-    \vspace{0.3cm}
-    \IfFileExists{assets/Fig 2.3.png}{%
-        \includegraphics[width=0.72\textwidth]{{assets/Fig 2.3.png}}%
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \IfFileExists{assets/rel-mod2.png}{%
+        \includegraphics[width=0.78\textwidth]{assets/rel-mod2.png}%
     }{%
-        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 2.3: Relational Subsystem 2 Schema}}}%
+        \IfFileExists{assets/Fig 2.3.png}{%
+            \includegraphics[width=0.78\textwidth]{assets/Fig 2.3.png}%
+        }{%
+            \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 2.3: Relational Subsystem 2 Schema}}}%
+        }%
     }
     \caption{Relational Subsystem 2: Code Analysis Engine \& AI Prompts Schema}
     \label{fig:rel_mod2}
 \end{figure}
 
-\begin{figure}[h!]
+\clearpage
+
+\begin{figure}[!htbp]
     \centering
-    \IfFileExists{assets/Fig 2.4.png}{%
-        \includegraphics[width=0.72\textwidth]{{assets/Fig 2.4.png}}%
+    \IfFileExists{assets/rel-mod3.png}{%
+        \includegraphics[width=0.78\textwidth]{assets/rel-mod3.png}%
     }{%
-        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 2.4: Relational Subsystem 3 Schema}}}%
+        \IfFileExists{assets/Fig 2.4.png}{%
+            \includegraphics[width=0.78\textwidth]{assets/Fig 2.4.png}%
+        }{%
+            \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 2.4: Relational Subsystem 3 Schema}}}%
+        }%
     }
     \caption{Relational Subsystem 3: Educational Library \& Bookmarks Schema}
     \label{fig:rel_mod3}
-    \vspace{0.3cm}
-    \IfFileExists{assets/Fig 2.5.png}{%
-        \includegraphics[width=0.72\textwidth]{{assets/Fig 2.5.png}}%
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \IfFileExists{assets/rel-mod4.png}{%
+        \includegraphics[width=0.78\textwidth]{assets/rel-mod4.png}%
     }{%
-        \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 2.5: Relational Subsystem 4 Schema}}}%
+        \IfFileExists{assets/Fig 2.5.png}{%
+            \includegraphics[width=0.78\textwidth]{assets/Fig 2.5.png}%
+        }{%
+            \fbox{\parbox[c][3cm][c]{0.7\textwidth}{\centering \textbf{Fig 2.5: Relational Subsystem 4 Schema}}}%
+        }%
     }
     \caption{Relational Subsystem 4: System Administration \& Runtime Configuration Schema}
     \label{fig:rel_mod4}
 \end{figure}
+
+\clearpage
 
 \section{Explanation of the ER Diagram}
 \renewcommand{\thefigure}{\thechapter.\arabic{figure}}
@@ -517,7 +581,7 @@ A candidate key $K$ satisfies $K^+ = R$ (sufficiency) and no proper subset deter
     Neither $\{\text{user\_id}\}^+$ nor $\{\text{topic\_id}\}^+$ determines $R$, proving minimality.
 \end{itemize}
 
-\begin{table}[h!]
+\begin{table}[!htbp]
 \centering
 \small
 \begin{tabular}{>{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{5.0cm}}
@@ -587,7 +651,7 @@ In all 9 relations, every determinant is a primary key or candidate key:
 \section{Final Normalized Schema}
 Table~\ref{tab:normalization} summarizes the normalized schema. Every decomposition preserves dependencies and guarantees lossless joins because the shared intersection is always a superkey of the decomposed relation.
 
-\begin{table}[h!]
+\begin{table}[!htbp]
 \centering
 \small
 \begin{tabular}{>{\raggedright\arraybackslash}p{3.4cm} >{\raggedright\arraybackslash}p{3.2cm} c c c}
@@ -761,7 +825,7 @@ DELETE FROM code_analyses WHERE id = 101 AND user_id = 2;
 \section{Sample Database Contents}
 Tables~\ref{tab:users_sample} and~\ref{tab:analyses_sample} show representative sample records from MySQL, which map directly to live records surfaced in the administrative user management interface (Fig.~\ref{fig:ui_admin_users}) and the user analyses dashboard (Fig.~\ref{fig:ui_dashboard_analyses}).
 
-\begin{table}[h!]
+\begin{table}[!htbp]
 \centering
 \small
 \begin{tabular}{r >{\raggedright\arraybackslash}p{3.8cm} >{\raggedright\arraybackslash}p{4.6cm} p{1.5cm} r}
@@ -779,7 +843,7 @@ Tables~\ref{tab:users_sample} and~\ref{tab:analyses_sample} show representative 
 \label{tab:users_sample}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[!htbp]
 \centering
 \small
 \begin{tabular}{r r >{\raggedright\arraybackslash}p{3.5cm} p{2cm} p{2cm} r}
@@ -1151,15 +1215,19 @@ Table~\ref{tab:test_cases} details test cases verifying functional operations an
 \begingroup
 \small
 \begin{longtable}{|c|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}p{2.8cm}|>{\raggedright\arraybackslash}p{2.8cm}|c|}
+\caption{System Operations and Database Constraint Verification Test Cases}\label{tab:test_cases} \\
 \hline
 \textbf{Test ID} & \textbf{Operation} & \textbf{Input} & \textbf{Expected Result} & \textbf{Actual Result} & \textbf{Status} \\
 \hline
 \endfirsthead
+\multicolumn{6}{c}%
+{{\bfseries Table \thetable\ continued from previous page}} \\
 \hline
 \textbf{Test ID} & \textbf{Operation} & \textbf{Input} & \textbf{Expected Result} & \textbf{Actual Result} & \textbf{Status} \\
 \hline
 \endhead
 \hline
+\multicolumn{6}{r}{{Continued on next page\dots}} \\
 \endfoot
 \hline
 \endlastfoot
@@ -1188,7 +1256,6 @@ T11 & Full-Text Search & Search ``logarithmic'' & Matching topics retrieved & Ac
 T12 & View Aggregation & Query \texttt{v\_user\_overview} & Denormalized user overview & Sub-15ms fast response & Pass \\
 \hline
 \end{longtable}
-\label{tab:test_cases}
 \endgroup
 
 \section{Query Testing}
