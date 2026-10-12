@@ -56,13 +56,19 @@ The database seed (`database/seed.sql`) provisions credentials for testing and a
 
 ## How to Compile `Project-report.tex`
 
-### Option 1: Overleaf
+### Option 1: 1-Click Automated Compiler (Recommended)
+Run the bundled compiler script which bundles and embeds all 27 diagram & UI screenshot assets and outputs `Project-report.pdf`:
+```bash
+python compile_pdf.py
+```
+
+### Option 2: Overleaf
 1. Create a new Overleaf project.
 2. Upload `Project-report.tex` and the `assets/` folder.
 3. Ensure compiler is set to **pdfLaTeX** or **XeLaTeX** (default engine).
 4. Click **Recompile**.
 
-### Option 2: Local LaTeX (TeXLive / MiKTeX)
+### Option 3: Local LaTeX (TeXLive / MiKTeX)
 ```bash
 pdflatex Project-report.tex
 pdflatex Project-report.tex
