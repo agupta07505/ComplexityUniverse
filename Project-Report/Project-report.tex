@@ -14,6 +14,7 @@
 \usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage[space]{grffile}
+\graphicspath{{assets/}{./assets/}{../UI Screenshots/}{./}}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{listings}
@@ -194,14 +195,14 @@ The platform supports multi-language code analysis (JavaScript, TypeScript, Pyth
 The functional requirements describe the core operational capabilities of ComplexityUniverse:
 
 \begin{enumerate}[label=\textbf{FR-\arabic*.}]
-    \item \textbf{User Management:} Support user registration, bcrypt password hashing, stateless JWT authentication via secure cookies, and profile customization (headline, bio, location, avatar).
-    \item \textbf{Code Analysis Engine:} Accept source code in multiple languages, send structured prompts to Gemini AI, and return worst/average/best-case Big-O bounds, line-by-line costs, and optimization advice.
-    \item \textbf{Storage Engine Metrics:} Automatically calculate code line counts via MySQL stored generated columns upon tuple insertion.
-    \item \textbf{Analysis History:} Allow users to view, search, paginate, and delete saved analyses; triggers automatically update user analysis counters and insert audit records.
-    \item \textbf{Curriculum Library:} Provide structured topic modules across major algorithmic paradigms with full-text search capability.
-    \item \textbf{Topic Bookmarking:} Allow users to bookmark curriculum topics with personal study notes; reject duplicate bookmarks.
-    \item \textbf{Admin Studio:} Allow administrators to review platform metrics, edit AI prompt templates (with automatic version incrementation), and configure the active AI model.
-    \item \textbf{Audit Logging:} Record user registrations, analysis creation/deletion, and bookmark updates into an append-only audit table.
+    \item \textbf{User Management:} Support user registration, bcrypt password hashing, stateless JWT authentication via secure cookies, and profile customization (headline, bio, location, avatar) (see Fig.~\ref{fig:ui_register}, Fig.~\ref{fig:ui_signin}, and Fig.~\ref{fig:ui_dashboard_profile}).
+    \item \textbf{Code Analysis Engine:} Accept source code in multiple languages, send structured prompts to Gemini AI, and return worst/average/best-case Big-O bounds, line-by-line costs, and optimization advice (see Fig.~\ref{fig:ui_hero_analyzer} and Fig.~\ref{fig:ui_analysis_results}).
+    \item \textbf{Storage Engine Metrics:} Automatically calculate code line counts via MySQL stored generated columns upon tuple insertion (monitored in the dashboard telemetry cards, Fig.~\ref{fig:ui_dashboard_analyses}).
+    \item \textbf{Analysis History:} Allow users to view, search, paginate, and delete saved analyses; triggers automatically update user analysis counters and insert audit records (see Fig.~\ref{fig:ui_dashboard_analyses}).
+    \item \textbf{Curriculum Library:} Provide structured topic modules across major algorithmic paradigms with full-text search capability (see Fig.~\ref{fig:ui_learn_library}).
+    \item \textbf{Topic Bookmarking:} Allow users to bookmark curriculum topics with personal study notes; reject duplicate bookmarks (see Fig.~\ref{fig:ui_dashboard_saved_topics}).
+    \item \textbf{Admin Studio:} Allow administrators to review platform metrics, edit AI prompt templates (with automatic version incrementation), and configure the active AI model (see Fig.~\ref{fig:ui_admin_overview}, Fig.~\ref{fig:ui_admin_topics}, and Fig.~\ref{fig:ui_admin_prompts}).
+    \item \textbf{Audit Logging:} Record user registrations, analysis creation/deletion, and bookmark updates into an append-only audit table (streamed in the audit panels of Fig.~\ref{fig:ui_dashboard_profile} and Fig.~\ref{fig:ui_admin_overview}).
 \end{enumerate}
 
 \begin{figure}[h!]
@@ -758,7 +759,7 @@ DELETE FROM code_analyses WHERE id = 101 AND user_id = 2;
 \end{lstlisting}
 
 \section{Sample Database Contents}
-Tables~\ref{tab:users_sample} and~\ref{tab:analyses_sample} show representative sample records from MySQL.
+Tables~\ref{tab:users_sample} and~\ref{tab:analyses_sample} show representative sample records from MySQL, which map directly to live records surfaced in the administrative user management interface (Fig.~\ref{fig:ui_admin_users}) and the user analyses dashboard (Fig.~\ref{fig:ui_dashboard_analyses}).
 
 \begin{table}[h!]
 \centering
@@ -895,11 +896,11 @@ SELECT id, name, email, headline, rank_label, saved_topic_count
 \subsection{Database Views}
 Five production views simplify complex joins:
 \begin{itemize}
-    \item \texttt{v\_user\_overview}: Combines user profiles, bookmark counts, and developer ranks.
-    \item \texttt{v\_analysis\_feed}: Categorizes analyses into performance tiers.
-    \item \texttt{v\_topic\_overview}: Computes example and bookmark counts per topic.
-    \item \texttt{v\_user\_saved\_topics}: Provides denormalized bookmark feeds for the dashboard.
-    \item \texttt{v\_complexity\_distribution}: Groups analyses by complexity buckets for telemetry.
+    \item \texttt{v\_user\_overview}: Combines user profiles, bookmark counts, and developer ranks (visualized on the profile card and admin user roster, Fig.~\ref{fig:ui_dashboard_profile} and Fig.~\ref{fig:ui_admin_users}).
+    \item \texttt{v\_analysis\_feed}: Categorizes analyses into performance tiers (rendered in the user history stream, Fig.~\ref{fig:ui_dashboard_analyses}).
+    \item \texttt{v\_topic\_overview}: Computes example and bookmark counts per topic (administered via Fig.~\ref{fig:ui_admin_topics}).
+    \item \texttt{v\_user\_saved\_topics}: Provides denormalized bookmark feeds for the dashboard (displayed in Fig.~\ref{fig:ui_dashboard_saved_topics}).
+    \item \texttt{v\_complexity\_distribution}: Groups analyses by complexity buckets for telemetry (visualized on the admin dashboard, Fig.~\ref{fig:ui_admin_overview}).
 \end{itemize}
 
 \subsection{Database Triggers}
@@ -910,7 +911,7 @@ Ten triggers enforce rules autonomously at the database layer:
     \item \texttt{trg\_analyses\_after\_insert} / \texttt{delete}: Increments/decrements \texttt{users.analysis\_count}.
     \item \texttt{trg\_topics\_before\_insert} / \texttt{update}: Auto-generates URL slugs from titles.
     \item \texttt{trg\_saved\_after\_insert} / \texttt{delete}: Records bookmark audit events.
-    \item \texttt{trg\_prompt\_before\_update}: Automatically increments prompt version by 1.
+    \item \texttt{trg\_prompt\_before\_update}: Automatically increments prompt version by 1 upon editing (managed via the Admin AI Studio, Fig.~\ref{fig:ui_admin_prompts}).
 \end{itemize}
 
 \begin{lstlisting}[language=SQL]
@@ -956,11 +957,11 @@ ComplexityUniverse is constructed on Next.js 16 (App Router) using a decoupled a
 
 \section{Application Modules}
 \begin{enumerate}
-    \item \textbf{Algorithmic Complexity Analyzer:} Code editor with language selector, analysis mode switch, and Big-O results badge display.
-    \item \textbf{Learn Curriculum Library:} Categorized algorithmic modules with instant full-text search and runnable code snippets.
-    \item \textbf{Developer Dashboard:} Displays profile credentials, saved analysis history, bookmarked topics, and distribution charts.
-    \item \textbf{Admin AI Governance Studio:} Manages user roles, inspects telemetry, and edits AI prompt templates with version tracking.
-    \item \textbf{Authentication Guard:} Handles registration, login, bcrypt password verification, and JWT session cookies.
+    \item \textbf{Algorithmic Complexity Analyzer:} Code editor with language selector, analysis mode switch, and Big-O results badge display (Fig.~\ref{fig:ui_hero_analyzer}, Fig.~\ref{fig:ui_analysis_results}, and Fig.~\ref{fig:ui_code_viewer}).
+    \item \textbf{Learn Curriculum Library:} Categorized algorithmic modules with instant full-text search and runnable code snippets (Fig.~\ref{fig:ui_learn_library}).
+    \item \textbf{Developer Dashboard:} Displays profile credentials, saved analysis history, bookmarked topics, and distribution charts (Fig.~\ref{fig:ui_dashboard_analyses}, Fig.~\ref{fig:ui_dashboard_saved_topics}, and Fig.~\ref{fig:ui_dashboard_profile}).
+    \item \textbf{Admin AI Governance Studio:} Manages user roles, inspects telemetry, and edits AI prompt templates with version tracking (Fig.~\ref{fig:ui_admin_overview}, Fig.~\ref{fig:ui_admin_topics}, Fig.~\ref{fig:ui_admin_prompts}, and Fig.~\ref{fig:ui_admin_users}).
+    \item \textbf{Authentication Guard:} Handles registration, login, bcrypt password verification, and JWT session cookies (Fig.~\ref{fig:ui_signin}, Fig.~\ref{fig:ui_register}, and Fig.~\ref{fig:ui_admin_signin}).
 \end{enumerate}
 
 \section{Database Connectivity}
@@ -972,14 +973,166 @@ Connection pooling is implemented via \texttt{mysql2/promise} in \texttt{lib/db.
 \end{itemize}
 
 \section{Application Screenshots}
-The application interface is structured across five core screens:
-\begin{enumerate}
-    \item \textbf{Hero Analyzer View:} Interactive code editor with language selection and analysis triggers.
-    \item \textbf{Analysis Breakdown View:} Displays asymptotic Big-O badges, line-by-line cost accordions, and optimization recommendations.
-    \item \textbf{Curriculum Library View:} Split-pane topic catalog with full-text search and runnable examples.
-    \item \textbf{Developer Dashboard View:} User metrics, saved analysis history, and bookmark management.
-    \item \textbf{Admin Governance Studio View:} Telemetry dashboard and AI prompt template editor.
-\end{enumerate}
+The ComplexityUniverse web application provides an intuitive, high-performance interface built with Next.js~16 and Vanilla CSS. This section presents the primary user-facing and administrator-facing screens that form the core interaction loop of the platform:
+
+\subsection{Algorithmic Code Editor and Analysis Submission}
+The primary landing view (Fig.~\ref{fig:ui_hero_analyzer}) centers on an interactive code editor with syntax detection and a custom 2D particle canvas starfield. Developers can paste arbitrary code snippets in supported languages (JavaScript, Python, Java, C++, Go, Rust, etc.) or select automatic language detection. The interface provides instantaneous keyboard navigation (\texttt{Ctrl + Enter}) to trigger complexity evaluation.
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-hero-analyzer.png}{%
+        \includegraphics[width=0.92\textwidth]{{assets/ui-hero-analyzer.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (122).png}{%
+            \includegraphics[width=0.92\textwidth]{{assets/Screenshot (122).png}}%
+        }{%
+            \fbox{\parbox[c][4cm][c]{0.85\textwidth}{\centering \textbf{Figure Placeholder: Hero Code Analyzer}}}%
+        }%
+    }
+    \caption{Interactive Hero Code Analyzer with Language Selector, Dynamic Particle Starfield, and Execution Trigger}
+    \label{fig:ui_hero_analyzer}
+\end{figure}
+
+\subsection{Asymptotic Complexity Breakdown and Performance Profiling}
+Upon submitting code for analysis, Google Gemini parses the algorithmic structure and returns a strictly typed JSON payload. As illustrated in Fig.~\ref{fig:ui_analysis_results}, the UI renders:
+\begin{itemize}
+    \item \textbf{High-Level Asymptotic Badges:} Prominent time complexity ($\mathcal{O}(m \times n)$) and auxiliary space complexity ($\mathcal{O}(m \times n)$) badges with an aggregate circular cost gauge.
+    \item \textbf{Multi-Case Complexity Matrix:} Best-case, average-case, and worst-case bounds formatted in standard mathematical notation.
+    \item \textbf{Structural Cost Attribution:} An accordion detailing the exact origins of computational load (e.g., initialization passes versus nested dynamic programming transitions).
+    \item \textbf{Bottlenecks and Optimization Advice:} Concrete architectural recommendations to reduce memory overhead (e.g., rolling array optimization or closed-form combinatorial approaches).
+    \item \textbf{Persistence Control:} A prominent ``Save to dashboard'' action triggering transactional tuple insertion into \texttt{code\_analyses}.
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-analysis-results.png}{%
+        \includegraphics[width=0.92\textwidth]{{assets/ui-analysis-results.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (125).png}{%
+            \includegraphics[width=0.92\textwidth]{{assets/Screenshot (125).png}}%
+        }{%
+            \fbox{\parbox[c][4cm][c]{0.85\textwidth}{\centering \textbf{Figure Placeholder: Complexity Analysis Results}}}%
+        }%
+    }
+    \caption{Granular Complexity Analysis Results Displaying Multi-Case Bounds, Cost Breakdown, and Concrete Optimization Ideas}
+    \label{fig:ui_analysis_results}
+\end{figure}
+
+\clearpage
+
+\subsection{Analyzed Source Code Inspector and Platform Architecture Pillars}
+Directly beneath the complexity metrics, the interface displays the submitted source code in a syntax-highlighted code container equipped with a one-click copy tool (Fig.~\ref{fig:ui_code_viewer}). Complementary architectural cards emphasize ComplexityUniverse's core differentiators: rigorous algorithmic reasoning without heuristic guesswork (``Cost, not vibes''), synchronized curriculum cross-referencing (``Learn as you check''), and persistent cloud-backed history tracking (``Keep a history'').
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-code-viewer.png}{%
+        \includegraphics[width=0.92\textwidth]{{assets/ui-code-viewer.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (126).png}{%
+            \includegraphics[width=0.92\textwidth]{{assets/Screenshot (126).png}}%
+        }{%
+            \fbox{\parbox[c][4cm][c]{0.85\textwidth}{\centering \textbf{Figure Placeholder: Analyzed Code Inspector}}}%
+        }%
+    }
+    \caption{Analyzed Source Code Inspector with Copy Utility and Platform Architectural Pillars}
+    \label{fig:ui_code_viewer}
+\end{figure}
+
+\subsection{Interactive Curriculum and Algorithmic Knowledge Base}
+The Learn portal (Fig.~\ref{fig:ui_learn_library}) implements a responsive split-pane reading sandbox. The left navigation tree organizes topics across algorithmic tiers: Fundamentals (Big-O Notation, Recursion), Common Complexities ($\mathcal{O}(1)$ through $\mathcal{O}(2^n)$), Data Structures \& Algorithms, and Optimization Techniques. The right view renders comprehensive educational content, standard mathematical rules of thumb, and a one-click bookmarking mechanism backed by MySQL.
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-learn-library.png}{%
+        \includegraphics[width=0.92\textwidth]{{assets/ui-learn-library.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (127).png}{%
+            \includegraphics[width=0.92\textwidth]{{assets/Screenshot (127).png}}%
+        }{%
+            \fbox{\parbox[c][4cm][c]{0.85\textwidth}{\centering \textbf{Figure Placeholder: Curriculum Learning Library}}}%
+        }%
+    }
+    \caption{Curriculum Learning Library featuring Split-Pane Category Navigation and Interactive Big-O Notation Module}
+    \label{fig:ui_learn_library}
+\end{figure}
+
+\clearpage
+
+\subsection{Developer Dashboard: Saved Analyses History and Metrics}
+Authenticated developers access their centralized operational hub (Fig.~\ref{fig:ui_dashboard_analyses}). Four summary metric cards compute real-time statistics: Total Saved Analyses, Bookmarked Topics, Lines of Code Analyzed (evaluated by MySQL stored generated columns), and Dominant Complexity Class. The chronological analysis roster displays language badges, asymptotic classifications, code line totals, AI engine tags, and individual analysis deletion controls.
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-dashboard-analyses.png}{%
+        \includegraphics[width=0.92\textwidth]{{assets/ui-dashboard-analyses.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (130).png}{%
+            \includegraphics[width=0.92\textwidth]{{assets/Screenshot (130).png}}%
+        }{%
+            \fbox{\parbox[c][4cm][c]{0.85\textwidth}{\centering \textbf{Figure Placeholder: Developer Dashboard Analyses}}}%
+        }%
+    }
+    \caption{Developer Dashboard displaying User Profile Header, Aggregate Telemetry Cards, and Historical Saved Analyses Roster}
+    \label{fig:ui_dashboard_analyses}
+\end{figure}
+
+\subsection{Developer Dashboard: Profile Metadata and Real-Time Audit Feed}
+The Profile view within the Developer Dashboard (Fig.~\ref{fig:ui_dashboard_profile}) provides account management alongside an autonomous real-time audit stream. User metadata includes email, role tier, assigned developer rank (computed dynamically via \texttt{v\_user\_stats}), and login timestamps. The ``Recent Activity'' panel is populated directly from the append-only \texttt{activity\_log} table, providing transparent traceability for all user-initiated database events.
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-dashboard-profile.png}{%
+        \includegraphics[width=0.92\textwidth]{{assets/ui-dashboard-profile.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (132).png}{%
+            \includegraphics[width=0.92\textwidth]{{assets/Screenshot (132).png}}%
+        }{%
+            \fbox{\parbox[c][4cm][c]{0.85\textwidth}{\centering \textbf{Figure Placeholder: Developer Dashboard Profile}}}%
+        }%
+    }
+    \caption{Developer Profile Interface displaying Account Attributes, Dynamic Developer Rank, and Live Audit Activity Stream}
+    \label{fig:ui_dashboard_profile}
+\end{figure}
+
+\clearpage
+
+\subsection{Administrator Console: Platform Overview and Distribution Telemetry}
+Privileged administrators possess dedicated dashboard tooling (Fig.~\ref{fig:ui_admin_overview}) to monitor overall platform health. Key performance cards track total users, persisted analyses, published topics, code examples, active bookmarks, and system log entries. The lower-left analytics panel aggregates analyses across complexity buckets via \texttt{v\_complexity\_distribution}, while the right feed streams global system-wide activity.
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-admin-overview.png}{%
+        \includegraphics[width=0.92\textwidth]{{assets/ui-admin-overview.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (134).png}{%
+            \includegraphics[width=0.92\textwidth]{{assets/Screenshot (134).png}}%
+        }{%
+            \fbox{\parbox[c][4cm][c]{0.85\textwidth}{\centering \textbf{Figure Placeholder: Admin Console Overview}}}%
+        }%
+    }
+    \caption{Administrator Console Overview displaying Platform Performance Indicators and Asymptotic Complexity Distribution Telemetry}
+    \label{fig:ui_admin_overview}
+\end{figure}
+
+\subsection{Administrator Console: AI Governance and Prompt Engineering}
+The AI Settings console (Fig.~\ref{fig:ui_admin_prompts}) facilitates runtime governance of the underlying LLM engine. Administrators can securely update the Google Gemini API key, select active foundation models (\texttt{gemini-3.5-flash}), and refine the system prompt template. The template editor supports parameter placeholders (\texttt{\{CODE\}}, \texttt{\{LANGUAGE\}}, \texttt{\{MODE\}}). Any saved modification invokes the \texttt{trg\_prompt\_before\_update} trigger, which automatically increments the prompt version for audit compliance.
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-admin-prompts.png}{%
+        \includegraphics[width=0.92\textwidth]{{assets/ui-admin-prompts.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (136).png}{%
+            \includegraphics[width=0.92\textwidth]{{assets/Screenshot (136).png}}%
+        }{%
+            \fbox{\parbox[c][4cm][c]{0.85\textwidth}{\centering \textbf{Figure Placeholder: Admin AI Settings}}}%
+        }%
+    }
+    \caption{Admin AI Governance Studio for Google Gemini API Connection Configuration and Trigger-Audited Prompt Template Versioning}
+    \label{fig:ui_admin_prompts}
+\end{figure}
+
+\clearpage
 
 \section{Database Operations through the Application}
 User actions translate directly to database operations:
@@ -1122,13 +1275,158 @@ The application codebase is organized within the project repository:
 \end{itemize}
 
 \chapter{Additional Screenshots}
-The application interface provides an intuitive user experience:
+This appendix documents complementary user interfaces and administrative subsystems that support the end-to-end operational lifecycle of ComplexityUniverse:
+
+\section{User Authentication and Access Control Interfaces}
+ComplexityUniverse enforces strict authentication boundaries across public users, registered analysts, and system administrators:
 \begin{itemize}
-    \item \textbf{Particle Starfield Hero:} Interactive Canvas animation with dark-mode aesthetic.
-    \item \textbf{Split-Pane Learning Sandbox:} Curriculum reader with live code examples.
-    \item \textbf{Dynamic Developer Rank Badging:} In-app rank badges computed via database views.
-    \item \textbf{Admin AI Governance Studio:} Live prompt engineering with automated schema-level versioning.
+    \item \textbf{Member Sign-In (Fig.~\ref{fig:ui_signin}):} Secure credential entry verifying bcrypt password hashes and returning signed HTTP-only JWT cookies.
+    \item \textbf{Member Registration (Fig.~\ref{fig:ui_register}):} New developer onboarding portal; tuple insertion into \texttt{users} automatically triggers the creation of associated \texttt{user\_profiles} tuples and logs account creation in \texttt{activity\_log}.
+    \item \textbf{Administrator Sign-In (Fig.~\ref{fig:ui_admin_signin}):} Dedicated privileged access gateway safeguarding the administrative management console.
 \end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-signin.png}{%
+        \includegraphics[width=0.88\textwidth]{{assets/ui-signin.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (123).png}{%
+            \includegraphics[width=0.88\textwidth]{{assets/Screenshot (123).png}}%
+        }{%
+            \fbox{\parbox[c][3.5cm][c]{0.8\textwidth}{\centering \textbf{Figure Placeholder: Member Sign-In}}}%
+        }%
+    }
+    \caption{Member Sign-In Interface with Secure Credential Submission}
+    \label{fig:ui_signin}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-register.png}{%
+        \includegraphics[width=0.88\textwidth]{{assets/ui-register.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (124).png}{%
+            \includegraphics[width=0.88\textwidth]{{assets/Screenshot (124).png}}%
+        }{%
+            \fbox{\parbox[c][3.5cm][c]{0.8\textwidth}{\centering \textbf{Figure Placeholder: Member Registration}}}%
+        }%
+    }
+    \caption{Member Registration Interface triggering Automated Profile Initialization}
+    \label{fig:ui_register}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-admin-signin.png}{%
+        \includegraphics[width=0.88\textwidth]{{assets/ui-admin-signin.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (133).png}{%
+            \includegraphics[width=0.88\textwidth]{{assets/Screenshot (133).png}}%
+        }{%
+            \fbox{\parbox[c][3.5cm][c]{0.8\textwidth}{\centering \textbf{Figure Placeholder: Admin Sign-In}}}%
+        }%
+    }
+    \caption{Dedicated Administrator Access Portal for System Configuration and Management}
+    \label{fig:ui_admin_signin}
+\end{figure}
+
+\section{Developer Onboarding and Knowledge Reinforcement}
+To bridge theoretical complexity analysis and practical software engineering, ComplexityUniverse incorporates self-paced guidance workflows:
+\begin{itemize}
+    \item \textbf{Four-Step Execution Workflow (Fig.~\ref{fig:ui_how_to_use_guide}):} A structured operational guide detailing the core lifecycle: Paste code, Trigger analysis, Persist to dashboard, and Bookmark curriculum topics.
+    \item \textbf{Asymptotic Badge Legend and System FAQ (Fig.~\ref{fig:ui_badge_legend_faq}):} A clear visual taxonomy color-coding computational bounds (green for constant/logarithmic, blue for linear/linearithmic, orange for quadratic, and red for exponential) alongside an interactive FAQ accordion.
+    \item \textbf{Developer Dashboard Saved Topics (Fig.~\ref{fig:ui_dashboard_saved_topics}):} Personalized study repository displaying bookmarked topics populated through the \texttt{v\_user\_saved\_topics} view with one-click note review and removal actions.
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-how-to-use-guide.png}{%
+        \includegraphics[width=0.88\textwidth]{{assets/ui-how-to-use-guide.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (128).png}{%
+            \includegraphics[width=0.88\textwidth]{{assets/Screenshot (128).png}}%
+        }{%
+            \fbox{\parbox[c][3.5cm][c]{0.8\textwidth}{\centering \textbf{Figure Placeholder: How to Use Guide}}}%
+        }%
+    }
+    \caption{Step-by-Step Platform Execution Guide (``How to Use'') Outlining the Four-Move Workflow}
+    \label{fig:ui_how_to_use_guide}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-badge-legend-faq.png}{%
+        \includegraphics[width=0.88\textwidth]{{assets/ui-badge-legend-faq.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (129).png}{%
+            \includegraphics[width=0.88\textwidth]{{assets/Screenshot (129).png}}%
+        }{%
+            \fbox{\parbox[c][3.5cm][c]{0.8\textwidth}{\centering \textbf{Figure Placeholder: Badge Legend and FAQ}}}%
+        }%
+    }
+    \caption{Asymptotic Complexity Color-Coded Badge Legend and Frequently Asked Questions Accordion}
+    \label{fig:ui_badge_legend_faq}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-dashboard-saved-topics.png}{%
+        \includegraphics[width=0.88\textwidth]{{assets/ui-dashboard-saved-topics.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (131).png}{%
+            \includegraphics[width=0.88\textwidth]{{assets/Screenshot (131).png}}%
+        }{%
+            \fbox{\parbox[c][3.5cm][c]{0.8\textwidth}{\centering \textbf{Figure Placeholder: Dashboard Saved Topics}}}%
+        }%
+    }
+    \caption{Developer Dashboard Saved Topics Workspace Displaying Bookmarked Curriculum Modules}
+    \label{fig:ui_dashboard_saved_topics}
+\end{figure}
+
+\clearpage
+
+\section{Content Management and User Administration}
+The administrative backplane provides direct operational interfaces over the MySQL relational tables:
+\begin{itemize}
+    \item \textbf{Curriculum Topic Management (Fig.~\ref{fig:ui_admin_topics}):} Interactive CRUD table managing the \texttt{complexity\_topics} table, displaying difficulty levels, complexity tags, code example counts, bookmark statistics, publication status, and modal controls for adding new curriculum topics.
+    \item \textbf{User Administration and Dynamic Rank Badging (Fig.~\ref{fig:ui_admin_users}):} Comprehensive user roster presenting account emails, editable user roles (\texttt{user} or \texttt{admin}), live status badges, individual analysis/bookmark totals, and dynamically computed developer ranks (e.g., ``Power analyst'', ``Regular analyst'') evaluated through the \texttt{v\_user\_stats} view.
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-admin-topics.png}{%
+        \includegraphics[width=0.88\textwidth]{{assets/ui-admin-topics.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (135).png}{%
+            \includegraphics[width=0.88\textwidth]{{assets/Screenshot (135).png}}%
+        }{%
+            \fbox{\parbox[c][3.5cm][c]{0.8\textwidth}{\centering \textbf{Figure Placeholder: Admin Topics Table}}}%
+        }%
+    }
+    \caption{Admin Console Curriculum Topic Management Table with Inline Status, Example Counts, and Topic Creation Trigger}
+    \label{fig:ui_admin_topics}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{assets/ui-admin-users.png}{%
+        \includegraphics[width=0.88\textwidth]{{assets/ui-admin-users.png}}%
+    }{%
+        \IfFileExists{assets/Screenshot (137).png}{%
+            \includegraphics[width=0.88\textwidth]{{assets/Screenshot (137).png}}%
+        }{%
+            \fbox{\parbox[c][3.5cm][c]{0.8\textwidth}{\centering \textbf{Figure Placeholder: Admin User Roster}}}%
+        }%
+    }
+    \caption{Admin Console User Management Roster with Role-Based Access Control and Database-Computed Rank Tiers}
+    \label{fig:ui_admin_users}
+\end{figure}
+
+\clearpage
 
 \chapter{Team Contribution}
 This project was undertaken by the following team members from the Department of Computer Science and Engineering at IIIT Bhopal:
