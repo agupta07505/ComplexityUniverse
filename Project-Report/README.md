@@ -36,10 +36,10 @@ Project-Report/
 
 | Name | Scholar Number | Project Contributions |
 | :--- | :--- | :--- |
-| **Animesh Gupta** | `25U024044` | Complete Project Architecture, Next.js Fullstack Implementation, MySQL Database Design, AI Integration, LaTeX Report, Presentation Deck, Conceptual & Relational ER Modeling |
+| **Animesh Gupta** | `25U024044` | Project Lead, Complete System Architecture & Implementation, MySQL Database Design, AI Gateway Integration, Complete Project Report, Conceptual & Relational ER Modeling |
 | **Ritik Raj** | `25U024041` | Entity--Relationship Modeling & ER Diagram Drafting |
-| **Aditya Chaudhary** | `25U024045` | *(Contribution lines blank for manual entry)* |
-| **Gaurav Kumar Singh** | `25U024043` | *(Contribution lines blank for manual entry)* |
+| **Aditya Chaudhary** | `25U024045` | Sample Code Collection & Basic Testing Assistance |
+| **Gaurav Kumar Singh** | `25U024043` | Project Presentation Slide Deck (`Project Presentation.ppt`), Presentation Structure & Design |
 
 ---
 
